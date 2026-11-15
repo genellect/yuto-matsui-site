@@ -1,0 +1,162 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { MobileHeroRibbons } from "./MobileHeroRibbons";
+import styles from "./founder.module.css";
+import { lakePortraitComposition } from "./hero-composition";
+
+const SLIDES = [
+  {
+    src: "/images/founder-portfolio/yuto-matsui-profile-hero.webp",
+    alt: "横顔のYuto Matsui / 松井優知",
+    location: "PORTRAIT / SIDE",
+    motion: "from-left",
+    focus: "natural"
+  },
+  {
+    src: "/images/founder-portfolio/yuto-matsui-nagano-lake-hero-centered-20260917.webp",
+    alt: "長野の湖と山々を背景に立つYuto Matsui / 松井優知",
+    location: "NAGANO / NATURE",
+    motion: "from-right",
+    focus: "face-centered"
+  },
+  {
+    src: "/images/founder-portfolio/yuto-matsui-city-night-hero-composition-20260928.webp",
+    alt: "冬のイルミネーションを背景に立つYuto Matsui / 松井優知",
+    location: "CITY / NIGHT",
+    motion: "night-focus",
+    focus: "face-centered"
+  }
+] as const;
+
+const INTERVAL_MS = 5200;
+
+export function FounderHeroGallery() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const gallery = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const frame = gallery.current?.querySelector<HTMLElement>(`.${styles.photoFrame}`);
+    const crop = gallery.current?.querySelector<HTMLElement>("[data-composition='lake-portrait']");
+    if (!frame || !crop) return;
+    const sync = () => {
+      const { width, height } = frame.getBoundingClientRect();
+      if (!width || !height) return;
+      const composition = lakePortraitComposition(width, height);
+      for (const [name, value] of Object.entries(composition)) crop.style.setProperty(`--portrait-${name}`, `${value}px`);
+    };
+    const observer = new ResizeObserver(sync);
+    observer.observe(frame);
+    sync();
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 640px)");
+    const hero = gallery.current?.parentElement;
+    const copy = hero?.querySelector<HTMLElement>(`.${styles.heroCopy}`);
+    const header = hero?.closest(`.${styles.page}`)?.querySelector<HTMLElement>(`.${styles.header}`);
+    if (!hero || !copy) return;
+    const sync = () => {
+      if (!mobile.matches) {
+        hero.style.removeProperty("--hero-copy-height");
+        hero.style.removeProperty("--hero-header-height");
+        return;
+      }
+      hero.style.setProperty("--hero-copy-height", `${copy.offsetHeight}px`);
+      if (header) hero.style.setProperty("--hero-header-height", `${header.offsetHeight}px`);
+    };
+    const observer = new ResizeObserver(sync);
+    observer.observe(copy);
+    if (header) observer.observe(header);
+    sync();
+    mobile.addEventListener("change", sync);
+    return () => {
+      observer.disconnect();
+      mobile.removeEventListener("change", sync);
+      hero.style.removeProperty("--hero-copy-height");
+      hero.style.removeProperty("--hero-header-height");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const timer = window.setInterval(() => {
+      if (!document.hidden && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        setActiveIndex((current) => (current + 1) % SLIDES.length);
+      }
+    }, INTERVAL_MS);
+
+    return () => window.clearInterval(timer);
+  }, [paused]);
+
+  return (
+    <div
+      ref={gallery}
+      className={styles.heroPhoto}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Yuto Matsui ポートレート"
+      data-paused={paused}
+    >
+      <div className={styles.photoFrame} aria-live="off">
+        {SLIDES.map((slide, index) => (
+          <figure
+            key={slide.src}
+            className={styles.photoSlide}
+            data-active={index === activeIndex}
+            data-motion={slide.motion}
+            data-focus={slide.focus}
+            data-composition={index === 1 ? "lake-portrait" : undefined}
+            aria-hidden={index !== activeIndex}
+          >
+            {index === 1 ? <div className={styles.lakePortraitLayer}>
+              <Image src={slide.src} alt={index === activeIndex ? slide.alt : ""} width={1600} height={2400} priority sizes="(min-width: 901px) 88vw, 180vw" />
+            </div> : <Image
+              src={slide.src}
+              alt={index === activeIndex ? slide.alt : ""}
+              fill
+              priority
+              sizes="(min-width: 901px) 46vw, (max-width: 640px) 100vw, 88vw"
+            />}
+          </figure>
+        ))}
+        <div className={styles.photoScan} aria-hidden="true" />
+      </div>
+
+      <MobileHeroRibbons paused={paused} />
+
+      <div className={styles.photoControls}>
+        <div className={styles.photoDots} aria-label="表示する写真を選択">
+          {SLIDES.map((slide, index) => (
+            <button
+              key={slide.src}
+              type="button"
+              data-active={index === activeIndex}
+              aria-label={`写真 ${index + 1} を表示`}
+              aria-pressed={index === activeIndex}
+              onClick={() => setActiveIndex(index)}
+            >
+              <span />
+            </button>
+          ))}
+        </div>
+        <span className={styles.photoMeta} aria-hidden="true">
+          {String(activeIndex + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")} · {SLIDES[activeIndex].location}
+        </span>
+        <button
+          type="button"
+          className={styles.pauseButton}
+          aria-label={paused ? "写真の自動切替を再開" : "写真の自動切替を一時停止"}
+          aria-pressed={paused}
+          onClick={() => setPaused((current) => !current)}
+        >
+          <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
+        </button>
+      </div>
+    </div>
+  );
+}

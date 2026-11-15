@@ -1,0 +1,40 @@
+.frame[data-depth-visual] {
+  --frame-depth: 20px;
+  --frame-edge: #cedbe4;
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+:global([data-depth-editorial="true"]) .frame { --frame-edge: #c2becf; }
+:global([data-depth-editorial="true"][data-depth-card="experience"]) .frame { --frame-edge: #29483e; }
+:global([data-depth-card="photo"]:not([data-depth-editorial])) .frame { --frame-edge: #d7c9bb; }
+.geometry[data-depth-geometry] {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  perspective: 1400px;
+  perspective-origin: 180% 180%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+/* The photo's stacking context always paints after the complete 3D decoration.
+   Neither the image nor the copy participates in its depth sorting (WebKit). */
+.surface {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: inherit;
+  background: inherit;
+}
+.face { position: absolute; display: block; background: var(--frame-edge); backface-visibility: visible; }
+.face[data-depth-face="back"] { inset: 0; transform: translateZ(calc(-1 * var(--frame-depth))) rotateY(180deg); }
+.face[data-depth-face="right"] { left: 100%; top: 0; width: var(--frame-depth); height: 100%; transform-origin: left; transform: rotateY(90deg); background: color-mix(in srgb, var(--frame-edge), black 12%); }
+.face[data-depth-face="left"] { right: 100%; top: 0; width: var(--frame-depth); height: 100%; transform-origin: right; transform: rotateY(-90deg); }
+.face[data-depth-face="top"] { bottom: 100%; left: 0; width: 100%; height: var(--frame-depth); transform-origin: bottom; transform: rotateX(90deg); }
+.face[data-depth-face="bottom"] { top: 100%; left: 0; width: 100%; height: var(--frame-depth); transform-origin: top; transform: rotateX(-90deg); background: color-mix(in srgb, var(--frame-edge), black 18%); }
+@media (max-width: 900px) {
+  .frame[data-depth-visual] { --frame-depth: 14px; }
+  .geometry[data-depth-geometry] { perspective: 1200px; }
+}

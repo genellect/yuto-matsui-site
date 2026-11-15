@@ -1,0 +1,223 @@
+{
+  "observedAt": "2026-11-15T03:03:42.515Z",
+  "sourceCommit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+  "origin": "https://yuto-matsui.com",
+  "method": "GET; no redirects; identity encoding",
+  "policyHeaders": [
+    "content-type",
+    "cache-control",
+    "access-control-allow-origin",
+    "permissions-policy",
+    "referrer-policy",
+    "x-content-type-options",
+    "link"
+  ],
+  "results": [
+    {
+      "path": "/",
+      "contract": {
+        "status": 200,
+        "location": "",
+        "policy": {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "max-age=0, must-revalidate, public",
+          "access-control-allow-origin": "*",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "x-content-type-options": "nosniff",
+          "link": "</images/founder-portfolio/yuto-matsui-profile-hero.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/yuto-matsui-nagano-lake-hero-centered-20260917.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/yuto-matsui-city-night-hero-composition-20260928.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/life-science-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/software-development-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-life-science.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-development.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-education.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-drive.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-shogi.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-climbing.webp>; rel=\"preload\"; as=image, <https://www.googletagmanager.com/gtag/js?id=G-EHKJ8B8N0Y>; rel=\"preload\"; as=script"
+        }
+      },
+      "headers": {
+        "access-control-allow-origin": "*",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "cf-cache-status": "DYNAMIC",
+        "cf-ray": "a5ab062efde3d798-NRT",
+        "connection": "keep-alive",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sun, 15 Nov 2026 03:03:40 GMT",
+        "link": "</images/founder-portfolio/yuto-matsui-profile-hero.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/yuto-matsui-nagano-lake-hero-centered-20260917.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/yuto-matsui-city-night-hero-composition-20260928.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/life-science-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/software-development-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-life-science.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-development.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-education.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-drive.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-shogi.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-climbing.webp>; rel=\"preload\"; as=image, <https://www.googletagmanager.com/gtag/js?id=G-EHKJ8B8N0Y>; rel=\"preload\"; as=script",
+        "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=OQBciAKB8zcOLQCcrobym81sks5EXqoMTMbt7ry29gNeAv%2BYxMeUX2FFOtSKXjPkjxByRT1inYe3pYCSMFndGpXDbaS2fj1lNRfX6nKyw5BJIe%2Bz3oCfNKy5otBsaNf5PkM%3D\"}]}",
+        "server": "cloudflare",
+        "transfer-encoding": "chunked",
+        "x-content-type-options": "nosniff"
+      }
+    },
+    {
+      "path": "/en/",
+      "contract": {
+        "status": 200,
+        "location": "",
+        "policy": {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "max-age=0, must-revalidate, public",
+          "access-control-allow-origin": "*",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "x-content-type-options": "nosniff",
+          "link": "</images/founder-portfolio/yuto-matsui-nagano-lake-hero-20260831.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/life-science-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/software-development-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-life-science.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-development.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-education.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-drive.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-shogi.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-climbing.webp>; rel=\"preload\"; as=image, <https://www.googletagmanager.com/gtag/js?id=G-EHKJ8B8N0Y>; rel=\"preload\"; as=script"
+        }
+      },
+      "headers": {
+        "access-control-allow-origin": "*",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "cf-cache-status": "DYNAMIC",
+        "cf-ray": "a5ab0632fef6f2d6-NRT",
+        "connection": "keep-alive",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sun, 15 Nov 2026 03:03:41 GMT",
+        "link": "</images/founder-portfolio/yuto-matsui-nagano-lake-hero-20260831.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/life-science-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/software-development-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-life-science.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-development.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-education.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-drive.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-shogi.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-climbing.webp>; rel=\"preload\"; as=image, <https://www.googletagmanager.com/gtag/js?id=G-EHKJ8B8N0Y>; rel=\"preload\"; as=script",
+        "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=8wi6Y50%2BO4HMV9QrQrxkvoBtZj10p7a3iwKDSPcWkN4vASYYYMrzr%2BXocSNln7DrjEFqTJStC7eU73%2Bg5kzPvp8VmGACRQMddIw6I9%2FYReqe4H6QdYK0QT2NsaEs8IeH014%3D\"}]}",
+        "server": "cloudflare",
+        "transfer-encoding": "chunked",
+        "x-content-type-options": "nosniff"
+      }
+    },
+    {
+      "path": "/en?x=1",
+      "contract": {
+        "status": 308,
+        "location": "/en/?x=1",
+        "policy": {
+          "content-type": "",
+          "cache-control": "",
+          "access-control-allow-origin": "*",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "x-content-type-options": "nosniff",
+          "link": ""
+        }
+      },
+      "headers": {
+        "access-control-allow-origin": "*",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "cf-cache-status": "DYNAMIC",
+        "cf-ray": "a5ab0634ebfed798-NRT",
+        "connection": "keep-alive",
+        "content-length": "0",
+        "date": "Sun, 15 Nov 2026 03:03:41 GMT",
+        "location": "/en/?x=1",
+        "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=b2pWiBJ%2FDOVaA%2BCHsq3%2BUhZYW0rVekwGteynTacybZDbu4MiBZLpb6XPloB8I9S1QygjZjSeerYjFkehdFklSzVcUZRIRtyn7F2rhhRRpzmdP%2FPmYMoagWL9sOVmPNN9yQU%3D\"}]}",
+        "server": "cloudflare",
+        "x-content-type-options": "nosniff"
+      }
+    },
+    {
+      "path": "/robots.txt",
+      "contract": {
+        "status": 200,
+        "location": "",
+        "policy": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "max-age=0, must-revalidate, public",
+          "access-control-allow-origin": "*",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "x-content-type-options": "nosniff",
+          "link": ""
+        },
+        "bodySha256": "2f3d31939b7142b7c23dd723cbb64a60ceb798829e42ed6a9473767f68c87f95"
+      },
+      "headers": {
+        "access-control-allow-origin": "*",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "cf-cache-status": "DYNAMIC",
+        "cf-ray": "a5ab0635db64f2d6-NRT",
+        "connection": "keep-alive",
+        "content-length": "69",
+        "content-type": "text/plain; charset=utf-8",
+        "date": "Sun, 15 Nov 2026 03:03:41 GMT",
+        "etag": "\"ac057ca20dd5e019961025dc661d03c6\"",
+        "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=VnVDc%2FzS44%2FNlKiXI7tQsrQxNdIf61BTWJBfscAZlSnsVQiLEP686ffYul5KdYyUkDylqve1To%2BDxKlOG7up%2BkiyoGUbnXG8SDx3n79trxnTqfCQ4qRqONByw9KVWFljctk%3D\"}]}",
+        "server": "cloudflare",
+        "x-content-type-options": "nosniff"
+      }
+    },
+    {
+      "path": "/sitemap.xml",
+      "contract": {
+        "status": 200,
+        "location": "",
+        "policy": {
+          "content-type": "application/xml",
+          "cache-control": "max-age=0, must-revalidate, public",
+          "access-control-allow-origin": "*",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "x-content-type-options": "nosniff",
+          "link": ""
+        },
+        "bodySha256": "6ca561b5b1f873f77bedaa17ee48e890cb58e6d6fb13e7795deadf65fbb7ddac"
+      },
+      "headers": {
+        "access-control-allow-origin": "*",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "cf-cache-status": "DYNAMIC",
+        "cf-ray": "a5ab0636afabd798-NRT",
+        "connection": "keep-alive",
+        "content-length": "776",
+        "content-type": "application/xml",
+        "date": "Sun, 15 Nov 2026 03:03:42 GMT",
+        "etag": "\"2f9cec3c1f0fc29984c75d852ae0e3b2\"",
+        "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=XSyozNJxvNr6HzDNxa1tn2m4ve%2FGdzZyQkmqLvrQODE0g5ZefE2Xg1LNBcbeC0pT9BXnrxu9ZnEOmJF%2Br%2BbfmJ2FiBNzj%2F26IL5hdrhsG85pP06uG6Vgfk5dtxzWY5j9njQ%3D\"}]}",
+        "server": "cloudflare",
+        "x-content-type-options": "nosniff"
+      }
+    },
+    {
+      "path": "/1692e67b895d46c0b6124bd047f73fcd.txt",
+      "contract": {
+        "status": 200,
+        "location": "",
+        "policy": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "max-age=0, must-revalidate, public",
+          "access-control-allow-origin": "*",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "x-content-type-options": "nosniff",
+          "link": ""
+        },
+        "bodySha256": "63cd72e607708f637c6fcb6c0880e8d423c81f439ab84dae154416ecc79df599"
+      },
+      "headers": {
+        "access-control-allow-origin": "*",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "cf-cache-status": "DYNAMIC",
+        "cf-ray": "a5ab06386f17f2d6-NRT",
+        "connection": "keep-alive",
+        "content-length": "33",
+        "content-type": "text/plain; charset=utf-8",
+        "date": "Sun, 15 Nov 2026 03:03:42 GMT",
+        "etag": "\"0ba3eea4acc286a1db5d06af4bd38d3b\"",
+        "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=Ne70CU2uQxEg%2Fp4sW3hS0DSNMD929%2FQYKX4YxDh6N49YFVNzVry5%2FSHsqYQgdEnN%2FB%2Fk67GgT6GeJcRwjNADz4CjpaeKrjQw0G5BVEGQD3AAj2dzjH1kmbzGIhGu6TXgQAg%3D\"}]}",
+        "server": "cloudflare",
+        "x-content-type-options": "nosniff"
+      }
+    }
+  ],
+  "passed": true
+}

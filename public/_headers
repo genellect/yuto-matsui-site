@@ -1,0 +1,16 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/robots.txt
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sitemap.xml
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Link: </images/founder-portfolio/yuto-matsui-profile-hero.webp>; rel="preload"; as=image, </images/founder-portfolio/yuto-matsui-nagano-lake-hero-centered-20260917.webp>; rel="preload"; as=image, </images/founder-portfolio/yuto-matsui-city-night-hero-composition-20260928.webp>; rel="preload"; as=image, </images/founder-portfolio/source/life-science-unsplash.jpg>; rel="preload"; as=image, </images/founder-portfolio/source/software-development-unsplash.jpg>; rel="preload"; as=image, </images/founder-portfolio/source/experience-life-science.webp>; rel="preload"; as=image, </images/founder-portfolio/source/experience-development.webp>; rel="preload"; as=image, </images/founder-portfolio/source/experience-education.webp>; rel="preload"; as=image, </images/founder-portfolio/off-hours-drive.webp>; rel="preload"; as=image, </images/founder-portfolio/off-hours-shogi.webp>; rel="preload"; as=image, </images/founder-portfolio/off-hours-climbing.webp>; rel="preload"; as=image, <https://www.googletagmanager.com/gtag/js?id=G-EHKJ8B8N0Y>; rel="preload"; as=script
+
+/en/
+  Link: </images/founder-portfolio/yuto-matsui-nagano-lake-hero-20260831.webp>; rel="preload"; as=image, </images/founder-portfolio/source/life-science-unsplash.jpg>; rel="preload"; as=image, </images/founder-portfolio/source/software-development-unsplash.jpg>; rel="preload"; as=image, </images/founder-portfolio/source/experience-life-science.webp>; rel="preload"; as=image, </images/founder-portfolio/source/experience-development.webp>; rel="preload"; as=image, </images/founder-portfolio/source/experience-education.webp>; rel="preload"; as=image, </images/founder-portfolio/off-hours-drive.webp>; rel="preload"; as=image, </images/founder-portfolio/off-hours-shogi.webp>; rel="preload"; as=image, </images/founder-portfolio/off-hours-climbing.webp>; rel="preload"; as=image, <https://www.googletagmanager.com/gtag/js?id=G-EHKJ8B8N0Y>; rel="preload"; as=script

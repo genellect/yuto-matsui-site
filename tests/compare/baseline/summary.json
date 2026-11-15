@@ -1,0 +1,77 @@
+{
+  "observedAt": "2026-11-15T02:53:25.693Z",
+  "origin": "https://yuto-matsui.com",
+  "sourceCommit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+  "browser": "151.0.7922.34",
+  "platform": "linux",
+  "mode": "capture",
+  "checks": [
+    {
+      "key": "ja-390x844",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "ja-1024x768",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "ja-1280x720",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "ja-1275x553",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "ja-1536x672",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-390x844",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-1024x768",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-1280x720",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-1275x553",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-1536x672",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    }
+  ],
+  "policy": {
+    "motion": "reduced; CSS animations/transitions disabled",
+    "canvas": "masked only in screenshots; interactive tests required separately",
+    "analytics": "requests fulfilled locally; no analytics events sent",
+    "transport": "Next.js transport scripts/preloads recorded separately from semantic DOM"
+  },
+  "passed": true
+}

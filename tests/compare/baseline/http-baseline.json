@@ -1,0 +1,84 @@
+{
+  "observedAtJapan": "2026-11-15T00:06:38+09:00",
+  "method": "HEAD, no redirect following",
+  "sourceCommit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+  "results": [
+    {
+      "url": "https://yuto-matsui.com/",
+      "status": 200,
+      "location": "",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "public, must-revalidate, max-age=0"
+    },
+    {
+      "url": "https://yuto-matsui.com/en/",
+      "status": 200,
+      "location": "",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "public, must-revalidate, max-age=0"
+    },
+    {
+      "url": "https://yuto-matsui.com/en?x=1",
+      "status": 308,
+      "location": "/en/?x=1",
+      "contentType": "",
+      "cacheControl": ""
+    },
+    {
+      "url": "https://yuto-matsui.com/founder/?x=1",
+      "status": 301,
+      "location": "https://yuto-matsui.com/?x=1",
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": ""
+    },
+    {
+      "url": "https://yuto-matsui.com/robots.txt",
+      "status": 200,
+      "location": "",
+      "contentType": "text/plain; charset=utf-8",
+      "cacheControl": "public, must-revalidate, max-age=0"
+    },
+    {
+      "url": "https://yuto-matsui.com/sitemap.xml",
+      "status": 200,
+      "location": "",
+      "contentType": "application/xml",
+      "cacheControl": "public, must-revalidate, max-age=0"
+    },
+    {
+      "url": "https://yuto-matsui.com/.well-known/acme-challenge/refactor-check",
+      "status": 301,
+      "location": "https://compass-official.pages.dev/.well-known/acme-challenge/refactor-check",
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": ""
+    },
+    {
+      "url": "https://yuto-matsui.com/habitat/night-v1/top.webp",
+      "status": 301,
+      "location": "https://compass-official.pages.dev/habitat/night-v1/top.webp",
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": ""
+    },
+    {
+      "url": "https://compass-official.pages.dev/founder/?x=1",
+      "status": 301,
+      "location": "https://yuto-matsui.com/?x=1",
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": ""
+    },
+    {
+      "url": "https://compass-official.pages.dev/en/?x=1",
+      "status": 301,
+      "location": "https://yuto-matsui.com/en/",
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": ""
+    },
+    {
+      "url": "https://www.yuto-matsui.com/en/?x=1",
+      "status": 301,
+      "location": "https://yuto-matsui.com/en/?x=1",
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": ""
+    }
+  ]
+}
