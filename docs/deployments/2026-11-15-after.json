@@ -1,0 +1,157 @@
+{
+  "observedAt": "2026-11-15",
+  "oldProject": "compass-official",
+  "oldDeployment": "ffdc871a-31b8-4e4a-943f-8ddeb7110caf",
+  "oldCommit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+  "newProject": "yuto-matsui-site",
+  "dns": [
+    {
+      "type": "CNAME",
+      "name": "yuto-matsui.com",
+      "content": "yuto-matsui-site.pages.dev",
+      "proxied": true,
+      "ttl": "Auto"
+    },
+    {
+      "type": "CNAME",
+      "name": "www.yuto-matsui.com",
+      "content": "yuto-matsui.com",
+      "proxied": true,
+      "ttl": "Auto"
+    }
+  ],
+  "domainStatus": "Active; SSL enabled",
+  "returnRule": {
+    "id": "bfe5befe0f2b408bbb0d3b19b6811361",
+    "expression": "(http.host eq \"yuto-matsui.com\" and http.request.uri.path ne \"/\" and http.request.uri.path ne \"/robots.txt\" and http.request.uri.path ne \"/sitemap.xml\" and http.request.uri.path ne \"/1692e67b895d46c0b6124bd047f73fcd.txt\" and not starts_with(http.request.uri.path, \"/_next/\") and not starts_with(http.request.uri.path, \"/images/\") and not starts_with(http.request.uri.path, \"/cdn-cgi/\") and not starts_with(http.request.uri.path, \"/founder\") and not starts_with(http.request.uri.path, \"/en\") and not starts_with(http.request.uri.path, \"/.well-known/acme-challenge/\"))",
+    "destination": "concat(\"https://compass-official.pages.dev\", http.request.uri.path)",
+    "status": 301,
+    "preserveQuery": true
+  },
+  "rewriteRules": [
+    {
+      "id": "2eb5508584224667897c5c3be3e27993",
+      "path": "/",
+      "target": "/founder/",
+      "enabled": false
+    },
+    {
+      "id": "4a8e2946d4f54ecea429be78c9b1d211",
+      "path": "/robots.txt",
+      "target": "/founder-robots.txt",
+      "enabled": false
+    },
+    {
+      "id": "0d8532d14d4c41f19b414530e0c64565",
+      "path": "/sitemap.xml",
+      "target": "/founder-sitemap.xml",
+      "enabled": false
+    }
+  ],
+  "productionProject": "yuto-matsui-site",
+  "productionCommit": "1b7cfb50efc9ed8667069935c4d6815e021e6034",
+  "productionDeploymentURL": "https://1fea4699.yuto-matsui-site.pages.dev",
+  "oldDomainDetached": true,
+  "rehearsalResourcesRemoved": true,
+  "cacheRule": {
+    "id": "ae5ec35205ca4f25bcdea52aea44e36c",
+    "name": "Preserve portfolio robots cache headers",
+    "expression": "(http.host eq \"yuto-matsui.com\" and http.request.uri.path eq \"/robots.txt\")",
+    "enabled": true,
+    "cache": true,
+    "browser_ttl": {
+      "mode": "respect_origin"
+    }
+  },
+  "bulkRedirect": {
+    "ruleId": "701bd43cf851489b91c4c44d00287fbd",
+    "listId": "eb10dfa9543f404298a90546ae2498de",
+    "listName": "founder_domain_migration",
+    "enabled": true,
+    "entries": [
+      {
+        "source": "https://compass-official.pages.dev/founder",
+        "target": "https://yuto-matsui.com/",
+        "status": 301,
+        "preserveQuery": true,
+        "includeSubdomains": false,
+        "subpathMatching": false,
+        "preservePathSuffix": false
+      },
+      {
+        "source": "https://compass-official.pages.dev/founder/",
+        "target": "https://yuto-matsui.com/",
+        "status": 301,
+        "preserveQuery": true,
+        "includeSubdomains": false,
+        "subpathMatching": false,
+        "preservePathSuffix": false
+      },
+      {
+        "source": "https://compass-official.pages.dev/founder/index.html",
+        "target": "https://yuto-matsui.com/",
+        "status": 301,
+        "preserveQuery": true,
+        "includeSubdomains": false,
+        "subpathMatching": false,
+        "preservePathSuffix": false
+      },
+      {
+        "source": "https://compass-official.pages.dev/en",
+        "target": "https://yuto-matsui.com/en/",
+        "status": 301,
+        "preserveQuery": false,
+        "includeSubdomains": false,
+        "subpathMatching": false,
+        "preservePathSuffix": false
+      },
+      {
+        "source": "https://compass-official.pages.dev/en/",
+        "target": "https://yuto-matsui.com/en/",
+        "status": 301,
+        "preserveQuery": false,
+        "includeSubdomains": false,
+        "subpathMatching": false,
+        "preservePathSuffix": false
+      },
+      {
+        "source": "https://compass-official.pages.dev/en/index.html",
+        "target": "https://yuto-matsui.com/en/",
+        "status": 301,
+        "preserveQuery": false,
+        "includeSubdomains": false,
+        "subpathMatching": false,
+        "preservePathSuffix": false
+      }
+    ]
+  },
+  "pages": {
+    "repository": "genellect/yuto-matsui-site",
+    "productionBranch": "main",
+    "automaticProductionDeployments": true,
+    "previewBranches": "all non-production branches",
+    "buildCommand": "npm run typecheck && npm run build && npm run verify",
+    "output": "out",
+    "root": "",
+    "buildSystem": 3,
+    "buildCache": false
+  },
+  "github": {
+    "productionOrigin": "https://yuto-matsui.com",
+    "requiredCheck": "verify",
+    "requiredCheckAppId": 15368,
+    "strictChecks": true,
+    "requiredPullRequest": true,
+    "requiredApprovals": 0,
+    "enforceAdmins": true,
+    "allowForcePushes": false,
+    "allowDeletions": false,
+    "requiredConversationResolution": true
+  },
+  "compassAfter": {
+    "commit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+    "deployment": "ffdc871a-31b8-4e4a-943f-8ddeb7110caf",
+    "changed": false,
+    "customDomains": []
+  }
+}

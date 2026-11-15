@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-11-15T06:22:55.899866+00:00",
+  "origin": "https://yuto-matsui.com",
+  "commit": "1b7cfb50efc9ed8667069935c4d6815e021e6034",
+  "command": "RESPONSIVE_BASE_URL=https://yuto-matsui.com npm run test:e2e -- --workers=1",
+  "passed": 33,
+  "failed": 0,
+  "duration": "4.4 minutes",
+  "exitCode": 0,
+  "analytics": "collected requests intercepted; no GA4 test events submitted",
+  "coverage": [
+    "JP/EN desktop/mobile visible section links",
+    "language transitions and history",
+    "incoming linker consume before cleanup",
+    "Google identity failure retains unconsumed incoming linker",
+    "mobile and desktop photographs",
+    "3D motion/pause/drag/wheel",
+    "WebGL fallback",
+    "product links and static cards",
+    "menus and English statement"
+  ]
+}

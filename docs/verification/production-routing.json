@@ -1,0 +1,71 @@
+{
+  "observedAt": "2026-11-15T06:18:43.097Z",
+  "passed": true,
+  "redirects": [
+    {
+      "path": "/founder",
+      "status": 301,
+      "location": "https://yuto-matsui.com/?migration_check=1"
+    },
+    {
+      "path": "/founder/",
+      "status": 301,
+      "location": "https://yuto-matsui.com/?migration_check=1"
+    },
+    {
+      "path": "/founder/index.html",
+      "status": 301,
+      "location": "https://yuto-matsui.com/?migration_check=1"
+    },
+    {
+      "path": "/en",
+      "status": 301,
+      "location": "https://yuto-matsui.com/en/"
+    },
+    {
+      "path": "/en/",
+      "status": 301,
+      "location": "https://yuto-matsui.com/en/"
+    },
+    {
+      "path": "/en/index.html",
+      "status": 301,
+      "location": "https://yuto-matsui.com/en/"
+    },
+    {
+      "origin": "http://yuto-matsui.com",
+      "status": 301,
+      "location": "https://yuto-matsui.com/en/?migration_check=1"
+    },
+    {
+      "origin": "https://www.yuto-matsui.com",
+      "status": 301,
+      "location": "https://yuto-matsui.com/en/?migration_check=1"
+    },
+    {
+      "path": "/contact/?migration_check=1",
+      "status": 301,
+      "location": "https://compass-official.pages.dev/contact/?migration_check=1"
+    },
+    {
+      "path": "/habitat/night-v1/top.webp",
+      "status": 301,
+      "location": "https://compass-official.pages.dev/habitat/night-v1/top.webp"
+    }
+  ],
+  "compass": [
+    {
+      "path": "/",
+      "status": 200,
+      "sha256": "c9a14c49570534d250dbab11ef2f0f424cca2550c4a31dfd61cff0be7e71a885",
+      "contentIsCompass": true
+    },
+    {
+      "path": "/contact/",
+      "status": 200,
+      "sha256": "a7f16fb24dc9d849b91e1a56767079d222ec6bebad9f9962df184acb157daa48",
+      "contentIsCompass": true
+    }
+  ],
+  "compassDeploymentVerification": "Dashboard deployment ID and source commit must be checked separately; immutable hash hostname requires Cloudflare Access, so no unauthenticated body-equivalence claim is made."
+}

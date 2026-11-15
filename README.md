@@ -1,7 +1,7 @@
 # Yuto Matsui portfolio
 
 `yuto-matsui.com` の日本語 `/`・英語 `/en/` を管理する専用repositoryです。
-現行COMPASSからの移植と文言抽出はDraft PRで検証済みです。独自ドメインの配信はまだ切り替えていません。
+2026-11-15に専用Cloudflare Pages `yuto-matsui-site` へ本番を切り替えました。JP `/`・EN `/en/` はこのrepositoryから配信されます。
 
 ## 開発
 
@@ -30,4 +30,6 @@ Playwrightはbundled Chromiumを使います。OS依存が不足するLinuxで�
 
 権利条件は [LICENSE](LICENSE)、素材の出典は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) と [画像の出典](docs/founder-image-credits.md) にあります。
 元ソースと移動先・SHA-256は [source-map.json](docs/source-map.json) に記録しています。
-本番切替は [移行手順](docs/migration.md) の別工程です。
+開発PRではCloudflare PreviewとCIを確認し、CI `verify` 成功後にmainへmergeします。mainは自動build・公開され、`Production verification` が本番ドメインのcommitとHTTPを確認します。
+
+[本番切替の実績・インフラ設定・復元手順](docs/deployments/2026-11-15-cutover.md) と [比較方法](docs/migration.md) を参照してください。
