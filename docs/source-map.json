@@ -1,0 +1,251 @@
+{
+  "sourceRepository": "https://github.com/genellect/compass",
+  "sourceCommit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+  "files": [
+    {
+      "source": "src/app/(official)/founder/EssayContinuation.tsx",
+      "destination": "src/ja/EssayContinuation.tsx",
+      "sourceSha256": "6de1dfe0f304b773a53ea092bf6bb080afe4747566571b1025385bc3866afa0d"
+    },
+    {
+      "source": "src/app/(official)/founder/mobile-fragment-film.module.css",
+      "destination": "src/shared/fragment-film/mobile-fragment-film.module.css",
+      "sourceSha256": "d3a0dec85e9e01803af8f3ff31cac503bdebe45a5ee0b05c5aff4ea21d578aa0"
+    },
+    {
+      "source": "src/app/(official)/founder/platform-glyphs.ts",
+      "destination": "src/shared/products/platform-glyphs.ts",
+      "sourceSha256": "61df9557d8c83a94484d45d630cf064fa9e70d30f99a815c0490d5d31994552f"
+    },
+    {
+      "source": "src/app/(official)/founder/products-cinematic.module.css",
+      "destination": "src/shared/products/products-cinematic.module.css",
+      "sourceSha256": "4ee722c6be8fc91a9e706a41a4c854dd74e0ec23390944d56ab9ceeffbca2014"
+    },
+    {
+      "source": "src/app/(official)/founder/FragmentFilm.tsx",
+      "destination": "src/shared/fragment-film/FragmentFilm.tsx",
+      "sourceSha256": "8cc79648195d68a9d1b5938c6abd0a541df835f5b71b3b1f21f5dfcdc019749f"
+    },
+    {
+      "source": "src/app/(official)/founder/product-sculpture-engine.ts",
+      "destination": "src/shared/products/product-sculpture-engine.ts",
+      "sourceSha256": "dade011cef31768a156bd02de633ee31b12984e44ca86979d2cf217b11b8e224"
+    },
+    {
+      "source": "src/app/(official)/founder/MobileFragmentFilm.tsx",
+      "destination": "src/shared/fragment-film/MobileFragmentFilm.tsx",
+      "sourceSha256": "540143a546b2fa663894f33f8c490290e174a336a32cad1530dc65a2dfdcc7ef"
+    },
+    {
+      "source": "src/app/(official)/founder/fragment-film.module.css",
+      "destination": "src/shared/fragment-film/fragment-film.module.css",
+      "sourceSha256": "86869aeb7856748510403aa6a1c2f641dde78e4d050a6a7524455bf3628cd0b3"
+    },
+    {
+      "source": "src/app/(official)/founder/CytellectSculpture.tsx",
+      "destination": "src/ja/CytellectSculpture.tsx",
+      "sourceSha256": "5a26b67c9dd667152329d2e2c2dbeb4e970b949db8eb5e2a4b1f8ea336830cd4"
+    },
+    {
+      "source": "src/app/(official)/founder/fragment-film-engine.ts",
+      "destination": "src/shared/fragment-film/fragment-film-engine.ts",
+      "sourceSha256": "f85891b5f6f6e6377e125f97ef2752853bf04975f20d61073fe7d04f33671781"
+    },
+    {
+      "source": "src/app/(official)/founder/products-equal.module.css",
+      "destination": "src/shared/products/products-equal.module.css",
+      "sourceSha256": "160457e18cba25ac8ff263af69553adb8e41d5b9667974869eb7c4acf63a41fe"
+    },
+    {
+      "source": "src/app/(official)/founder/hero-composition.ts",
+      "destination": "src/ja/hero-composition.ts",
+      "sourceSha256": "27e150f5fa3d706dbd7a9fe136921bb66a90f41228e7a4d02368cf5448c4ba06"
+    },
+    {
+      "source": "src/app/(official)/founder/mobile-fragment-film-engine.ts",
+      "destination": "src/shared/fragment-film/mobile-fragment-film-engine.ts",
+      "sourceSha256": "185e1d3590395593e9aab1cc0e337aaee8be0836485ee7c0f87fbf3e5d71b559"
+    },
+    {
+      "source": "src/app/(official)/founder/ProductSculpture.tsx",
+      "destination": "src/shared/products/ProductSculpture.tsx",
+      "sourceSha256": "57a4a516e7f5cbd6a1614c7206f906a12deab88f04ff369a36549bb773085cce"
+    },
+    {
+      "source": "src/app/(official)/founder/founder.module.css",
+      "destination": "src/ja/founder.module.css",
+      "sourceSha256": "c61b4243c384a65c19b864d0027a8dd33025513fc7d859333fcbc9aacf558049"
+    },
+    {
+      "source": "src/app/(official)/founder/page.tsx",
+      "destination": "src/app/(ja)/page.tsx",
+      "sourceSha256": "e0b95e043cadf108daa7ea794bf219d8f9d84c4aa10d4c7be94640237c5449bb"
+    },
+    {
+      "source": "src/app/(official)/founder/MobileHeroRibbons.tsx",
+      "destination": "src/ja/MobileHeroRibbons.tsx",
+      "sourceSha256": "596e8c30e628cd2a5c4e84411dca6c065adcacb09611f0d4bfafa6ab0d0b31f0"
+    },
+    {
+      "source": "src/app/(official)/founder/FounderProducts.tsx",
+      "destination": "src/shared/products/FounderProducts.tsx",
+      "sourceSha256": "df4d4c9891a9a5cef4e8252dc00fe904223ce36884de1ed3aeac814b8f4aa661"
+    },
+    {
+      "source": "src/app/(official)/founder/FounderHeroGallery.tsx",
+      "destination": "src/ja/FounderHeroGallery.tsx",
+      "sourceSha256": "9e9efc051c4642e75d5dc535c00754d3f47bdaef522720ac52c9736fd24c676c"
+    },
+    {
+      "source": "src/app/(official)/founder/MobileExternalMenu.tsx",
+      "destination": "src/ja/MobileExternalMenu.tsx",
+      "sourceSha256": "3624fa8113502db092a67ab3922b23d967c2026613b8a2efe12996cae012a85c"
+    },
+    {
+      "source": "src/app/(official)/founder/FounderFragments.tsx",
+      "destination": "src/ja/FounderFragments.tsx",
+      "sourceSha256": "ecd06c3cd9dd0da77517e1a0cc056622d1a8ba7630256ac0d741ae3c02ea62e2"
+    },
+    {
+      "source": "src/app/(official)/layout.tsx",
+      "destination": "src/app/(ja)/layout.tsx",
+      "sourceSha256": "fe871ff352ec9a78e674dddef49eba0308772b6c3c8541ef12b93526d43a8c15"
+    },
+    {
+      "source": "src/app/(founder-en)/en/english-founder-global.css",
+      "destination": "src/en/english-founder-global.css",
+      "sourceSha256": "e3cc2e8ec2478e2cb2664911c5db138ffa2674fc99526b579eff5eb0b76c02c6"
+    },
+    {
+      "source": "src/app/(founder-en)/en/EnglishMobileMenu.tsx",
+      "destination": "src/en/EnglishMobileMenu.tsx",
+      "sourceSha256": "eb2d7276ad18ef832758620fff4eb7c301373ab7a51387f2a8fbc7dcd508e7d1"
+    },
+    {
+      "source": "src/app/(founder-en)/en/layout.tsx",
+      "destination": "src/app/(en)/en/layout.tsx",
+      "sourceSha256": "62011cd091ff5ed83d6b336d8cfbc3d5d5729fe780a9711cbf84c7440552cc94"
+    },
+    {
+      "source": "src/app/(founder-en)/en/EnglishHeroGallery.tsx",
+      "destination": "src/en/EnglishHeroGallery.tsx",
+      "sourceSha256": "ac408929ad5845f7de675b8f848dd36864a2c5f72224b6b42e2eea3c811b7b6a"
+    },
+    {
+      "source": "src/app/(founder-en)/en/content.ts",
+      "destination": "src/content/en.ts",
+      "sourceSha256": "cf43c9f7ade863ce1d0834bfd25c590ce7ecfc36ec0e59d08e99fb9ffecd891a"
+    },
+    {
+      "source": "src/app/(founder-en)/en/english-founder.module.css",
+      "destination": "src/en/english-founder.module.css",
+      "sourceSha256": "faaeb7a76ed5c1cc1927f9e8fe699c4499c212ae7525ba3bb71139b6c3a99fd1"
+    },
+    {
+      "source": "src/app/(founder-en)/en/EnglishStatement.tsx",
+      "destination": "src/en/EnglishStatement.tsx",
+      "sourceSha256": "e96e99108699fbade072305f19ebfaa12a5159dbd046715d9d1fc57a155c9711"
+    },
+    {
+      "source": "src/app/(founder-en)/en/page.tsx",
+      "destination": "src/app/(en)/en/page.tsx",
+      "sourceSha256": "791858084b0405f417952ce78dc945eea613a20c25d9f12c7fcaf602cd478021"
+    },
+    {
+      "source": "src/app/(founder-en)/en/EnglishFragments.tsx",
+      "destination": "src/en/EnglishFragments.tsx",
+      "sourceSha256": "748c30fc03b3c9c1781dd4973feba114c58324addda6524858dbf1a982910bdc"
+    },
+    {
+      "source": "src/app/(founder-en)/en/EnglishSocialIcons.tsx",
+      "destination": "src/en/EnglishSocialIcons.tsx",
+      "sourceSha256": "96e7380fd2b92bcd6fe2bba2ac750d32063e6d0edf6be01fed8998d7020dbb46"
+    },
+    {
+      "source": "src/components/portfolio/portfolio-depth.module.css",
+      "destination": "src/shared/portfolio/portfolio-depth.module.css",
+      "sourceSha256": "b2f623872fc858b847a921d8117a7e0a0400c0cd4510a42f0a083838b97a88eb"
+    },
+    {
+      "source": "src/components/portfolio/DepthCard.tsx",
+      "destination": "src/shared/portfolio/DepthCard.tsx",
+      "sourceSha256": "4784ce34820d7048a9182a1830151dfdeb3eb5546d07790132196d97dd7f8d9a"
+    },
+    {
+      "source": "src/components/portfolio/OffHoursGallery.tsx",
+      "destination": "src/shared/portfolio/OffHoursGallery.tsx",
+      "sourceSha256": "31d47254fe3bdcfcc9a85c3620d669a10eaa45c1404ba90f365fca37f6a5bca5"
+    },
+    {
+      "source": "src/components/FounderJapaneseLink.tsx",
+      "destination": "src/shared/JapaneseLink.tsx",
+      "sourceSha256": "e70920afef8361c2b1147b9d4b07e6d1facb41344392d2920266828e2f13acc0"
+    },
+    {
+      "source": "src/components/LegacyInteractions.tsx",
+      "destination": "src/inherited/interactions/LegacyInteractions.tsx",
+      "sourceSha256": "fe41207c04345ff6e9365ec89ff4b37da0ba746103cfb2f68d75dd134dee31c6"
+    },
+    {
+      "source": "src/legacy-interactions.ts",
+      "destination": "src/inherited/interactions/legacy-interactions.ts",
+      "sourceSha256": "c89ced41c9b249f27e141e24f8e1d15af2cdf9f4a45691f910cd71756e46e8fa"
+    },
+    {
+      "source": "src/analytics.ts",
+      "destination": "src/analytics.ts",
+      "sourceSha256": "f225d65f5b12d8223923e81f3514cdd23244a1f2dbebbc2829b3b8452a2f9915"
+    },
+    {
+      "source": "src/styles/legacy.css",
+      "destination": "src/inherited/styles/legacy.css",
+      "sourceSha256": "8efd0b406bc72c1f692d398e2c7d6e5e8f249ccf5e217db35ff52f3b4bd51fe4"
+    },
+    {
+      "source": "src/styles/hero.css",
+      "destination": "src/inherited/styles/hero.css",
+      "sourceSha256": "5b6cad9565183afbc4acbd37ceadf33afcabf5ab91ba3f8609b2f780195c2111"
+    },
+    {
+      "source": "src/styles/desktop-system.css",
+      "destination": "src/inherited/styles/desktop-system.css",
+      "sourceSha256": "092db2e683beaa60528b9337b2cb09ee7fbdc3382acb415a1689c28c00ada2dd"
+    },
+    {
+      "source": "src/styles/official-immersive.css",
+      "destination": "src/inherited/styles/official-immersive.css",
+      "sourceSha256": "6365a591a2ebacd271d4e1775106982d542150ab0268bd17831d4d5b805b20d0"
+    },
+    {
+      "source": "src/styles/official-four-directions.css",
+      "destination": "src/inherited/styles/official-four-directions.css",
+      "sourceSha256": "a14e64a4cf04eb5330a3c370d230e54581929ea175965018f085033e8938d50b"
+    },
+    {
+      "source": "src/styles/official-core-redesign.css",
+      "destination": "src/inherited/styles/official-core-redesign.css",
+      "sourceSha256": "fa4df481d4ba5bf759341c50c97dcdd9134650cb83ff814d3c3d5be656d49b22"
+    },
+    {
+      "source": "src/styles/official-brand-system.css",
+      "destination": "src/inherited/styles/official-brand-system.css",
+      "sourceSha256": "5f11ea9763596cca1e1aa972c6d12b67abadee3b7ce812a7e36dabdc9621baaf"
+    },
+    {
+      "source": "src/styles/living-intelligence-hero.css",
+      "destination": "src/inherited/styles/living-intelligence-hero.css",
+      "sourceSha256": "1625f7b3e2afdba64731bcd2354117bfc7aca7927b9d29fa9744bea75815f238"
+    },
+    {
+      "source": "src/styles/github-profile-link.css",
+      "destination": "src/inherited/styles/github-profile-link.css",
+      "sourceSha256": "8294b4667f799f13bca738d91e4f612c36a8af19f84ebb718f53497b2d1fbcc5"
+    },
+    {
+      "source": "src/interactive/styles/experience.css",
+      "destination": "src/inherited/styles/experience.css",
+      "sourceSha256": "46e786b375ce064e2efebdc3102bb83cb91d4ed77d1c362611b90a50dfcdbb84"
+    }
+  ]
+}

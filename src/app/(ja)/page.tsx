@@ -1,0 +1,546 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import Script from "next/script";
+import { LegacyInteractions } from "../../inherited/interactions/LegacyInteractions";
+import { FounderJapaneseLink } from "../../shared/JapaneseLink";
+import { FounderProducts } from "../../shared/products/FounderProducts";
+import { EssayContinuation } from "../../ja/EssayContinuation";
+import { FounderFragments } from "../../ja/FounderFragments";
+import { FounderHeroGallery } from "../../ja/FounderHeroGallery";
+import { MobileExternalMenu } from "../../ja/MobileExternalMenu";
+import { DepthCard, DepthVisual } from "../../shared/portfolio/DepthCard";
+import { OffHoursGallery } from "../../shared/portfolio/OffHoursGallery";
+import styles from "../../ja/founder.module.css";
+
+const FOUNDER_URL = "https://yuto-matsui.com/";
+const FOUNDER_EN_URL = "https://yuto-matsui.com/en/";
+const COMPASS_ORIGIN = "https://compass-official.pages.dev";
+
+export const metadata: Metadata = {
+  title: "Yuto Matsui / 松井優知 | Life Science Research & AI-Native Development",
+  description:
+    "生命科学研究とAIネイティブ開発を軸に、分子生物学研究とシステムエンジニアとしての実務に取り組むYuto Matsui / 松井優知の個人ポートフォリオ。",
+  alternates: {
+    canonical: FOUNDER_URL,
+    languages: { ja: FOUNDER_URL, en: FOUNDER_EN_URL, "x-default": FOUNDER_URL }
+  },
+  authors: [{ name: "Yuto Matsui / 松井優知" }],
+  openGraph: {
+    locale: "ja_JP",
+    type: "profile",
+    siteName: "Yuto Matsui",
+    title: "Yuto Matsui / 松井優知",
+    description: "ライフサイエンス研究・AIネイティブ開発・大学教育支援。",
+    url: FOUNDER_URL,
+    images: [
+      {
+        url: `${FOUNDER_URL}images/founder-portfolio/yuto-matsui-profile-hero.webp`,
+        width: 1600,
+        height: 2400,
+        alt: "Yuto Matsui / 松井優知"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Yuto Matsui / 松井優知",
+    description: "ライフサイエンス研究・AIネイティブ開発・大学教育支援。",
+    images: [`${FOUNDER_URL}images/founder-portfolio/yuto-matsui-profile-hero.webp`]
+  }
+};
+
+const fields = [
+  {
+    id: "01",
+    title: "分子生物学研究",
+    english: "Molecular Biology Research",
+    description: "神経変性疾患の分子病態を、実験研究の現場から理解する。",
+    image: "/images/founder-portfolio/source/life-science-unsplash.jpg",
+    alt: "細胞培養の観察に使われる顕微鏡",
+    accent: "bio"
+  },
+  {
+    id: "02",
+    title: "AIネイティブ開発",
+    english: "AI-Native Development",
+    description: "AIとともに、一人が設計・実装できるシステムの規模を広げる。",
+    image: "/images/founder-portfolio/source/software-development-unsplash.jpg",
+    alt: "ソースコードを表示したPCの開発環境",
+    accent: "ai"
+  }
+] as const;
+
+const products = [
+  {
+    key: "cytellect",
+    label: "cytellect",
+    title: "Get your microscopy publication-ready.",
+    links: [{ label: "プロダクトLP", href: "https://cytellect.vercel.app/" }],
+    recognition: [
+      { event: "北里大学ChatGPTハッカソン2026", result: "準優勝" },
+      { event: "東京AIハッカソン2026", result: "本選進出" },
+      { event: "技育展2026", result: "決勝進出" }
+    ]
+  },
+  {
+    key: "topos",
+    label: "Topos",
+    title: "誰の考えも埋もれない議論を、すべての教室に。",
+    links: [{ label: "プロダクトLP", href: "https://web--devfest2026-t167.asia-east1.hosted.app/lp" }],
+    recognition: [
+      { event: "チーム「Triple Helix」", result: "Project Manager" },
+      { event: "DevFest GDGoC Hackathon 2026", result: "出展" }
+    ]
+  },
+  {
+    key: "interactive",
+    label: "COMPASS Interactive",
+    title: "リアルタイム × AIが、講義を次の次元へ。",
+    image: "/images/hero.desktop.highlight.webp",
+    alt: "DNA、コンパス、ネットワークで構成されたCOMPASS Interactiveのビジュアル",
+    links: [
+      { label: "紹介サイト", href: `${COMPASS_ORIGIN}/INTRO_Interactive/` }
+    ]
+  },
+  {
+    key: "platform",
+    label: "COMPASS",
+    title: "Don’t Just Learn. Build What’s Next.",
+    links: [{ label: "COMPASSを体験する", href: `${COMPASS_ORIGIN}/` }]
+  }
+] as const;
+
+const credentials = [
+  { kind: "eiken", mark: "英検", name: "実用英語技能検定", score: "1級" },
+  { kind: "toeic", mark: "TOEIC", name: "TOEIC L&R", score: "965" },
+  { kind: "ielts", mark: "IELTS", name: "IELTS Academic", score: "7.5" }
+] as const;
+
+const experience = [
+  {
+    area: "Life Science",
+    years: "3+ years",
+    focus: ["分子生物学", "細胞生物学", "神経科学"],
+    image: "/images/founder-portfolio/source/experience-life-science.webp",
+    alt: "分子生物学・細胞生物学の実験に用いる機器と器具が並ぶ研究室",
+    accent: "bio"
+  },
+  {
+    area: "Development",
+    years: "4+ years",
+    focus: ["フルスタックWeb開発", "クラウド・インフラ設計", "AI・Machine Learning"],
+    image: "/images/founder-portfolio/source/experience-development.webp",
+    alt: "ソースコードを表示したモニター",
+    accent: "ai"
+  },
+  {
+    area: "Education",
+    years: "4+ years",
+    focus: ["英語教育", "生命科学教育", "AIリテラシー"],
+    image: "/images/founder-portfolio/source/experience-education.webp",
+    alt: "スクリーンと階段状の座席がある大学の講義室",
+    accent: "education"
+  }
+] as const;
+
+const offHours = [
+  {
+    id: "01",
+    label: "DRIVE",
+    image: "/images/founder-portfolio/off-hours-drive.webp",
+    alt: "雪山と新緑を背景に高原道路を走る車",
+    copy: [
+      "自然の中で車を走らせるのが好きです。",
+      "一番の思い出は、友人との長野ドライブです。"
+    ]
+  },
+  {
+    id: "02",
+    label: "SHOGI",
+    image: "/images/founder-portfolio/off-hours-shogi.webp",
+    alt: "新将棋会館のエントランスと将棋会館の石碑",
+    copy: [
+      "将棋は小学生から始め、棋力はアマチュア三段です。",
+      "全国大会にも何度か出場しました。"
+    ]
+  },
+  {
+    id: "03",
+    label: "CLIMBING",
+    image: "/images/founder-portfolio/off-hours-climbing.webp",
+    alt: "ボルダリングウォールを登るYuto Matsui",
+    copy: [
+      "高校時代はクライミング部。",
+      "最近は頻度こそ減りましたが、登山や自然の中で過ごすことが好きです。"
+    ]
+  }
+] as const;
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Yuto Matsui",
+  alternateName: "松井優知",
+  url: FOUNDER_URL,
+  image: `${FOUNDER_URL}images/founder-portfolio/yuto-matsui-profile-hero.webp`,
+  knowsAbout: [
+    "Life science research",
+    "AI-native software development",
+    "University education support"
+  ],
+  founder: {
+    "@type": "Organization",
+    name: "COMPASS",
+    url: "https://compass-official.pages.dev/"
+  },
+  sameAs: ["https://github.com/genellect", "https://www.instagram.com/n.m.w.314/"]
+};
+
+function ArrowIcon() {
+  return <span aria-hidden="true">↗</span>;
+}
+
+function opensInNewTab(href: string) {
+  try {
+    return new URL(href, COMPASS_ORIGIN).origin !== COMPASS_ORIGIN;
+  } catch {
+    return false;
+  }
+}
+
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" role="presentation">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4.25" />
+      <circle className={styles.iconFill} cx="17.4" cy="6.7" r="1.1" />
+    </svg>
+  );
+}
+
+function GitHubIcon() {
+  return (
+    <svg viewBox="0 0 24 24" role="presentation">
+      <path className={styles.iconFill} d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.87c-2.78.61-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.58 9.58 0 0 1 12 6.82c.85 0 1.71.11 2.51.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+    </svg>
+  );
+}
+
+export default function FounderPage() {
+  return (
+    <div className={styles.page} data-founder-page>
+      <a className={styles.skipLink} href="#founder-main">本文へスキップ</a>
+
+      <header className={styles.header}>
+        <a className={styles.wordmark} href="#top" aria-label="Yuto Matsui ポートフォリオの先頭へ">
+          <strong>YUTO MATSUI</strong>
+          <span>Research × Engineering</span>
+        </a>
+        <nav className={styles.navigation} aria-label="Portfolio navigation">
+          <a href="#expertise">Expertise</a>
+          <a href="#story">Story</a>
+          <a href="#products">Products</a>
+          <a href="#experience">Credentials</a>
+          <a href="#off-hours">Off Hours</a>
+          <a href="#contact-cta">Contact</a>
+          <span className={styles.desktopLanguageSwitch} aria-label="言語切替">
+            <FounderJapaneseLink aria-current="page">JP</FounderJapaneseLink><span>/</span><a href={FOUNDER_EN_URL}>EN</a>
+          </span>
+        </nav>
+        <nav className={styles.mobileNavigation} aria-label="Mobile portfolio navigation">
+          <a href="#message">Message</a>
+          <a href="#products">Product</a>
+          <a href="#contact-cta">Contact</a>
+          <MobileExternalMenu className={styles.mobileExternalLinks}>
+            <div className={styles.mobileExternalPopover} aria-label="Yuto Matsuiの外部リンク">
+              <div className={styles.mobileExternalIcons}>
+                <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><InstagramIcon /></a>
+                <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><GitHubIcon /></a>
+              </div>
+              <div className={styles.mobileLanguagePanel}>
+                <span>Language</span>
+                <div><FounderJapaneseLink aria-current="page">JP</FounderJapaneseLink><span>/</span><a href={FOUNDER_EN_URL}>EN</a></div>
+              </div>
+            </div>
+          </MobileExternalMenu>
+        </nav>
+      </header>
+
+      <main id="founder-main">
+        <section id="top" className={styles.hero} aria-labelledby="founder-title">
+          <div className={styles.heroAmbient} aria-hidden="true"><span /><span /><span /></div>
+          <FounderHeroGallery />
+
+          <div className={styles.heroCopy}>
+            <p className={styles.eyebrow}>システムエンジニア・分子生物学研究</p>
+            <h1 id="founder-title">Yuto Matsui</h1>
+            <p className={styles.japaneseName}>松井優知</p>
+            <p className={styles.heroStatement}><span>境界を越え、</span><span>新しい可能性へ。</span></p>
+
+            <ul className={styles.axisList} aria-label="専門領域">
+              <li data-accent="bio"><span aria-hidden="true" />生命科学研究</li>
+              <li data-accent="ai"><span aria-hidden="true" />AIネイティブ開発</li>
+            </ul>
+
+            <nav className={styles.socialLinks} aria-label="Yuto Matsuiの外部リンク">
+              <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                <InstagramIcon />
+              </a>
+              <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+                <GitHubIcon />
+              </a>
+            </nav>
+          </div>
+
+          <div className={styles.interfaceGraphic} aria-hidden="true">
+            <svg viewBox="0 0 410 220" role="presentation">
+              <path className={styles.bioLine} d="M8 34 C124 34 135 110 250 110" />
+              <path className={styles.aiLine} d="M8 110 H250" />
+              <path className={styles.educationLine} d="M8 186 C124 186 135 110 250 110" />
+              <circle className={styles.bioNode} cx="8" cy="34" r="4" />
+              <circle className={styles.aiNode} cx="8" cy="110" r="4" />
+              <circle className={styles.educationNode} cx="8" cy="186" r="4" />
+              <circle className={styles.interfaceNode} cx="250" cy="110" r="7" />
+              <path className={styles.outputLine} d="M258 110 H402" />
+            </svg>
+          </div>
+        </section>
+
+        <section id="expertise" className={styles.expertise} aria-labelledby="expertise-title">
+          <div className={styles.sectionShell}>
+            <header className={styles.compactHeading} data-reveal>
+              <h2 id="expertise-title">Expertise</h2>
+            </header>
+            <div className={styles.fieldGrid}>
+              {fields.map((field) => (
+                <DepthCard key={field.id} depth="expertise" className={styles.fieldCard} data-accent={field.accent}>
+                  <DepthVisual className={styles.fieldImage} data-depth-layer="image">
+                    <Image decoding="sync" loading="eager" src={field.image} alt={field.alt} fill sizes="(min-width: 1100px) 438px, (min-width: 901px) 43vw, (min-width: 641px) 552px, 86vw" />
+                    <div className={styles.fieldOverlay} aria-hidden="true" />
+                    <span className={styles.fieldNumber}>{field.id}</span>
+                  </DepthVisual>
+                  <div className={styles.fieldCopy} data-depth-layer="copy">
+                    <p>{field.english}</p>
+                    <h3>{field.title}</h3>
+                    <span>{field.description}</span>
+                  </div>
+                </DepthCard>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <FounderFragments />
+
+        <section id="story" className={styles.story} aria-labelledby="story-title">
+          <div className={styles.storyShell}>
+            <aside className={styles.storyPortrait} data-reveal>
+              <div className={styles.storyPortraitFrame}>
+                <Image src="/images/founder-portfolio/yuto-matsui-front.webp" alt="正面を向くYuto Matsui / 松井優知" fill sizes="(min-width: 901px) 38vw, 92vw" />
+                <div className={styles.storyPhotoGrid} aria-hidden="true" />
+              </div>
+              <div className={styles.storyPortraitCaption}>
+                <span>Background &amp; values</span>
+                <strong>THE INTERFACE</strong>
+              </div>
+            </aside>
+
+            <div className={styles.essay}>
+              <header id="message" className={styles.storyHeading} data-reveal>
+                <p className={styles.sectionKicker}>Personal statement</p>
+                <h2 id="story-title">
+                  研究と<span className={styles.mobileStoryBreak} aria-hidden="true"><br /></span>エンジニアリングの<br />
+                  インターフェース。
+                </h2>
+              </header>
+
+              <section className={styles.essayChapter} aria-labelledby="chapter-origin" data-reveal>
+                <header><span>01</span><h3 id="chapter-origin">Origin</h3></header>
+                <p>高校時代の2020年頃から趣味でプログラミングを始め、Webアプリケーション開発を中心に学びました。当時は現在のようなAIやコーディングエージェントはなく、実装、デバッグ、Git操作の多くを手作業で行う時代でした。開発そのものにも強く惹かれていましたが、科学によって生命の仕組みを解き明かし、新しい治療につなげることにも魅力を感じ、大学では薬学部へ進学しました。</p>
+                <p>大学では学部2年次から実験系研究室に所属し、神経変性疾患に関わる遺伝子変異と分子病態を研究してきました。その一方で、生成AIとコーディングエージェントの急速な進歩をきっかけに、研究データ解析からフルスタック開発へと領域を広げ、ソフトウェア開発にも再び軸足を置くようになりました。</p>
+                <p>そこで実感したのは、AIの価値は単にコーディングを高速化することではなく、一人の人間が設計・実装できるシステムの規模を拡張することにあるという点です。</p>
+              </section>
+
+              <EssayContinuation
+                className={styles.essayContinuation}
+                buttonClassName={styles.essayContinuationButton}
+                contentClassName={styles.essayContinuationContent}
+              >
+                <section className={styles.essayChapter} aria-labelledby="chapter-work">
+                  <header><span>02</span><h3 id="chapter-work">WORK</h3></header>
+                  <p>個人開発から始めたソフトウェア開発は、研究を続けるなかで、生命科学研究の成果を事業として社会に届けたいという目標へと変わっていきました。そのためには、顧客と向き合い、要件を定め、システムとして届けるまでを実務で経験する必要があると考え、3年間務めた集団指導講師の仕事から、システムエンジニアの実務へと踏み出しました。現在はITベンチャー企業2社でSEとして、顧客の課題整理から要件定義、設計、実装までを一貫して担当しています。</p>
+                  <p>実務を通じて実感したのは、AIによって、これまで分業されていた工程を一人で担えるようになったことです。そして、そこで問われるのは経験年数や肩書きではなく、課題を見極め、AIの出力を評価し、結果に責任を持つ実行力とメタ認知能力でした。研究の現場で生まれる課題を、事業として成り立つシステムへと形にしていく。それが、いまの私の仕事の中心にあります。</p>
+                </section>
+
+                <section className={styles.essayChapter} aria-labelledby="chapter-interface">
+                  <header><span>03</span><h3 id="chapter-interface">The interface</h3></header>
+                  <p>私が届けたいのは、研究者が研究を前に進めるための力です。生命科学の課題を研究者として理解し、その解決を支えるシステムをエンジニアとして実装する。自分ひとりの研究成果にとどまらず、多くの研究者の生産性と研究体験を変えることで、より大きなスケールで生命科学に貢献したいと考えています。</p>
+                </section>
+
+                <section className={`${styles.essayChapter} ${styles.essayClosing}`} aria-labelledby="chapter-future">
+                  <header><span>04</span><h3 id="chapter-future">Future</h3></header>
+                  <p>生成AIの普及は、IT業界の働き方そのものを変えました。しかし、テクノロジーの可能性が、社会のあらゆる場所に等しく届いたわけではありません。特に教育や生命科学など、複雑な意思決定と高度な専門性を必要とする分野では、技術の進歩を現実の仕組みへと変えていくことに、今なお大きな参入障壁があります。</p>
+                  <p>私が目指すのは、そのような不確実性の渦の中でも、批判や失敗を恐れず、より良い未来をつくるために前へ進み続けることです。テクノロジーとライフサイエンスの融合により、人々の生産性を再設計し、これまで当然とされてきた社会の前提を書き換えることです。</p>
+                  <p className={styles.closingInvitation}>テクノロジーのさらなる先へ、共に進みませんか。</p>
+                </section>
+              </EssayContinuation>
+            </div>
+          </div>
+        </section>
+
+        <section id="products" className={styles.products} aria-labelledby="products-title">
+          <div className={styles.sectionShell}>
+            <header className={styles.productsHeading} data-reveal>
+              <div><p className={styles.sectionKicker}>Products</p><h2 id="products-title">プロダクト紹介</h2></div>
+            </header>
+            <FounderProducts products={products} />
+          </div>
+        </section>
+
+        <section id="experience" className={styles.experience} aria-labelledby="experience-title">
+          <div className={styles.sectionShell}>
+            <header className={styles.compactHeading} data-reveal>
+              <p className={styles.sectionKicker}>Area / Experience / Focus</p>
+              <div className={styles.experienceHeading}>
+                <h2 id="experience-title">EXPERIENCE</h2>
+                <p>2026年8月現在</p>
+              </div>
+            </header>
+            <div className={styles.experienceGrid}>
+              {experience.map((item) => (
+                <DepthCard key={item.area} depth="experience" className={styles.experienceCard} data-accent={item.accent}>
+                  {item.area === "Development" ? <a className={styles.experienceLink} href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label="Development — Yuto MatsuiのGitHubプロフィール（新しいタブで開く）" /> : null}
+                  <DepthVisual className={styles.experienceVisual} data-depth-layer="image">
+                    <Image decoding="sync" loading="eager" src={item.image} alt={item.alt} fill sizes="(min-width: 901px) 31vw, (min-width: 641px) 31vw, 100vw" />
+                  </DepthVisual>
+                  <div className={styles.experienceBody}>
+                    <div className={styles.experienceMeta}>
+                      <div className={styles.experienceArea}>
+                        <span className={styles.experienceLabel}>Area</span>
+                        <h3>{item.area}</h3>
+                      </div>
+                      <div className={styles.experienceTenure}>
+                        <span className={styles.experienceLabel}>Experience</span>
+                        <strong>{item.years}</strong>
+                      </div>
+                    </div>
+                    <div className={styles.experienceFocus} data-depth-layer="detail">
+                      <span className={styles.experienceLabel}>Focus</span>
+                      <p>{item.focus.map((line) => <span key={line}>{line}</span>)}</p>
+                    </div>
+                  </div>
+                </DepthCard>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="credentials" className={styles.credentials} aria-labelledby="credentials-title">
+          <div className={styles.sectionShell}>
+            <header className={styles.compactHeading} data-reveal>
+              <p className={styles.sectionKicker}>Credentials</p>
+              <h2 id="credentials-title">English Proficiency</h2>
+            </header>
+            <div className={styles.credentialGrid}>
+              {credentials.map((credential) => (
+                <article key={credential.name} className={styles.credentialCard} data-credential={credential.kind} data-reveal>
+                  <span className={styles.credentialMark} aria-hidden="true">{credential.mark}</span>
+                  <div><p>{credential.name}</p><strong>{credential.score}</strong></div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="off-hours" className={styles.offHours} aria-labelledby="off-hours-title">
+          <div className={styles.sectionShell}>
+            <header className={styles.offHoursHeading} data-reveal>
+              <p className={styles.sectionKicker}>Away from the desk</p>
+              <h2 id="off-hours-title">OFF HOURS</h2>
+            </header>
+            <OffHoursGallery language="ja"
+              photos={offHours.map(item => ({ ...item, number: item.id }))}
+              classes={{ grid: styles.offHoursGrid, card: styles.offHoursCard, visual: styles.offHoursVisual, copy: styles.offHoursCopy }} />
+          </div>
+        </section>
+
+        <section id="contact-cta" className={styles.contact} aria-labelledby="contact-title">
+          <div className={styles.contactShell} data-reveal>
+            <div>
+              <p className={styles.contactKicker}>お問い合わせ</p>
+              <h2 id="contact-title">CONTACT</h2>
+            </div>
+            <div className={styles.contactCopy}>
+              <p>ご興味を持っていただけましたら、下記のフォームからお気軽にご連絡ください。学生・教職員・団体・企業の方を問わず、さまざまな方とのご縁を歓迎しています。</p>
+              <a href={`${COMPASS_ORIGIN}/contact/`}>Contact form <ArrowIcon /></a>
+              <details className={styles.contactEmail}>
+                <summary>メールでのご連絡</summary>
+                <div className={styles.contactEmailPanel}>
+                  <p className={styles.contactEmailIdentity}>
+                    <strong>Yuto Matsui</strong>
+                    <span>Researcher &amp; Engineer</span>
+                  </p>
+                  <div className={styles.contactEmailAddresses}>
+                    <p><span>Personal：</span><span className={styles.contactEmailValue}>contact@yuto-matsui.com</span></p>
+                    <p><span>Univ.：</span><span className={styles.contactEmailValue}>matsui.yuto@st.kitasato-u.ac.jp</span></p>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className={styles.footer}>
+        <div className={styles.footerPrimary}>
+          <div><strong>Yuto Matsui / 松井優知</strong><span>Life Science · AI-native Development · University Education</span></div>
+          <nav aria-label="Personal links">
+            <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer">Instagram <ArrowIcon /></a>
+            <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer">GitHub <ArrowIcon /></a>
+            <a href="#top">Back to top ↑</a>
+          </nav>
+        </div>
+        <div className={styles.footerLanguageSwitch} aria-label="言語切替">
+          <span>Language</span>
+          <div><FounderJapaneseLink aria-current="page">JP</FounderJapaneseLink><a href={FOUNDER_EN_URL}>EN</a></div>
+        </div>
+        <details className={styles.credits}>
+          <summary>Image credits</summary>
+          <p>
+            Life science: <a href="https://unsplash.com/photos/white-and-black-microscope-5HbxyB0_DBg" target="_blank" rel="noopener noreferrer">Jaron Nix / Unsplash</a> ·
+            Software development: <a href="https://unsplash.com/photos/code-appears-on-a-computer-screen-XG5q_aosoPo" target="_blank" rel="noopener noreferrer">Rob Wingate / Unsplash</a> ·
+            Education portrait: Yuto Matsui / personal archive ·
+            Experience — Life science: Yuto Matsui / personal archive ·
+            Experience — Development: <a href="https://www.pexels.com/photo/monitor-displaying-lines-of-code-6424583/" target="_blank" rel="noopener noreferrer">Nemuel Sereti / Pexels</a> ·
+            Experience — Education: <a href="https://unsplash.com/photos/empty-lecture-hall-with-tiered-seating-and-projector-screen-L5GTAFIeKNA" target="_blank" rel="noopener noreferrer">Fabio Sasso / Unsplash</a> ·
+            Manifesto visual: COMPASS visual archive ·
+            Drive: <a href="https://unsplash.com/photos/a-car-drives-along-a-scenic-mountain-road-e6XJTEz5SfA" target="_blank" rel="noopener noreferrer">Zixplore / Unsplash</a> ·
+            Shogi: <a href="https://commons.wikimedia.org/wiki/File:Hulic_Shogi-kaikan_Sendagaya_Building_entrance_2024-09-12.jpg" target="_blank" rel="noopener noreferrer">Asanagi / Wikimedia Commons (CC0)</a> ·
+            FRAGMENTS — DNA automation: <a href="https://unsplash.com/photos/gray-laboratory-machine-to8o0bqOA6Q" target="_blank" rel="noopener noreferrer">National Cancer Institute / Unsplash</a> ·
+            Microscopy: <a href="https://unsplash.com/photos/white-and-black-microscope-on-white-surface-JdtUKqGdqw8" target="_blank" rel="noopener noreferrer">Pawel Czerwinski / Unsplash</a> ·
+            Pipetting: <a href="https://unsplash.com/photos/person-using-pipette-in-laboratory-wDxFn_dBEC0" target="_blank" rel="noopener noreferrer">CDC / Unsplash</a> ·
+            Code and terminal: <a href="https://unsplash.com/photos/computer-screen-displaying-code-and-terminal-prompts-N4pwMINNNL8" target="_blank" rel="noopener noreferrer">Bernd Dittrich / Unsplash</a> ·
+            Development analysis: <a href="https://unsplash.com/photos/laptop-screen-displaying-code-and-data-charts-GQOylIn892U" target="_blank" rel="noopener noreferrer">Daniil Komov / Unsplash</a> ·
+            Servers: <a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener noreferrer">Kevin Ache / Unsplash</a> ·
+            Microfluidic devices: <a href="https://www.oist.jp/image/photograph-microfluidic-devices-microbionanofluidics-unit" target="_blank" rel="noopener noreferrer">OIST / CC BY 4.0</a> ·
+            Silicon wafer: <a href="https://www.oist.jp/image/silicon-wafer-deposition-chamber-oist-engineering-section" target="_blank" rel="noopener noreferrer">OIST / CC BY 4.0</a> ·
+            Personal portraits, FRAGMENTS &amp; climbing: Yuto Matsui / personal archive
+          </p>
+        </details>
+        <p className={styles.copyright}>© 2026 Yuto Matsui. Designed and developed by Yuto Matsui. All rights reserved.</p>
+      </footer>
+
+      <LegacyInteractions />
+      <Script id="founder-linker-url-cleanup" strategy="lazyOnload">
+        {`try {
+  const url = new URL(window.location.href);
+  if (url.searchParams.has('_gl')) {
+    url.searchParams.delete('_gl');
+    window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
+  }
+} catch {}`}
+      </Script>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
+    </div>
+  );
+}
