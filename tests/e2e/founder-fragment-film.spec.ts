@@ -86,9 +86,18 @@ test("Film auto motion, pause, manual drag and wheel coexist with page scrolling
   expect(Buffer.compare(first, await canvas.screenshot())).not.toBe(0);
   expect(await section.getAttribute("style")).not.toBe(initialLight);
   await film.getByRole("button", { name: "写真フィルムの自動送りを一時停止", exact: true }).click();
-  await page.waitForTimeout(1000);
-  const paused = await canvas.screenshot();
-  const pausedLight = await section.getAttribute("style");
+  await expect(film.getByRole("button", { name: "写真フィルムの自動送りを再開", exact: true })).toHaveAttribute("aria-pressed", "true");
+  // The existing film eases its remaining position after pausing. A fixed second
+  // does not represent the same number of rendered frames on a busy CI runner.
+  let paused = await canvas.screenshot();
+  let pausedLight = await section.getAttribute("style");
+  await expect.poll(async () => {
+    const next = await canvas.screenshot();
+    const light = await section.getAttribute("style");
+    const settled = paused.equals(next) && pausedLight === light;
+    paused = next; pausedLight = light;
+    return settled;
+  }).toBe(true);
   await page.waitForTimeout(300);
   expect(Buffer.compare(paused, await canvas.screenshot())).toBe(0);
   expect(await section.getAttribute("style")).toBe(pausedLight);
