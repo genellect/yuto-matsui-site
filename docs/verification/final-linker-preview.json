@@ -1,0 +1,276 @@
+{
+  "observedAt": "2026-11-15T05:25:17.719Z",
+  "origin": "https://1692504b.yuto-matsui-site.pages.dev",
+  "sourceCommit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+  "browser": "151.0.7922.34",
+  "platform": "linux",
+  "mode": "check",
+  "checks": [
+    {
+      "key": "ja-390x844",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-390x844",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-390x844",
+      "label": "menu",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-390x844",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "ja-1024x768",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-1024x768",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-1024x768",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "ja-1280x720",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-1280x720",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-1280x720",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "ja-1275x553",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-1275x553",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-1275x553",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "ja-1536x672",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-1536x672",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "ja-1536x672",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-390x844",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 1,
+      "acceptedRenderingVariance": true,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-390x844",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 1,
+      "acceptedRenderingVariance": true,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-390x844",
+      "label": "menu",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-390x844",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-1024x768",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-1024x768",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-1024x768",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-1280x720",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-1280x720",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-1280x720",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-1275x553",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-1275x553",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-1275x553",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    },
+    {
+      "key": "en-1536x672",
+      "label": "initial",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-1536x672",
+      "label": "scrolled",
+      "domEqual": true,
+      "stylesEqual": true,
+      "pixels": 0,
+      "acceptedRenderingVariance": false,
+      "dimensionsEqual": true
+    },
+    {
+      "key": "en-1536x672",
+      "network": true,
+      "runtime": true,
+      "compassRequests": 0
+    }
+  ],
+  "policy": {
+    "motion": "reduced; CSS animations/transitions disabled",
+    "canvas": "hidden only in screenshots; interactive tests required separately",
+    "acceptedVariance": "Owner-approved EN 390x844: (43,202), red channel +/-1 only; 2026-11-15",
+    "analytics": "requests fulfilled locally; no analytics events sent",
+    "transport": "Next.js transport scripts/preloads recorded separately from semantic DOM"
+  },
+  "passed": true
+}
