@@ -11,6 +11,8 @@ test("JP mobile photo art direction, ribbons and balanced external menu", async 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const hero = page.locator("#top");
   await expect(hero.locator('svg[class*="mobileHeroSignals"]')).toBeVisible();
+  // The server-rendered button can be visible before its event handler hydrates.
+  await expect(hero.locator('[data-composition="lake-portrait"]')).toHaveAttribute('style', /--portrait-width:/);
   const pause = hero.getByRole("button", { name: "写真の自動切替を一時停止", exact: true });
   await pause.click();
   await expect(hero.locator('[data-paused="true"]')).toBeVisible();
@@ -31,10 +33,11 @@ test("JP mobile photo art direction, ribbons and balanced external menu", async 
     for (const index of [1, 2, 3]) {
       await hero.getByRole("button", { name: `写真 ${index} を表示`, exact: true }).click();
       const image = hero.locator('figure[data-active="true"] img');
-      const box = await image.boundingBox();
       const expected = (heroBaseline.dimensions as Record<string, { width: number; height: number }>)[`${width}-${index}`];
-      expect(box!.width).toBe(expected.width);
-      expect(box!.height).toBe(expected.height);
+      await expect.poll(async () => {
+        const box = await image.boundingBox();
+        return { width: box?.width, height: box?.height };
+      }).toEqual(expected);
       await page.screenshot({ path: testInfo.outputPath(`composition-${width}-${index}.png`), animations: "disabled" });
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);

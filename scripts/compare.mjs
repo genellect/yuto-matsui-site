@@ -18,7 +18,7 @@ for(const path of ['/','/en/']) for(const [width,height] of matrix) {
  const key=`${path==='/'?'ja':'en'}-${width}x${height}`;
  if(chosen && !key.includes(chosen))continue;
  const context=await browser.newContext({viewport:{width,height},deviceScaleFactor:1,locale:'ja-JP',timezoneId:'Asia/Tokyo',reducedMotion:'reduce',serviceWorkers:'block'});
- const failures=[],compass=[],errors=[],resources=[];
+ const failures=[],compass=[],errors=[],resources=[],rendererMessages=[];
  await context.route('**/*',async route=>{
   const req=route.request(),u=new URL(req.url());
   if(/(^|\.)(googletagmanager\.com|google-analytics\.com|cloudflareinsights\.com)$/.test(u.hostname)) {await route.fulfill({status:200,contentType:'application/javascript',body:''});return;}
@@ -39,6 +39,7 @@ for(const path of ['/','/en/']) for(const [width,height] of matrix) {
    } finally {await mask.evaluate(e=>e.remove());}
  }
  page.on('pageerror',e=>errors.push(e.message));
+ page.on('console',m=>{if(['warning','error'].includes(m.type()))rendererMessages.push({type:m.type(),text:m.text()});});
  page.on('requestfailed',r=>failures.push(`${r.url()} ${r.failure()?.errorText}`));
  page.on('response',r=>{resources.push({url:r.url(),status:r.status(),type:r.request().resourceType()});if(r.status()>=400)failures.push(`${r.status()} ${r.url()}`);});
  const response=await page.goto(origin+path,{waitUntil:'load'});
@@ -109,7 +110,7 @@ for(const path of ['/','/en/']) for(const [width,height] of matrix) {
  await page.waitForFunction(()=>[...document.images].filter(i=>i.loading!=='lazy'||(i.getBoundingClientRect().top<innerHeight&&i.getBoundingClientRect().bottom>0)).every(i=>i.complete),{},{timeout:15000});
  await capture('scrolled');
  if(width<901){const name=path==='/'?'外部リンクを表示':'Open navigation';await page.getByRole('button',{name,exact:true}).click();await page.waitForTimeout(120);await capture('menu');await page.keyboard.press('Escape');}
- const report={key,status:response.status(),headers:await response.allHeaders(),failures,compassRequests:compass,errors,resources};
+ const report={key,status:response.status(),headers:await response.allHeaders(),failures,compassRequests:compass,errors,resources,rendererMessages};
  await writeFile(`${directory}/${key}-network.json`,JSON.stringify(report,null,2));
  summary.checks.push({key,network:failures.length===0,runtime:errors.length===0,compassRequests:compass.length});
  console.log(key,`status=${report.status} errors=${errors.length} failed=${failures.length} compass=${compass.length}`);
