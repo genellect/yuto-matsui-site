@@ -1,3 +1,4 @@
+import { site } from "../../../site";
 import { pageCopy } from "../../../content/en";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -152,7 +153,7 @@ export default function EnglishFounderPage() {
           <a href="#work">{pageCopy.navWork}</a>
           <a href="#contact">{pageCopy.navContact}</a>
           <span className={styles.languageSwitch} aria-label={pageCopy.languageSwitch}>
-            <FounderJapaneseLink>{pageCopy.languageSwitch2}</FounderJapaneseLink><span>{pageCopy.languageSwitch3}</span><a href={canonicalUrl} aria-current="page">{pageCopy.languageSwitch4}</a>
+            <FounderJapaneseLink>{pageCopy.languageSwitch2}</FounderJapaneseLink><span>{pageCopy.languageSwitch3}</span><a href={site.englishPath} aria-current="page">{pageCopy.languageSwitch4}</a>
           </span>
         </nav>
         <EnglishMobileMenu />
@@ -306,7 +307,7 @@ export default function EnglishFounderPage() {
         </div>
         <div className={styles.footerLanguageSwitch} aria-label={pageCopy.footerLanguageSwitch}>
           <span>{pageCopy.footerLanguageSwitch}</span>
-          <div><FounderJapaneseLink>{pageCopy.footerLanguageSwitch2}</FounderJapaneseLink><a href={canonicalUrl} aria-current="page">{pageCopy.footerLanguageSwitch3}</a></div>
+          <div><FounderJapaneseLink>{pageCopy.footerLanguageSwitch2}</FounderJapaneseLink><a href={site.englishPath} aria-current="page">{pageCopy.footerLanguageSwitch3}</a></div>
         </div>
         <details className={styles.credits}>
           <summary>{pageCopy.credits}</summary>

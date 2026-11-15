@@ -29,6 +29,8 @@ inline styleはブラウザーのCSSOM表現で比較し、空のstyle属性と�
 
 2026-11-15にオーナーが許容した例外: EN 390×844のinitial/scrolled画像にある座標(43,202)の赤成分1段階だけの差。本番同士の再取得でも再現した描画の揺れです。比較scriptはこの座標と成分を検証し、異なる場所や2ピクセル以上の差を許容しません。DOM・style・通信の許容差はありません。
 
+後続のGA4不具合修正では、オーナー指示により英語リンクを本番絶対URLから `/en/` に変更しています。比較ではこのhrefだけを同じ本番遷移先として扱い、Preview内の言語切替は別途E2Eで検証します。詳細は [analytics-url.md](analytics-url.md)。
+
 HTTPは `node scripts/http-contract.mjs check <Preview URL>` で、6URLのstatus・Location・Content-Type・Cache-Control・CORS・security policy・Linkと、robots/sitemap/IndexNowの本文SHA-256を比較します。Date、CF-Ray、Report-To等のリクエスト固有情報、転送圧縮・接続ヘッダー、CDNのcache診断は生値を保存しますが同値判定の対象にしません。Preview限定のnoindexも記録します。
 本番が返す画像preloadのLinkヘッダーを `public/_headers` に保持しています。画像の変更時はHTMLとこのヘッダーを一緒に見直してください。
 

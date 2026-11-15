@@ -1,12 +1,14 @@
 "use client";
 
-import { controls as enControls, menuCopy, mobileLinks as links, founderOrigin } from "../content/en";
+import { site } from "../site";
+
+import { controls as enControls, menuCopy, mobileLinks as links } from "../content/en";
 import { useEffect, useRef, useState } from "react";
 import { FounderJapaneseLink } from "../shared/JapaneseLink";
 import { GitHubIcon, InstagramIcon } from "./EnglishSocialIcons";
 import styles from "./english-founder.module.css";
 
-const englishPortfolioUrl = `${founderOrigin}/en/`;
+const englishPortfolioUrl = site.englishPath;
 
 export function EnglishMobileMenu() {
   const [open, setOpen] = useState(false);

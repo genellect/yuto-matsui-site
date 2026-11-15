@@ -1,7 +1,7 @@
 # Yuto Matsui portfolio
 
 `yuto-matsui.com` の日本語 `/`・英語 `/en/` を管理する専用repositoryです。
-現行COMPASSからの移植は実装・検証中です。独自ドメインの配信はまだ切り替えていません。
+現行COMPASSからの移植と文言抽出はDraft PRで検証済みです。独自ドメインの配信はまだ切り替えていません。
 
 ## 開発
 

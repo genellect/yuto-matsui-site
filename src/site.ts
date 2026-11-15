@@ -2,6 +2,7 @@
 export const site = {
   origin: "https://yuto-matsui.com",
   japaneseUrl: "https://yuto-matsui.com/",
+  englishPath: "/en/",
   englishUrl: "https://yuto-matsui.com/en/",
   compassOrigin: "https://compass-official.pages.dev",
   gaMeasurementId: "G-EHKJ8B8N0Y"

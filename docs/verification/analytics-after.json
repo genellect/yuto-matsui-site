@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-11-15T03:57:00.603Z",
+  "expectation": "clean",
+  "measurementId": "G-EHKJ8B8N0Y",
+  "googleScriptLoads": 4,
+  "realLinkerParameterAdded": true,
+  "clientAndSessionPreserved": true,
+  "incomingCleanup": true,
+  "pageViews": 4,
+  "pageViewPaths": [
+    "/",
+    "/en/",
+    "/",
+    "/en/"
+  ],
+  "collectionRequestsForwarded": 0,
+  "otherRequestsIntercepted": [],
+  "passed": true
+}
