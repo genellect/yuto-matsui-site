@@ -4,9 +4,9 @@ Cloudflare Pages project: `yuto-matsui-site`, Git repository: `genellect/yuto-ma
 
 `npm run build` exports the site and adds `X-Portfolio-Commit` to static responses. The value comes from `CF_PAGES_COMMIT_SHA` on Pages and `git rev-parse HEAD` locally. This lets deployment verification distinguish the new release from a still-cached previous release without loading analytics.
 
-The `Production verification` workflow runs after a push to main and can also be run manually. It waits for that exact commit, checks both language pages and static assets, then checks the HTTP contract. Its target is repository variable `PRODUCTION_ORIGIN`, initially the production pages.dev hostname and then the custom domain after cutover. It performs GET/HEAD requests only. GA4 and form submissions are not involved. The workflow stores its HTTP evidence as a 30-day artifact.
+The `Production verification` workflow runs after a push to main and can also be run manually. It waits for that exact commit, checks both language pages and static assets, then checks the HTTP contract. Its target is repository variable `PRODUCTION_ORIGIN`, now `https://yuto-matsui.com` after cutover. It performs GET/HEAD requests only. GA4 and form submissions are not involved. The workflow stores its HTTP evidence as a 30-day artifact.
 
-Expected release path: PR → CI `verify` → merge to main → Cloudflare Git build → commit-matched production verification. Pages must have automatic main deployments enabled and its temporary main-rejection command replaced with `npm run typecheck && npm run build && npm run verify` for this path to work. The migration's actual activation and verification are recorded separately.
+Expected release path: PR → CI `verify` → merge to main → Cloudflare Git build → commit-matched production verification. Pages now has automatic main deployments enabled and its temporary main-rejection command was replaced with `npm run typecheck && npm run build && npm run verify` for this path to work. The migration's actual activation and verification are recorded separately.
 
 ## Compatibility during domain migration
 
@@ -19,3 +19,5 @@ These three compatibility outputs can be removed in a later change after the old
 ## Recovery references
 
 The pre-cutover deployment and routing inventory is in `2026-11-15-before.json`. The old COMPASS deployment and source remain available during migration. A custom-domain rollback restores the old Pages association/DNS and the previous URL Rewrite Rules; it is not the same as reverting a commit in the new repository. A new-site code rollback uses a previous successful production deployment, followed by the same HTTP and browser verification.
+
+Actual production migration: [2026-11-15 cutover record](2026-11-15-cutover.md).

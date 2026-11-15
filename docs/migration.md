@@ -4,9 +4,9 @@
 
 ## 現状
 
-元repositoryは `genellect/compass`、参照commitは `6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884`。
-現行本番は `compass-official` に接続されたままです。この実装では既存の配信設定を変更しません。
-新repositoryと新Pages projectは検証用です。独自ドメインは接続しません。
+元repositoryは `genellect/compass`、比較基準commitは `6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884`。
+2026-11-15にオーナーの本番切替指示を受け、`yuto-matsui.com` のPages接続とDNSを `yuto-matsui-site` へ移しました。新repositoryのmainが本番配信元です。
+実測、全インフラ変更、CD、検証結果、復元方法は [切替記録](deployments/2026-11-15-cutover.md) にあります。
 
 ## 比較
 
@@ -34,24 +34,14 @@ inline styleはブラウザーのCSSOM表現で比較し、空のstyle属性と�
 HTTPは `node scripts/http-contract.mjs check <Preview URL>` で、6URLのstatus・Location・Content-Type・Cache-Control・CORS・security policy・Linkと、robots/sitemap/IndexNowの本文SHA-256を比較します。Date、CF-Ray、Report-To等のリクエスト固有情報、転送圧縮・接続ヘッダー、CDNのcache診断は生値を保存しますが同値判定の対象にしません。Preview限定のnoindexも記録します。
 本番が返す画像preloadのLinkヘッダーを `public/_headers` に保持しています。画像の変更時はHTMLとこのヘッダーを一緒に見直してください。
 
-新Pagesは `yuto-matsui-site`。mainの自動deployを無効にし、build commandにもmain拒否を設定しています。Previewは `codex/**` branchから確認します。独自ドメイン未接続です。
+新Pagesは `yuto-matsui-site`、本番branchはmain。build commandは `npm run typecheck && npm run build && npm run verify`、outputは `out`、mainの自動deployは有効です。Previewは全non-production branchで生成します。
 
-
-## 本番操作前のgate（今回は実行しない）
-
-1. 新Previewの比較とCIを完了する。
-2. `Verifying`の扱いと切替方式を決め、同じhost条件の検証環境で切替・切り戻しの両方を実測する。
-3. 本番deployment ID・commit、DNS record、Single/Bulk Redirectの写し、custom domain状態、新repositoryのcommitを記録する。
-4. オーナーの明示指示を得た日時にだけ切り替える。
-
-非200が受入時間を超えた場合、比較で未解決の差が出た場合、失敗requestが出た場合は切り戻す。
-付け替え方式は元projectへのドメイン再接続とDNS復元、中継方式は元deployment復元。操作順と所要時間は予行で確定する。
-切り戻すと切替時点の内容になる。以降の更新は新repositoryの記録commitとの差分で追跡する。
+本番のcommitは `X-Portfolio-Commit` で識別し、GitHub Actions `Production verification` が `PRODUCTION_ORIGIN=https://yuto-matsui.com` に対して確認します。PagesのPreviewには標準でnoindexが付きます。本番用check-deploymentはPreviewの確認には使いません。
 
 ## COMPASSの整理（今回は実行しない）
 
 切替後、オーナーが切り戻し不要と判断してから別PRで行う。画像とCOMPASS共通CSSは残す。
-ドメイン付け替えならFounder Functionsと関連middlewareを外し、_routesをAPI 3件にする。中継なら中継Functionsと全assetを含むrouteを維持する。
+今回の方式はドメイン付け替えです。整理時はFounder Functionsと関連middlewareを外し、_routesをAPI 3件にする。
 Functions inventoryの3か所の検査を同時に更新し、旧URL 6件の301とquery、COMPASSの主要ページ・フォーム・APIを確認する。
 Bulk Redirect元hostは全件 `https://compass-official.pages.dev`。founder 3件はquery保持、en 3件はquery破棄。
 

@@ -1,0 +1,90 @@
+{
+  "rehearsal": {
+    "firstObservedAt": "2026-11-15T05:53:17.026Z",
+    "lastObservedAt": "2026-11-15T06:12:53.166Z",
+    "interval": "one-second target; request timeout 4.5 seconds",
+    "observer": "single client, mostly NRT Cloudflare POP",
+    "paths": {
+      "/": {
+        "samples": 1175,
+        "non200Samples": 163,
+        "transportErrors": 45,
+        "firstNon200": "2026-11-15T05:54:38.085Z",
+        "lastNon200": "2026-11-15T06:00:25.727Z",
+        "firstNewCommit200": "2026-11-15T05:55:56.138Z",
+        "latest": {
+          "at": "2026-11-15T06:12:53.165Z",
+          "path": "/",
+          "status": 200,
+          "commit": null,
+          "location": null,
+          "ray": "a5ac1b598f06966a-NRT",
+          "ms": 372
+        },
+        "non200WindowSeconds": 347.642
+      },
+      "/en/": {
+        "samples": 1175,
+        "non200Samples": 162,
+        "transportErrors": 46,
+        "firstNon200": "2026-11-15T05:54:37.086Z",
+        "lastNon200": "2026-11-15T06:00:57.752Z",
+        "firstNewCommit200": "2026-11-15T05:55:56.139Z",
+        "latest": {
+          "at": "2026-11-15T06:12:53.166Z",
+          "path": "/en/",
+          "status": 200,
+          "commit": null,
+          "location": null,
+          "ray": "a5ac1b599ce7dfc5-NRT",
+          "ms": 417
+        },
+        "non200WindowSeconds": 380.666
+      }
+    }
+  },
+  "production": {
+    "firstObservedAt": "2026-11-15T06:02:51.889Z",
+    "lastObservedAt": "2026-11-15T06:15:48.174Z",
+    "interval": "one-second target; request timeout 4.5 seconds",
+    "observer": "single client, mostly NRT Cloudflare POP",
+    "paths": {
+      "/": {
+        "samples": 776,
+        "non200Samples": 149,
+        "transportErrors": 0,
+        "firstNon200": "2026-11-15T06:04:15.955Z",
+        "lastNon200": "2026-11-15T06:06:57.073Z",
+        "firstNewCommit200": "2026-11-15T06:06:44.064Z",
+        "latest": {
+          "at": "2026-11-15T06:15:48.172Z",
+          "path": "/",
+          "status": 200,
+          "commit": "1b7cfb50efc9ed8667069935c4d6815e021e6034",
+          "location": null,
+          "ray": "a5ac1f9f9c8d4efb-NRT",
+          "ms": 411
+        },
+        "non200WindowSeconds": 161.118
+      },
+      "/en/": {
+        "samples": 776,
+        "non200Samples": 147,
+        "transportErrors": 0,
+        "firstNon200": "2026-11-15T06:04:15.956Z",
+        "lastNon200": "2026-11-15T06:06:51.069Z",
+        "firstNewCommit200": "2026-11-15T06:06:43.065Z",
+        "latest": {
+          "at": "2026-11-15T06:15:48.174Z",
+          "path": "/en/",
+          "status": 200,
+          "commit": "1b7cfb50efc9ed8667069935c4d6815e021e6034",
+          "location": null,
+          "ray": "a5ac1f9fabfe795e-NRT",
+          "ms": 421
+        },
+        "non200WindowSeconds": 155.113
+      }
+    }
+  }
+}

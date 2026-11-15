@@ -1,0 +1,37 @@
+{
+  "destinationSource": "live production HTTPS response",
+  "sourcePage": "controlled cross-domain fixture",
+  "observedAt": "2026-11-15T06:11:44.431Z",
+  "expectation": "clean",
+  "measurementId": "G-EHKJ8B8N0Y",
+  "googleScriptLoads": 4,
+  "realLinkerParameterAdded": true,
+  "clientAndSessionPreserved": true,
+  "incomingCleanup": true,
+  "pageViews": 4,
+  "pageViewPaths": [
+    "/",
+    "/en/",
+    "/",
+    "/en/"
+  ],
+  "collectionRequestsForwarded": 0,
+  "otherRequestsIntercepted": [
+    {
+      "host": "static.cloudflareinsights.com",
+      "path": "/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092",
+      "type": "script"
+    },
+    {
+      "host": "static.cloudflareinsights.com",
+      "path": "/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092",
+      "type": "script"
+    },
+    {
+      "host": "static.cloudflareinsights.com",
+      "path": "/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092",
+      "type": "script"
+    }
+  ],
+  "passed": true
+}
