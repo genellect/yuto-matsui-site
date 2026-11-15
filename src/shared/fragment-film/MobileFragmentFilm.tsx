@@ -1,4 +1,6 @@
 "use client";
+import { controls as enControls } from "../../content/en";
+import { controls as jaControls } from "../../content/ja";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { FilmPhoto } from "./fragment-film-engine";
@@ -36,12 +38,12 @@ export function MobileFragmentFilm({ photos, active, language="ja", currentPhoto
       <div className={css.light}/><div className={css.shadow}/>
       <svg viewBox="0 0 430 600" preserveAspectRatio="none"><path d="M-100 420 C110 575 520 480 540 160"/><path d="M-90 433 C145 580 525 453 530 142"/><path d="M-120 115 C125 0 345 40 510 335"/><path className={css.trace} d="M-100 420 C110 575 520 480 540 160"/></svg>
     </div>
-    <div ref={host} className={css.viewport} tabIndex={active?0:-1} role="group" aria-label={en?"Photographic film. Drag horizontally or use the arrow keys.":"写真フィルム。横ドラッグまたは左右キーで移動"}/>
+    <div ref={host} className={css.viewport} tabIndex={active?0:-1} role="group" aria-label={en?enControls.mobileFilmDescription:jaControls.mobileFilmDescription}/>
     {!ready && <div className={css.poster} aria-hidden="true"><Image src={initial.src} alt="" width={initial.width} height={initial.height} sizes="90vw" loading="lazy" /></div>}
     <div className={css.controls}>
-      <button type="button" onClick={()=>controller.current?.step(-1)} aria-label={en?"Previous image":"前の写真"}>←</button>
-      <button type="button" aria-pressed={paused} onClick={()=>setPaused(p=>!p)} aria-label={en?(paused?"Resume automatic film movement":"Pause automatic film movement"):(paused?"写真フィルムの自動送りを再開":"写真フィルムの自動送りを一時停止")}>{paused?"Play":"Pause"}</button>
-      <button type="button" onClick={()=>controller.current?.step(1)} aria-label={en?"Next image":"次の写真"}>→</button>
+      <button type="button" onClick={()=>controller.current?.step(-1)} aria-label={en?enControls.mobileFilmPrevious:jaControls.mobileFilmPrevious}>←</button>
+      <button type="button" aria-pressed={paused} onClick={()=>setPaused(p=>!p)} aria-label={en?(paused?enControls.mobileFilmResume:enControls.mobileFilmPause):(paused?jaControls.mobileFilmResume:jaControls.mobileFilmPause)}>{paused?jaControls.mobileFilmPlayLabel:jaControls.mobileFilmPauseLabel}</button>
+      <button type="button" onClick={()=>controller.current?.step(1)} aria-label={en?enControls.mobileFilmNext:jaControls.mobileFilmNext}>→</button>
     </div>
     <div className={css.photoDescriptions}>{photos.map(p=><span key={p.key}>{p.alt}</span>)}</div>
   </div>;

@@ -1,5 +1,6 @@
 "use client";
 
+import { controls as enControls, heroCopy, heroSlides } from "../content/en";
 import Image from "next/image";
 import {
   type CSSProperties,
@@ -9,7 +10,6 @@ import {
   useRef,
   useState
 } from "react";
-import { heroSlides } from "../content/en";
 import styles from "./english-founder.module.css";
 
 const intervalMs = 8_000;
@@ -144,7 +144,7 @@ export function EnglishHeroGallery() {
       data-transitioning={enteringIndex !== null}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Portraits of Yuto Matsui"
+      aria-label={heroCopy.heroGallery}
       tabIndex={0}
       onKeyDown={(event) => {
         if (event.key === "ArrowLeft") {
@@ -208,7 +208,7 @@ export function EnglishHeroGallery() {
       </div>
 
       <div className={styles.heroSystemRail}>
-        <div className={styles.heroProgress} aria-label="Select a portrait">
+        <div className={styles.heroProgress} aria-label={heroCopy.heroProgress}>
           {heroSlides.map((slide, index) => (
             <button
               key={slide.src}
@@ -224,19 +224,17 @@ export function EnglishHeroGallery() {
           ))}
         </div>
         <span className={styles.heroGalleryMeta} aria-hidden="true">
-          {String(displayIndex + 1).padStart(2, "0")} / {String(heroSlides.length).padStart(2, "0")} · {heroSlides[displayIndex].label}
+          {String(displayIndex + 1).padStart(2, "0")}{heroCopy.heroGalleryMeta}{String(heroSlides.length).padStart(2, "0")}{heroCopy.heroGalleryMeta2}{heroSlides[displayIndex].label}
         </span>
-        <span className={styles.heroCoordinates} aria-hidden="true">
-          35.68° N&nbsp;&nbsp;139.76° E&nbsp;&nbsp;2026 / TOKYO
-        </span>
+        <span className={styles.heroCoordinates} aria-hidden="true">{heroCopy.heroCoordinates}</span>
         <button
           type="button"
           className={styles.heroPause}
-          aria-label={paused ? "Resume automatic portrait changes" : "Pause automatic portrait changes"}
+          aria-label={paused ? enControls.resumePortraits : enControls.pausePortraits}
           aria-pressed={paused}
           onClick={() => setPaused((current) => !current)}
         >
-          <span aria-hidden="true">{paused ? "Play" : "Pause"}</span>
+          <span aria-hidden="true">{paused ? enControls.portraitPlay : enControls.portraitPause}</span>
         </button>
       </div>
     </div>

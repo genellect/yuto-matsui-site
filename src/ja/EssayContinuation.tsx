@@ -1,5 +1,6 @@
 "use client";
 
+import { controls as jaControls } from "../content/ja";
 import { useState, type ReactNode } from "react";
 
 type EssayContinuationProps = {
@@ -26,7 +27,7 @@ export function EssayContinuation({
         aria-controls="founder-essay-continuation"
         onClick={() => setExpanded((current) => !current)}
       >
-        <span>{expanded ? "閉じる" : "続きを読む"}</span>
+        <span>{expanded ? jaControls.closeEssay : jaControls.readEssay}</span>
         <svg viewBox="0 0 20 20" aria-hidden="true">
           <path d="m5.5 7.5 4.5 4.5 4.5-4.5" />
         </svg>

@@ -1,0 +1,68 @@
+{
+  "files": [
+    {
+      "component": "src/app/(ja)/page.tsx",
+      "content": "src/content/ja.ts",
+      "object": "pageCopy",
+      "strings": 127
+    },
+    {
+      "component": "src/ja/FounderFragments.tsx",
+      "content": "src/content/ja.ts",
+      "object": "fragmentCopy",
+      "strings": 6
+    },
+    {
+      "component": "src/ja/FounderHeroGallery.tsx",
+      "content": "src/content/ja.ts",
+      "object": "heroCopy",
+      "strings": 4
+    },
+    {
+      "component": "src/ja/MobileExternalMenu.tsx",
+      "content": "src/content/ja.ts",
+      "object": "menuCopy",
+      "strings": 1
+    },
+    {
+      "component": "src/app/(en)/en/page.tsx",
+      "content": "src/content/en.ts",
+      "object": "pageCopy",
+      "strings": 93
+    },
+    {
+      "component": "src/en/EnglishFragments.tsx",
+      "content": "src/content/en.ts",
+      "object": "fragmentCopy",
+      "strings": 7
+    },
+    {
+      "component": "src/en/EnglishHeroGallery.tsx",
+      "content": "src/content/en.ts",
+      "object": "heroCopy",
+      "strings": 5
+    },
+    {
+      "component": "src/en/EnglishMobileMenu.tsx",
+      "content": "src/content/en.ts",
+      "object": "menuCopy",
+      "strings": 15
+    }
+  ],
+  "productHeadlines": {
+    "interactiveLead": "LET EVERYTHING",
+    "interactiveEmphasis": "MOVE.",
+    "cytellectLead": "Get your microscopy",
+    "cytellectEmphasis": "publication-ready.",
+    "toposLead": "誰の考えも",
+    "toposLeadContinuation": "埋もれない議論を、",
+    "toposEmphasis": "すべての教室に。",
+    "compassLead": "Don’t Just Learn.",
+    "compassEmphasis": "Build What’s Next.",
+    "fallbackEnglishLead": "LIFE IN THE",
+    "fallbackEnglishEmphasis": "AGE OF AI.",
+    "fallbackJapaneseLead": "AI時代を",
+    "fallbackJapaneseEmphasis": "どう生きるか。",
+    "externalArrow": "↗"
+  }
+}

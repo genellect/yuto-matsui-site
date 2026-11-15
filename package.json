@@ -10,7 +10,7 @@
     "dev": "next dev --webpack --hostname 127.0.0.1",
     "build": "next build --webpack",
     "typecheck": "tsc --noEmit",
-    "verify": "node scripts/verify-build.mjs",
+    "verify": "node scripts/verify-build.mjs && node scripts/verify-content-assets.mjs",
     "test:e2e": "playwright test",
     "compare": "node scripts/compare.mjs",
     "serve": "node scripts/serve-static.mjs"

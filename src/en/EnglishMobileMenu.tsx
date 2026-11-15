@@ -1,20 +1,10 @@
 "use client";
 
+import { controls as enControls, menuCopy, mobileLinks as links, founderOrigin } from "../content/en";
 import { useEffect, useRef, useState } from "react";
 import { FounderJapaneseLink } from "../shared/JapaneseLink";
-import { founderOrigin } from "../content/en";
 import { GitHubIcon, InstagramIcon } from "./EnglishSocialIcons";
 import styles from "./english-founder.module.css";
-
-const links = [
-  { label: "Expertise", href: "#expertise" },
-  { label: "Experience", href: "#experience" },
-  { label: "Fragments", href: "#fragments" },
-  { label: "Statement", href: "#statement" },
-  { label: "Selected Work", href: "#work" },
-  { label: "Off Hours", href: "#off-hours" },
-  { label: "Contact", href: "#contact" }
-] as const;
 
 const englishPortfolioUrl = `${founderOrigin}/en/`;
 
@@ -63,16 +53,16 @@ export function EnglishMobileMenu() {
 
   return (
     <div className={styles.mobileMenuRoot}>
-      <span className={styles.mobileHeaderLanguage} aria-label="Language">
-        <FounderJapaneseLink>JP</FounderJapaneseLink>
-        <span>/</span>
-        <a href={englishPortfolioUrl} aria-current="page">EN</a>
+      <span className={styles.mobileHeaderLanguage} aria-label={menuCopy.mobileHeaderLanguage}>
+        <FounderJapaneseLink>{menuCopy.mobileHeaderLanguage2}</FounderJapaneseLink>
+        <span>{menuCopy.mobileHeaderLanguage3}</span>
+        <a href={englishPortfolioUrl} aria-current="page">{menuCopy.mobileHeaderLanguage4}</a>
       </span>
       <button
         ref={triggerRef}
         type="button"
         className={styles.mobileMenuTrigger}
-        aria-label={open ? "Close navigation" : "Open navigation"}
+        aria-label={open ? enControls.closeMenu : enControls.openMenu}
         aria-expanded={open}
         aria-controls="english-mobile-menu"
         onClick={() => setOpen((current) => !current)}
@@ -88,10 +78,10 @@ export function EnglishMobileMenu() {
         aria-hidden={!open}
       >
         <div className={styles.mobileMenuHeader}>
-          <span>YUTO MATSUI</span>
-          <button type="button" onClick={() => setOpen(false)} aria-label="Close navigation">Close</button>
+          <span>{menuCopy.mobileMenuHeader}</span>
+          <button type="button" onClick={() => setOpen(false)} aria-label={menuCopy.mobileMenuHeader2}>{menuCopy.mobileMenuHeader3}</button>
         </div>
-        <nav className={styles.mobileMenuLinks} aria-label="Mobile portfolio navigation">
+        <nav className={styles.mobileMenuLinks} aria-label={menuCopy.mobileMenuLinks}>
           {links.map((link, index) => (
             <a key={link.href} href={link.href} onClick={() => setOpen(false)}>
               <span>{String(index + 1).padStart(2, "0")}</span>{link.label}
@@ -99,13 +89,13 @@ export function EnglishMobileMenu() {
           ))}
         </nav>
         <div className={styles.mobileMenuFooter}>
-          <nav className={styles.mobileMenuSocials} aria-label="Social profiles">
-            <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><InstagramIcon /></a>
-            <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><GitHubIcon /></a>
+          <nav className={styles.mobileMenuSocials} aria-label={menuCopy.mobileMenuSocials}>
+            <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label={menuCopy.mobileMenuSocials2}><InstagramIcon /></a>
+            <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={menuCopy.mobileMenuSocials3}><GitHubIcon /></a>
           </nav>
           <div className={styles.mobileMenuLanguage}>
-            <span>Language</span>
-            <div><FounderJapaneseLink>JP</FounderJapaneseLink><span>/</span><a href={englishPortfolioUrl} aria-current="page">EN</a></div>
+            <span>{menuCopy.mobileMenuLanguage}</span>
+            <div><FounderJapaneseLink>{menuCopy.mobileMenuLanguage2}</FounderJapaneseLink><span>{menuCopy.mobileMenuLanguage3}</span><a href={englishPortfolioUrl} aria-current="page">{menuCopy.mobileMenuLanguage4}</a></div>
           </div>
         </div>
       </div>

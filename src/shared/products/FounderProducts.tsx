@@ -1,5 +1,9 @@
 "use client";
 
+import { controls as jaControls, productCopy } from "../../content/ja";
+import { controls as enControls } from "../../content/en";
+
+import { COMPASS_ORIGIN } from "../../site";
 import { useState, type CSSProperties } from "react";
 import { ProductSculpture, type SculptureKind } from "./ProductSculpture";
 import sceneStyles from "./products-cinematic.module.css";
@@ -33,7 +37,7 @@ export function FounderProducts({ products, language = "ja" }: { products: reado
       <div className={styles.grid}>
         {products.map(product => {
           const [primary, ...secondary] = product.links;
-          const external = english || new URL(primary.href).origin !== "https://compass-official.pages.dev";
+          const external = english || new URL(primary.href).origin !== COMPASS_ORIGIN;
           return (
             <article key={product.key} className={`${sceneStyles.product} ${styles.product}`} data-product={product.key}>
               <div className={styles.stage}>
@@ -42,7 +46,7 @@ export function FounderProducts({ products, language = "ja" }: { products: reado
                     <div className={styles.still} data-scene={product.key}>
                       <img
                         src={!english && product.key === "cytellect" ? "/images/founder-products/cytellect/research-jp.png" : STILLS[product.key].src}
-                        alt={!english && product.key === "cytellect" ? "顕微鏡画像から論文の図へ。顕微鏡と解析結果のビジュアル" : english ? STILLS[product.key].en : STILLS[product.key].ja}
+                        alt={!english && product.key === "cytellect" ? jaControls.cytellectImageAlt : english ? STILLS[product.key].en : STILLS[product.key].ja}
                         width={!english && product.key === "cytellect" ? 2560 : STILLS[product.key].width} height={!english && product.key === "cytellect" ? 1280 : STILLS[product.key].height} loading="lazy" decoding="async"
                       />
                     </div>
@@ -52,12 +56,12 @@ export function FounderProducts({ products, language = "ja" }: { products: reado
                 <div className={styles.identity}><span className={styles.mark} aria-hidden="true" />{product.label}</div>
                 <h3 className={styles.title}>
                   {english && product.headline ? <><span>{product.headline[0]}</span><strong>{product.headline[1]}</strong></>
-                    : product.key === "interactive" ? <><span>LET EVERYTHING</span><strong>MOVE.</strong></>
-                    : product.key === "cytellect" ? <><span>Get your microscopy</span><strong>publication-ready.</strong></>
-                      : product.key === "topos" ? <><span>誰の考えも<wbr />埋もれない議論を、</span><strong>すべての教室に。</strong></>
-                      : product.key === "platform" ? <><span>Don’t Just Learn.</span><strong>Build What’s Next.</strong></>
-                      : english ? <><span>LIFE IN THE</span><strong>AGE OF AI.</strong></>
-                        : <><span>AI時代を</span><strong>どう生きるか。</strong></>}
+                    : product.key === "interactive" ? <><span>{productCopy.interactiveLead}</span><strong>{productCopy.interactiveEmphasis}</strong></>
+                    : product.key === "cytellect" ? <><span>{productCopy.cytellectLead}</span><strong>{productCopy.cytellectEmphasis}</strong></>
+                      : product.key === "topos" ? <><span>{productCopy.toposLead}<wbr />{productCopy.toposLeadContinuation}</span><strong>{productCopy.toposEmphasis}</strong></>
+                      : product.key === "platform" ? <><span>{productCopy.compassLead}</span><strong>{productCopy.compassEmphasis}</strong></>
+                      : english ? <><span>{productCopy.fallbackEnglishLead}</span><strong>{productCopy.fallbackEnglishEmphasis}</strong></>
+                        : <><span>{productCopy.fallbackJapaneseLead}</span><strong>{productCopy.fallbackJapaneseEmphasis}</strong></>}
                 </h3>
                 {product.recognition && product.recognition.length > 0 && (
                   <ul className={styles.recognition} aria-label={english ? `${product.label} recognition` : `${product.label}の実績`}>
@@ -76,16 +80,16 @@ export function FounderProducts({ products, language = "ja" }: { products: reado
               </div>
               {secondary.length > 0 && <nav className={styles.secondary} aria-label={english ? `${product.label} links` : `${product.label}へのリンク`}>
                 {secondary.map((link) => {
-                  const opensNew = english || new URL(link.href).origin !== "https://compass-official.pages.dev";
-                  return <a key={link.href} href={link.href} target={opensNew ? "_blank" : undefined} rel={opensNew ? "noopener noreferrer" : undefined}>{link.label}<span aria-hidden="true">↗</span></a>;
+                  const opensNew = english || new URL(link.href).origin !== COMPASS_ORIGIN;
+                  return <a key={link.href} href={link.href} target={opensNew ? "_blank" : undefined} rel={opensNew ? "noopener noreferrer" : undefined}>{link.label}<span aria-hidden="true">{productCopy.externalArrow}</span></a>;
                 })}
               </nav>}
             </article>
           );
         })}
       </div>
-      <button className={styles.motion} type="button" aria-pressed={paused} aria-label={english ? (paused ? "Resume 3D motion" : "Pause 3D motion") : (paused ? "3Dの自動モーションを再開" : "3Dの自動モーションを一時停止")} onClick={() => setPaused(!paused)}>
-        <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>{english ? (paused ? "Play" : "Pause") : (paused ? "再生" : "一時停止")}
+      <button className={styles.motion} type="button" aria-pressed={paused} aria-label={english ? (paused ? enControls.resumeProducts : enControls.pauseProducts) : (paused ? jaControls.resumeProducts : jaControls.pauseProducts)} onClick={() => setPaused(!paused)}>
+        <span aria-hidden="true">{paused ? jaControls.productPlaySymbol : jaControls.productPauseSymbol}</span>{english ? (paused ? enControls.productPlay : enControls.productPause) : (paused ? jaControls.productPlay : jaControls.productPause)}
       </button>
     </div>
   );

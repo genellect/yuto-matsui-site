@@ -1,7 +1,7 @@
 "use client";
 
+import { controls as enControls, statementParagraphs } from "../content/en";
 import { useState } from "react";
-import { statementParagraphs } from "../content/en";
 import styles from "./english-founder.module.css";
 
 export function EnglishStatement() {
@@ -29,8 +29,8 @@ export function EnglishStatement() {
         aria-controls="english-statement-continuation"
         onClick={() => setExpanded((current) => !current)}
       >
-        <span>{expanded ? "Close statement" : "Read the full statement"}</span>
-        <span aria-hidden="true">{expanded ? "−" : "+"}</span>
+        <span>{expanded ? enControls.closeStatement : enControls.readStatement}</span>
+        <span aria-hidden="true">{expanded ? enControls.collapseSymbol : enControls.expandSymbol}</span>
       </button>
     </div>
   );

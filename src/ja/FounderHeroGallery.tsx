@@ -1,34 +1,11 @@
 "use client";
 
+import { controls as jaControls, heroCopy, heroSlides as SLIDES } from "../content/ja";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { MobileHeroRibbons } from "./MobileHeroRibbons";
 import styles from "./founder.module.css";
 import { lakePortraitComposition } from "./hero-composition";
-
-const SLIDES = [
-  {
-    src: "/images/founder-portfolio/yuto-matsui-profile-hero.webp",
-    alt: "横顔のYuto Matsui / 松井優知",
-    location: "PORTRAIT / SIDE",
-    motion: "from-left",
-    focus: "natural"
-  },
-  {
-    src: "/images/founder-portfolio/yuto-matsui-nagano-lake-hero-centered-20260917.webp",
-    alt: "長野の湖と山々を背景に立つYuto Matsui / 松井優知",
-    location: "NAGANO / NATURE",
-    motion: "from-right",
-    focus: "face-centered"
-  },
-  {
-    src: "/images/founder-portfolio/yuto-matsui-city-night-hero-composition-20260928.webp",
-    alt: "冬のイルミネーションを背景に立つYuto Matsui / 松井優知",
-    location: "CITY / NIGHT",
-    motion: "night-focus",
-    focus: "face-centered"
-  }
-] as const;
 
 const INTERVAL_MS = 5200;
 
@@ -99,7 +76,7 @@ export function FounderHeroGallery() {
       className={styles.heroPhoto}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Yuto Matsui ポートレート"
+      aria-label={heroCopy.heroPhoto}
       data-paused={paused}
     >
       <div className={styles.photoFrame} aria-live="off">
@@ -130,7 +107,7 @@ export function FounderHeroGallery() {
       <MobileHeroRibbons paused={paused} />
 
       <div className={styles.photoControls}>
-        <div className={styles.photoDots} aria-label="表示する写真を選択">
+        <div className={styles.photoDots} aria-label={heroCopy.photoDots}>
           {SLIDES.map((slide, index) => (
             <button
               key={slide.src}
@@ -145,16 +122,16 @@ export function FounderHeroGallery() {
           ))}
         </div>
         <span className={styles.photoMeta} aria-hidden="true">
-          {String(activeIndex + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")} · {SLIDES[activeIndex].location}
+          {String(activeIndex + 1).padStart(2, "0")}{heroCopy.photoMeta}{String(SLIDES.length).padStart(2, "0")}{heroCopy.photoMeta2}{SLIDES[activeIndex].location}
         </span>
         <button
           type="button"
           className={styles.pauseButton}
-          aria-label={paused ? "写真の自動切替を再開" : "写真の自動切替を一時停止"}
+          aria-label={paused ? jaControls.resumePortraits : jaControls.pausePortraits}
           aria-pressed={paused}
           onClick={() => setPaused((current) => !current)}
         >
-          <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
+          <span aria-hidden="true">{paused ? jaControls.portraitPlaySymbol : jaControls.portraitPauseSymbol}</span>
         </button>
       </div>
     </div>

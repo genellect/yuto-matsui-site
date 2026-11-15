@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Manrope, Newsreader } from "next/font/google";
 import Script from "next/script";
 import type { ReactNode } from "react";
-import { COMPASS_PARENT_GA_MEASUREMENT_ID } from "../../../analytics";
+import { COMPASS_PARENT_GA_MEASUREMENT_ID, site } from "../../../site";
 import "../../../inherited/styles/experience.css";
 import "../../../en/english-founder-global.css";
 
@@ -19,7 +19,7 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://yuto-matsui.com"),
+  metadataBase: new URL(site.origin),
   icons: {
     icon: [{ url: "/images/compass-mark.svg?v=20260713", type: "image/svg+xml", sizes: "any" }]
   },

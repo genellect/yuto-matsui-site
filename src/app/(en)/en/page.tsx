@@ -1,3 +1,4 @@
+import { pageCopy } from "../../../content/en";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { FounderJapaneseLink } from "../../../shared/JapaneseLink";
@@ -88,7 +89,7 @@ const personSchema = {
 };
 
 function Arrow() {
-  return <span aria-hidden="true">↗</span>;
+  return <span aria-hidden="true">{pageCopy.externalArrow}</span>;
 }
 
 function ConvergenceField() {
@@ -136,22 +137,22 @@ function ConvergenceField() {
 export default function EnglishFounderPage() {
   return (
     <div className={styles.page} data-english-founder-page>
-      <a className={styles.skipLink} href="#main">Skip to content</a>
+      <a className={styles.skipLink} href="#main">{pageCopy.skipLink}</a>
 
       <header className={styles.siteHeader}>
-        <a className={styles.wordmark} href="#top" aria-label="Yuto Matsui portfolio home">
-          <strong>YUTO MATSUI</strong>
-          <span>Researcher &amp; Engineer</span>
+        <a className={styles.wordmark} href="#top" aria-label={pageCopy.wordmarkLabel}>
+          <strong>{pageCopy.wordmarkName}</strong>
+          <span>{pageCopy.wordmarkRole}</span>
         </a>
-        <nav className={styles.desktopNav} aria-label="Portfolio navigation">
-          <a href="#expertise">Expertise</a>
-          <a href="#experience">Experience</a>
-          <a href="#fragments">Fragments</a>
-          <a href="#statement">Statement</a>
-          <a href="#work">Work</a>
-          <a href="#contact">Contact</a>
-          <span className={styles.languageSwitch} aria-label="Language">
-            <FounderJapaneseLink>JP</FounderJapaneseLink><span>/</span><a href={canonicalUrl} aria-current="page">EN</a>
+        <nav className={styles.desktopNav} aria-label={pageCopy.navigationLabel}>
+          <a href="#expertise">{pageCopy.navExpertise}</a>
+          <a href="#experience">{pageCopy.navExperience}</a>
+          <a href="#fragments">{pageCopy.navFragments}</a>
+          <a href="#statement">{pageCopy.navStatement}</a>
+          <a href="#work">{pageCopy.navWork}</a>
+          <a href="#contact">{pageCopy.navContact}</a>
+          <span className={styles.languageSwitch} aria-label={pageCopy.languageSwitch}>
+            <FounderJapaneseLink>{pageCopy.languageSwitch2}</FounderJapaneseLink><span>{pageCopy.languageSwitch3}</span><a href={canonicalUrl} aria-current="page">{pageCopy.languageSwitch4}</a>
           </span>
         </nav>
         <EnglishMobileMenu />
@@ -161,15 +162,15 @@ export default function EnglishFounderPage() {
         <section id="top" className={styles.hero} aria-labelledby="english-founder-title" data-hero-interface data-hero-cycle="0">
           <ConvergenceField />
           <div className={styles.heroCopy}>
-            <p className={styles.heroRole}><span>Systems Engineer</span> · <span>Molecular Biology Research</span></p>
-            <h1 id="english-founder-title">Yuto Matsui</h1>
-            <p className={styles.heroThesis}>Advancing Science,<br />Transforming Education.</p>
-            <p className={styles.heroDomains}><span>Life Science Research</span> × <span>AI-Native Development</span></p>
-            <nav className={styles.heroSocialLinks} aria-label="Yuto Matsui social profiles">
-              <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+            <p className={styles.heroRole}><span>{pageCopy.heroRole}</span>{pageCopy.heroRole2}<span>{pageCopy.heroRole3}</span></p>
+            <h1 id="english-founder-title">{pageCopy.englishFounderTitle}</h1>
+            <p className={styles.heroThesis}>{pageCopy.heroThesis}<br />{pageCopy.heroThesis2}</p>
+            <p className={styles.heroDomains}><span>{pageCopy.heroDomains}</span>{pageCopy.heroDomains2}<span>{pageCopy.heroDomains3}</span></p>
+            <nav className={styles.heroSocialLinks} aria-label={pageCopy.heroSocialLinks}>
+              <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.heroSocialLinks2} title={pageCopy.heroSocialLinks2}>
                 <InstagramIcon />
               </a>
-              <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+              <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.heroSocialLinks3} title={pageCopy.heroSocialLinks3}>
                 <GitHubIcon />
               </a>
             </nav>
@@ -180,8 +181,8 @@ export default function EnglishFounderPage() {
         <section id="expertise" className={styles.expertise} aria-labelledby="expertise-title">
           <div className={styles.sectionShell}>
             <header className={styles.sectionHeading}>
-              <p className={styles.sectionIndex}>02 / Expertise</p>
-              <h2 id="expertise-title">Expertise</h2>
+              <p className={styles.sectionIndex}>{pageCopy.expertiseIndex}</p>
+              <h2 id="expertise-title">{pageCopy.expertiseTitle}</h2>
             </header>
             <div className={styles.expertiseGrid}>
               {expertise.map((item, index) => (
@@ -203,13 +204,13 @@ export default function EnglishFounderPage() {
         <section id="experience" className={styles.evidence} aria-labelledby="experience-title">
           <div className={styles.sectionShell}>
             <header className={styles.evidenceHeading}>
-              <div><p className={styles.sectionIndex}>03 / Experience &amp; Credentials</p><h2 id="experience-title">EXPERIENCE</h2></div>
-              <p>As of August 2026</p>
+              <div><p className={styles.sectionIndex}>{pageCopy.experienceIndex}</p><h2 id="experience-title">{pageCopy.experienceTitle}</h2></div>
+              <p>{pageCopy.evidenceHeading}</p>
             </header>
             <div className={styles.experienceGrid}>
               {experience.map((item) => (
                 <DepthCard key={item.area} depth="experience" editorial className={styles.experienceItem}>
-                  {item.area === "Development" ? <a className={styles.experienceLink} href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label="Development — Yuto Matsui’s GitHub profile (opens in a new tab)" /> : null}
+                  {item.area === "Development" ? <a className={styles.experienceLink} href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.experienceLink} /> : null}
                   <DepthVisual className={styles.experienceImage} data-depth-layer="image">
                     <Image decoding="sync" loading="eager" src={item.image} alt={item.alt} fill sizes="(min-width: 901px) 31vw, 92vw" />
                   </DepthVisual>
@@ -218,7 +219,7 @@ export default function EnglishFounderPage() {
                 </DepthCard>
               ))}
             </div>
-            <div className={styles.credentialsGrid} aria-label="English language credentials">
+            <div className={styles.credentialsGrid} aria-label={pageCopy.credentialsGrid}>
               {credentials.map((credential) => (
                 <article key={credential.name} className={styles.credentialItem}>
                   <span>{credential.mark}</span>
@@ -234,12 +235,12 @@ export default function EnglishFounderPage() {
         <section id="statement" className={styles.statement} aria-labelledby="statement-title">
           <div className={styles.statementShell}>
             <aside className={styles.statementIdentity}>
-              <p className={styles.sectionIndex}>05 / Personal Statement</p>
-              <h2 id="statement-title">Between Life Science and Engineering</h2>
+              <p className={styles.sectionIndex}>{pageCopy.statementIndex}</p>
+              <h2 id="statement-title">{pageCopy.statementTitle}</h2>
               <div className={styles.statementPortrait}>
                 <Image
                   src="/images/founder-portfolio/yuto-matsui-front.webp"
-                  alt="Yuto Matsui facing the camera"
+                  alt={pageCopy.statementPortrait}
                   fill
                   sizes="(min-width: 901px) 35vw, 92vw"
                 />
@@ -252,7 +253,7 @@ export default function EnglishFounderPage() {
         <section id="work" className={styles.work} aria-labelledby="work-title">
           <div className={styles.sectionShell}>
             <header className={styles.workHeading}>
-              <div><p className={styles.sectionIndex}>06 / Selected Work</p><h2 id="work-title">Selected Work</h2></div>
+              <div><p className={styles.sectionIndex}>{pageCopy.workIndex}</p><h2 id="work-title">{pageCopy.workTitle}</h2></div>
             </header>
 
             <FounderProducts products={products} language="en" />
@@ -262,8 +263,8 @@ export default function EnglishFounderPage() {
         <section id="off-hours" className={styles.offHours} aria-labelledby="off-hours-title">
           <div className={styles.sectionShell}>
             <header className={styles.offHoursHeading}>
-              <p className={styles.sectionIndex}>07 / Away from the desk</p>
-              <h2 id="off-hours-title">OFF HOURS</h2>
+              <p className={styles.sectionIndex}>{pageCopy.offHoursIndex}</p>
+              <h2 id="off-hours-title">{pageCopy.offHoursTitle}</h2>
             </header>
             <OffHoursGallery language="en"
               photos={offHours.map(item => ({ ...item, copy: [item.copy] }))}
@@ -275,19 +276,19 @@ export default function EnglishFounderPage() {
           <div className={styles.contactField} aria-hidden="true"><span /><span /><span /></div>
           <div className={styles.contactShell}>
             <div>
-              <p className={styles.sectionIndex}>08 / Contact</p>
-              <h2 id="contact-title">Get in touch.</h2>
+              <p className={styles.sectionIndex}>{pageCopy.contactIndex}</p>
+              <h2 id="contact-title">{pageCopy.contactTitle}</h2>
             </div>
             <div className={styles.contactCopy}>
               <div className={styles.contactIntroduction}>
-                <p>I’m always open to thoughtful conversations, collaborations, and new opportunities.</p>
-                <p>Feel free to reach out anytime. I’m happy to connect in English and available for Zoom or Google Meet conversations.</p>
-                <p>Please include your name, affiliation, and a brief introduction when contacting me.</p>
+                <p>{pageCopy.contactIntroduction}</p>
+                <p>{pageCopy.contactIntroduction2}</p>
+                <p>{pageCopy.contactIntroduction3}</p>
               </div>
-              <div className={styles.contactEmail} aria-label="Email contact details">
-                <p><strong>Yuto Matsui</strong><span>Researcher &amp; Engineer</span></p>
-                <p><span>Personal</span><span>contact@yuto-matsui.com</span></p>
-                <p><span>Univ.</span><span>matsui.yuto@st.kitasato-u.ac.jp</span></p>
+              <div className={styles.contactEmail} aria-label={pageCopy.emailDetailsLabel}>
+                <p><strong>{pageCopy.contactName}</strong><span>{pageCopy.contactRole}</span></p>
+                <p><span>{pageCopy.personalEmailLabel}</span><span>{pageCopy.personalEmail}</span></p>
+                <p><span>{pageCopy.universityEmailLabel}</span><span>{pageCopy.universityEmail}</span></p>
               </div>
             </div>
           </div>
@@ -296,41 +297,22 @@ export default function EnglishFounderPage() {
 
       <footer className={styles.footer}>
         <div className={styles.footerPrimary}>
-          <div><strong>Yuto Matsui</strong><span>Life Science Research · AI-Native Engineering · Higher Education</span></div>
-          <nav aria-label="Personal links">
-            <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer">Instagram <Arrow /></a>
-            <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer">GitHub <Arrow /></a>
-            <a href="#top">Back to top ↑</a>
+          <div><strong>{pageCopy.footerName}</strong><span>{pageCopy.footerRole}</span></div>
+          <nav aria-label={pageCopy.footerLinksLabel}>
+            <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer">{pageCopy.footerInstagram}<Arrow /></a>
+            <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer">{pageCopy.footerGitHub}<Arrow /></a>
+            <a href="#top">{pageCopy.backToTop}</a>
           </nav>
         </div>
-        <div className={styles.footerLanguageSwitch} aria-label="Language">
-          <span>Language</span>
-          <div><FounderJapaneseLink>JP</FounderJapaneseLink><a href={canonicalUrl} aria-current="page">EN</a></div>
+        <div className={styles.footerLanguageSwitch} aria-label={pageCopy.footerLanguageSwitch}>
+          <span>{pageCopy.footerLanguageSwitch}</span>
+          <div><FounderJapaneseLink>{pageCopy.footerLanguageSwitch2}</FounderJapaneseLink><a href={canonicalUrl} aria-current="page">{pageCopy.footerLanguageSwitch3}</a></div>
         </div>
         <details className={styles.credits}>
-          <summary>Image credits</summary>
-          <p>
-            Life science: <a href="https://unsplash.com/photos/white-and-black-microscope-5HbxyB0_DBg" target="_blank" rel="noopener noreferrer">Jaron Nix / Unsplash</a> ·
-            Software development: <a href="https://unsplash.com/photos/code-appears-on-a-computer-screen-XG5q_aosoPo" target="_blank" rel="noopener noreferrer">Rob Wingate / Unsplash</a> ·
-            Education portrait: Yuto Matsui / personal archive ·
-            Experience — Life science: Yuto Matsui / personal archive ·
-            Experience — Development: <a href="https://www.pexels.com/photo/monitor-displaying-lines-of-code-6424583/" target="_blank" rel="noopener noreferrer">Nemuel Sereti / Pexels</a> ·
-            Experience — Education: <a href="https://unsplash.com/photos/empty-lecture-hall-with-tiered-seating-and-projector-screen-L5GTAFIeKNA" target="_blank" rel="noopener noreferrer">Fabio Sasso / Unsplash</a> ·
-            Manifesto visual: COMPASS visual archive ·
-            Drive: <a href="https://unsplash.com/photos/a-car-drives-along-a-scenic-mountain-road-e6XJTEz5SfA" target="_blank" rel="noopener noreferrer">Zixplore / Unsplash</a> ·
-            Shogi: <a href="https://commons.wikimedia.org/wiki/File:Hulic_Shogi-kaikan_Sendagaya_Building_entrance_2024-09-12.jpg" target="_blank" rel="noopener noreferrer">Asanagi / Wikimedia Commons (CC0)</a> ·
-            FRAGMENTS — DNA automation: <a href="https://unsplash.com/photos/gray-laboratory-machine-to8o0bqOA6Q" target="_blank" rel="noopener noreferrer">National Cancer Institute / Unsplash</a> ·
-            Microscopy: <a href="https://unsplash.com/photos/white-and-black-microscope-on-white-surface-JdtUKqGdqw8" target="_blank" rel="noopener noreferrer">Pawel Czerwinski / Unsplash</a> ·
-            Pipetting: <a href="https://unsplash.com/photos/person-using-pipette-in-laboratory-wDxFn_dBEC0" target="_blank" rel="noopener noreferrer">CDC / Unsplash</a> ·
-            Code and terminal: <a href="https://unsplash.com/photos/computer-screen-displaying-code-and-terminal-prompts-N4pwMINNNL8" target="_blank" rel="noopener noreferrer">Bernd Dittrich / Unsplash</a> ·
-            Development analysis: <a href="https://unsplash.com/photos/laptop-screen-displaying-code-and-data-charts-GQOylIn892U" target="_blank" rel="noopener noreferrer">Daniil Komov / Unsplash</a> ·
-            Servers: <a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener noreferrer">Kevin Ache / Unsplash</a> ·
-            Microfluidic devices: <a href="https://www.oist.jp/image/photograph-microfluidic-devices-microbionanofluidics-unit" target="_blank" rel="noopener noreferrer">OIST / CC BY 4.0</a> ·
-            Silicon wafer: <a href="https://www.oist.jp/image/silicon-wafer-deposition-chamber-oist-engineering-section" target="_blank" rel="noopener noreferrer">OIST / CC BY 4.0</a> ·
-            Personal portraits, FRAGMENTS &amp; climbing: Yuto Matsui / personal archive
-          </p>
+          <summary>{pageCopy.credits}</summary>
+          <p>{pageCopy.creditsLifeScience}<a href="https://unsplash.com/photos/white-and-black-microscope-5HbxyB0_DBg" target="_blank" rel="noopener noreferrer">{pageCopy.creditJaronNix}</a>{pageCopy.creditsSoftware}<a href="https://unsplash.com/photos/code-appears-on-a-computer-screen-XG5q_aosoPo" target="_blank" rel="noopener noreferrer">{pageCopy.creditRobWingate}</a>{pageCopy.creditsPersonalAndDevelopment}<a href="https://www.pexels.com/photo/monitor-displaying-lines-of-code-6424583/" target="_blank" rel="noopener noreferrer">{pageCopy.creditNemuelSereti}</a>{pageCopy.creditsEducation}<a href="https://unsplash.com/photos/empty-lecture-hall-with-tiered-seating-and-projector-screen-L5GTAFIeKNA" target="_blank" rel="noopener noreferrer">{pageCopy.creditFabioSasso}</a>{pageCopy.creditsManifestoAndDrive}<a href="https://unsplash.com/photos/a-car-drives-along-a-scenic-mountain-road-e6XJTEz5SfA" target="_blank" rel="noopener noreferrer">{pageCopy.creditZixplore}</a>{pageCopy.creditsShogi}<a href="https://commons.wikimedia.org/wiki/File:Hulic_Shogi-kaikan_Sendagaya_Building_entrance_2024-09-12.jpg" target="_blank" rel="noopener noreferrer">{pageCopy.creditAsanagi}</a>{pageCopy.creditsDna}<a href="https://unsplash.com/photos/gray-laboratory-machine-to8o0bqOA6Q" target="_blank" rel="noopener noreferrer">{pageCopy.creditNci}</a>{pageCopy.creditsMicroscopy}<a href="https://unsplash.com/photos/white-and-black-microscope-on-white-surface-JdtUKqGdqw8" target="_blank" rel="noopener noreferrer">{pageCopy.creditPawel}</a>{pageCopy.creditsPipetting}<a href="https://unsplash.com/photos/person-using-pipette-in-laboratory-wDxFn_dBEC0" target="_blank" rel="noopener noreferrer">{pageCopy.creditCdc}</a>{pageCopy.creditsTerminal}<a href="https://unsplash.com/photos/computer-screen-displaying-code-and-terminal-prompts-N4pwMINNNL8" target="_blank" rel="noopener noreferrer">{pageCopy.creditBernd}</a>{pageCopy.creditsAnalysis}<a href="https://unsplash.com/photos/laptop-screen-displaying-code-and-data-charts-GQOylIn892U" target="_blank" rel="noopener noreferrer">{pageCopy.creditDaniil}</a>{pageCopy.creditsServers}<a href="https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0" target="_blank" rel="noopener noreferrer">{pageCopy.creditKevin}</a>{pageCopy.creditsMicrofluidics}<a href="https://www.oist.jp/image/photograph-microfluidic-devices-microbionanofluidics-unit" target="_blank" rel="noopener noreferrer">{pageCopy.creditOist}</a>{pageCopy.creditsWafer}<a href="https://www.oist.jp/image/silicon-wafer-deposition-chamber-oist-engineering-section" target="_blank" rel="noopener noreferrer">{pageCopy.creditOist}</a>{pageCopy.creditsPersonal}</p>
         </details>
-        <p className={styles.copyright}>© 2026 Yuto Matsui. Designed and developed by Yuto Matsui. All rights reserved.</p>
+        <p className={styles.copyright}>{pageCopy.copyright}</p>
       </footer>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />

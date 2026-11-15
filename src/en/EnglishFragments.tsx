@@ -1,10 +1,10 @@
 "use client";
 
+import { fragmentCopy, fragmentPhotos, type FragmentPhoto } from "../content/en";
 import Image from "next/image";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { FragmentFilm, FragmentFilmAtmosphere } from "../shared/fragment-film/FragmentFilm";
 import { MobileFragmentFilm } from "../shared/fragment-film/MobileFragmentFilm";
-import { fragmentPhotos, type FragmentPhoto } from "../content/en";
 import styles from "./english-founder.module.css";
 
 const resumeDelayMs = 4_000;
@@ -154,13 +154,13 @@ export function EnglishFragments() {
       <div className={styles.sectionShell}>
         <header className={styles.fragmentsHeading}>
           <div>
-            <p className={styles.sectionIndex}>04 / Archive</p>
-            <h2 id="fragments-title">FRAGMENTS</h2>
+            <p className={styles.sectionIndex}>{fragmentCopy.sectionIndex}</p>
+            <h2 id="fragments-title">{fragmentCopy.fragmentsTitle}</h2>
           </div>
-          <p>Research, systems, cities, and the quiet moments between them.</p>
-          <div className={styles.fragmentViewSwitch} role="group" aria-label="FRAGMENTS presentation">
-            <button type="button" aria-pressed={view === "3d"} aria-controls="english-fragment-film english-fragment-mobile-film" onClick={() => changeView("3d")}>3D</button>
-            <button type="button" aria-pressed={view === "original"} aria-controls="english-fragment-original" onClick={() => changeView("original")}>Original</button>
+          <p>{fragmentCopy.fragmentsHeading}</p>
+          <div className={styles.fragmentViewSwitch} role="group" aria-label={fragmentCopy.presentationLabel}>
+            <button type="button" aria-pressed={view === "3d"} aria-controls="english-fragment-film english-fragment-mobile-film" onClick={() => changeView("3d")}>{fragmentCopy.threeDimensionalView}</button>
+            <button type="button" aria-pressed={view === "original"} aria-controls="english-fragment-original" onClick={() => changeView("original")}>{fragmentCopy.originalView}</button>
           </div>
         </header>
 
@@ -176,7 +176,7 @@ export function EnglishFragments() {
           id="english-fragment-original"
           role="region"
           tabIndex={0}
-          aria-label="Scrollable photo archive"
+          aria-label={fragmentCopy.englishFragmentOriginal}
           onPointerDown={startDrag}
           onPointerMove={moveDrag}
           onPointerUp={endDrag}
