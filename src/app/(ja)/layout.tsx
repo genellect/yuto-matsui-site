@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import type { ReactNode } from "react";
-import { COMPASS_PARENT_GA_MEASUREMENT_ID } from "../../analytics";
+import { COMPASS_PARENT_GA_MEASUREMENT_ID, site } from "../../site";
 import "../../inherited/styles/legacy.css";
 import "../../inherited/styles/hero.css";
 import "../../inherited/styles/desktop-system.css";
@@ -13,7 +13,7 @@ import "../../inherited/styles/living-intelligence-hero.css";
 import "../../inherited/styles/github-profile-link.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://compass-official.pages.dev"),
+  metadataBase: new URL(site.compassOrigin),
   title: "COMPASS | 学生主導の教育・テクノロジープラットフォーム",
   description:
     "COMPASSは、北里大学薬学部を起点に、WebシステムとAIを中核として、資料、ワークショップ、学生との共創をつなぎ、学びとより良い意思決定を支える学生主導型の教育・テクノロジープラットフォームです。",

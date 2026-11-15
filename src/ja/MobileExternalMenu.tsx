@@ -1,5 +1,6 @@
 "use client";
 
+import { menuCopy } from "../content/ja";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -41,7 +42,7 @@ export function MobileExternalMenu({ children, className }: MobileExternalMenuPr
       <button
         ref={triggerRef}
         type="button"
-        aria-label="外部リンクを表示"
+        aria-label={menuCopy.label}
         aria-expanded={open}
         aria-haspopup="true"
         onClick={() => setOpen((current) => !current)}

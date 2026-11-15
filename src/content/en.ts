@@ -1,5 +1,6 @@
-export const founderOrigin = "https://yuto-matsui.com";
-export const compassOrigin = "https://compass-official.pages.dev";
+import { site } from "../site";
+export const founderOrigin = site.origin;
+export const compassOrigin = site.compassOrigin;
 
 export const heroSlides = [
   {
@@ -188,3 +189,178 @@ export const fragmentPhotos: readonly FragmentPhoto[] = [
   { key: "yuto-699", src: `${fragmentRoot}/yuto-699-1044.webp`, width: 1044, height: 1566, alt: "Yuto Matsui seated within curved architectural forms", tone: "warm" },
   { key: "yuto-704", src: `${fragmentRoot}/yuto-704-1372.webp`, width: 1372, height: 1192, alt: "A quiet profile of Yuto Matsui in front of pine branches" }
 ];
+
+// Rendered text from src/app/(en)/en/page.tsx; JSX structure stays in the component.
+export const pageCopy = {
+  "externalArrow": "↗",
+  "skipLink": "Skip to content",
+  "wordmarkLabel": "Yuto Matsui portfolio home",
+  "wordmarkName": "YUTO MATSUI",
+  "wordmarkRole": "Researcher & Engineer",
+  "navigationLabel": "Portfolio navigation",
+  "navExpertise": "Expertise",
+  "navExperience": "Experience",
+  "navFragments": "Fragments",
+  "navStatement": "Statement",
+  "navWork": "Work",
+  "navContact": "Contact",
+  "languageSwitch": "Language",
+  "languageSwitch2": "JP",
+  "languageSwitch3": "/",
+  "languageSwitch4": "EN",
+  "heroRole": "Systems Engineer",
+  "heroRole2": " · ",
+  "heroRole3": "Molecular Biology Research",
+  "englishFounderTitle": "Yuto Matsui",
+  "heroThesis": "Advancing Science,",
+  "heroThesis2": "Transforming Education.",
+  "heroDomains": "Life Science Research",
+  "heroDomains2": " × ",
+  "heroDomains3": "AI-Native Development",
+  "heroSocialLinks": "Yuto Matsui social profiles",
+  "heroSocialLinks2": "Instagram",
+  "heroSocialLinks3": "GitHub",
+  "expertiseIndex": "02 / Expertise",
+  "expertiseTitle": "Expertise",
+  "experienceIndex": "03 / Experience & Credentials",
+  "experienceTitle": "EXPERIENCE",
+  "evidenceHeading": "As of August 2026",
+  "experienceLink": "Development — Yuto Matsui’s GitHub profile (opens in a new tab)",
+  "credentialsGrid": "English language credentials",
+  "statementIndex": "05 / Personal Statement",
+  "statementTitle": "Between Life Science and Engineering",
+  "statementPortrait": "Yuto Matsui facing the camera",
+  "workIndex": "06 / Selected Work",
+  "workTitle": "Selected Work",
+  "offHoursIndex": "07 / Away from the desk",
+  "offHoursTitle": "OFF HOURS",
+  "contactIndex": "08 / Contact",
+  "contactTitle": "Get in touch.",
+  "contactIntroduction": "I’m always open to thoughtful conversations, collaborations, and new opportunities.",
+  "contactIntroduction2": "Feel free to reach out anytime. I’m happy to connect in English and available for Zoom or Google Meet conversations.",
+  "contactIntroduction3": "Please include your name, affiliation, and a brief introduction when contacting me.",
+  "emailDetailsLabel": "Email contact details",
+  "contactName": "Yuto Matsui",
+  "contactRole": "Researcher & Engineer",
+  "personalEmailLabel": "Personal",
+  "personalEmail": "contact@yuto-matsui.com",
+  "universityEmailLabel": "Univ.",
+  "universityEmail": "matsui.yuto@st.kitasato-u.ac.jp",
+  "footerName": "Yuto Matsui",
+  "footerRole": "Life Science Research · AI-Native Engineering · Higher Education",
+  "footerLinksLabel": "Personal links",
+  "footerInstagram": "Instagram ",
+  "footerGitHub": "GitHub ",
+  "backToTop": "Back to top ↑",
+  "footerLanguageSwitch": "Language",
+  "footerLanguageSwitch2": "JP",
+  "footerLanguageSwitch3": "EN",
+  "credits": "Image credits",
+  "creditsLifeScience": "Life science: ",
+  "creditJaronNix": "Jaron Nix / Unsplash",
+  "creditsSoftware": " · Software development: ",
+  "creditRobWingate": "Rob Wingate / Unsplash",
+  "creditsPersonalAndDevelopment": " · Education portrait: Yuto Matsui / personal archive · Experience — Life science: Yuto Matsui / personal archive · Experience — Development: ",
+  "creditNemuelSereti": "Nemuel Sereti / Pexels",
+  "creditsEducation": " · Experience — Education: ",
+  "creditFabioSasso": "Fabio Sasso / Unsplash",
+  "creditsManifestoAndDrive": " · Manifesto visual: COMPASS visual archive · Drive: ",
+  "creditZixplore": "Zixplore / Unsplash",
+  "creditsShogi": " · Shogi: ",
+  "creditAsanagi": "Asanagi / Wikimedia Commons (CC0)",
+  "creditsDna": " · FRAGMENTS — DNA automation: ",
+  "creditNci": "National Cancer Institute / Unsplash",
+  "creditsMicroscopy": " · Microscopy: ",
+  "creditPawel": "Pawel Czerwinski / Unsplash",
+  "creditsPipetting": " · Pipetting: ",
+  "creditCdc": "CDC / Unsplash",
+  "creditsTerminal": " · Code and terminal: ",
+  "creditBernd": "Bernd Dittrich / Unsplash",
+  "creditsAnalysis": " · Development analysis: ",
+  "creditDaniil": "Daniil Komov / Unsplash",
+  "creditsServers": " · Servers: ",
+  "creditKevin": "Kevin Ache / Unsplash",
+  "creditsMicrofluidics": " · Microfluidic devices: ",
+  "creditOist": "OIST / CC BY 4.0",
+  "creditsWafer": " · Silicon wafer: ",
+  "creditsPersonal": " · Personal portraits, FRAGMENTS & climbing: Yuto Matsui / personal archive",
+  "copyright": "© 2026 Yuto Matsui. Designed and developed by Yuto Matsui. All rights reserved."
+} as const;
+
+// Rendered text from src/en/EnglishFragments.tsx; JSX structure stays in the component.
+export const fragmentCopy = {
+  "sectionIndex": "04 / Archive",
+  "fragmentsTitle": "FRAGMENTS",
+  "fragmentsHeading": "Research, systems, cities, and the quiet moments between them.",
+  "presentationLabel": "FRAGMENTS presentation",
+  "threeDimensionalView": "3D",
+  "originalView": "Original",
+  "englishFragmentOriginal": "Scrollable photo archive"
+} as const;
+
+// Rendered text from src/en/EnglishHeroGallery.tsx; JSX structure stays in the component.
+export const heroCopy = {
+  "heroGallery": "Portraits of Yuto Matsui",
+  "heroProgress": "Select a portrait",
+  "heroGalleryMeta": " / ",
+  "heroGalleryMeta2": " · ",
+  "heroCoordinates": "35.68° N  139.76° E  2026 / TOKYO"
+} as const;
+
+// Rendered text from src/en/EnglishMobileMenu.tsx; JSX structure stays in the component.
+export const menuCopy = {
+  "mobileHeaderLanguage": "Language",
+  "mobileHeaderLanguage2": "JP",
+  "mobileHeaderLanguage3": "/",
+  "mobileHeaderLanguage4": "EN",
+  "mobileMenuHeader": "YUTO MATSUI",
+  "mobileMenuHeader2": "Close navigation",
+  "mobileMenuHeader3": "Close",
+  "mobileMenuLinks": "Mobile portfolio navigation",
+  "mobileMenuSocials": "Social profiles",
+  "mobileMenuSocials2": "Instagram",
+  "mobileMenuSocials3": "GitHub",
+  "mobileMenuLanguage": "Language",
+  "mobileMenuLanguage2": "JP",
+  "mobileMenuLanguage3": "/",
+  "mobileMenuLanguage4": "EN"
+} as const;
+
+// Dynamic control labels; state and element structure remain in the components.
+export const controls = {
+  "resumePortraits": "Resume automatic portrait changes",
+  "pausePortraits": "Pause automatic portrait changes",
+  "portraitPlay": "Play",
+  "portraitPause": "Pause",
+  "closeMenu": "Close navigation",
+  "openMenu": "Open navigation",
+  "closeStatement": "Close statement",
+  "readStatement": "Read the full statement",
+  "collapseSymbol": "−",
+  "expandSymbol": "+",
+  "resumeProducts": "Resume 3D motion",
+  "pauseProducts": "Pause 3D motion",
+  "productPlay": "Play",
+  "productPause": "Pause",
+  "filmDescription": "Curved photographic film. Use the arrow keys, drag, or scroll horizontally to move.",
+  "filmArchiveLabel": "FRAGMENTS photo archive",
+  "filmPrevious": "Previous image",
+  "filmResume": "Resume automatic film movement",
+  "filmPause": "Pause automatic film movement",
+  "filmNext": "Next image",
+  "mobileFilmDescription": "Photographic film. Drag horizontally or use the arrow keys.",
+  "mobileFilmPrevious": "Previous image",
+  "mobileFilmResume": "Resume automatic film movement",
+  "mobileFilmPause": "Pause automatic film movement",
+  "mobileFilmNext": "Next image"
+} as const;
+
+export const mobileLinks = [
+  { label: "Expertise", href: "#expertise" },
+  { label: "Experience", href: "#experience" },
+  { label: "Fragments", href: "#fragments" },
+  { label: "Statement", href: "#statement" },
+  { label: "Selected Work", href: "#work" },
+  { label: "Off Hours", href: "#off-hours" },
+  { label: "Contact", href: "#contact" }
+] as const;

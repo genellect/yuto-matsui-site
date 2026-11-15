@@ -1,4 +1,6 @@
 "use client";
+import { controls as enControls } from "../../content/en";
+import { controls as jaControls } from "../../content/ja";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { FilmController, FilmPhoto } from "./fragment-film-engine";
@@ -45,14 +47,14 @@ export function FragmentFilm({ photos, active, language = "ja" }: { photos: read
   }, [active, fallback, photos]);
   const english = language === "en";
   return <div className={css.film} data-fragment-film data-ready={ready} data-language={language}>
-    <div ref={host} className={css.viewport} tabIndex={ready ? 0 : -1} role="group" aria-label={english ? "Curved photographic film. Use the arrow keys, drag, or scroll horizontally to move." : "湾曲した写真フィルム。左右キー、ドラッグ、横スクロールで移動"} />
-    <div className={css.fallback} tabIndex={ready ? -1 : 0} aria-label={english ? "FRAGMENTS photo archive" : "FRAGMENTSの写真一覧"}>
+    <div ref={host} className={css.viewport} tabIndex={ready ? 0 : -1} role="group" aria-label={english ? enControls.filmDescription : jaControls.filmDescription} />
+    <div className={css.fallback} tabIndex={ready ? -1 : 0} aria-label={english ? enControls.filmArchiveLabel : jaControls.filmArchiveLabel}>
       {photos.map(photo => <Image key={photo.key} src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" draggable={false} />)}
     </div>
     {ready && <div className={css.controls}>
-      <button type="button" onClick={() => controller.current?.step(-1)} aria-label={english ? "Previous image" : "前の写真"}>←</button>
-      <button type="button" aria-pressed={paused} onClick={() => setPaused(!paused)} aria-label={english ? (paused ? "Resume automatic film movement" : "Pause automatic film movement") : (paused ? "写真フィルムの自動送りを再開" : "写真フィルムの自動送りを一時停止")}>{paused ? "Play" : "Pause"}</button>
-      <button type="button" onClick={() => controller.current?.step(1)} aria-label={english ? "Next image" : "次の写真"}>→</button>
+      <button type="button" onClick={() => controller.current?.step(-1)} aria-label={english ? enControls.filmPrevious : jaControls.filmPrevious}>←</button>
+      <button type="button" aria-pressed={paused} onClick={() => setPaused(!paused)} aria-label={english ? (paused ? enControls.filmResume : enControls.filmPause) : (paused ? jaControls.filmResume : jaControls.filmPause)}>{paused ? jaControls.filmPlayLabel : jaControls.filmPauseLabel}</button>
+      <button type="button" onClick={() => controller.current?.step(1)} aria-label={english ? enControls.filmNext : jaControls.filmNext}>→</button>
     </div>}
   </div>;
 }
