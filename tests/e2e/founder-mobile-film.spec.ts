@@ -9,13 +9,17 @@ test("JP lake portrait: measured composition at desktop and iPhone sizes", async
     await page.setViewportSize({width,height});
     const crop=page.locator('[data-composition="lake-portrait"] img');
     await expect.poll(async()=>crop.evaluate(el=>el.getBoundingClientRect().width)).toBeGreaterThan(width/2);
-    const geometry=await crop.evaluate((el,a)=>{
+    const measure=()=>crop.evaluate((el,a)=>{
       const image=el.getBoundingClientRect(),frame=el.closest("figure")!.getBoundingClientRect();
       const scale=image.width/a.sourceWidth;
       return { nose:(image.x+a.noseX*scale-frame.x)/frame.width,head:(image.y+a.headY*scale-frame.y)/frame.height,
         hands:(image.y+a.handsY*scale-frame.y)/frame.height,left:(image.x+a.leftElbowX*scale-frame.x)/frame.width,right:(image.x+a.rightElbowX*scale-frame.x)/frame.width,
         uncovered:image.x>frame.x+.5||image.y>frame.y+.5||image.right<frame.right-.5||image.bottom<frame.bottom-.5};
     },anchors);
+    // setViewportSize finishes before the component's ResizeObserver composition.
+    // Wait for the actual anchors, not an image width that may belong to the old size.
+    await expect.poll(measure).toMatchObject({nose:expect.closeTo(.5,2),head:expect.closeTo(.2,2)});
+    const geometry=await measure();
     expect(geometry.nose).toBeCloseTo(.5,2); expect(geometry.head).toBeCloseTo(.2,2);
     expect(geometry.hands).toBeLessThan(.9); expect(geometry.left).toBeGreaterThanOrEqual(.059);expect(geometry.right).toBeLessThanOrEqual(.941);
     expect(geometry.uncovered).toBe(false);
@@ -92,7 +96,11 @@ test.describe('iPhone-sized touch gestures',()=>{
   test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   test('horizontal drag keeps its position and vertical touch scroll remains native',async({page,context},info)=>{
     await page.goto('/');const section=page.locator('#fragments');await section.scrollIntoViewIfNeeded();
-    const film=section.locator('[data-mobile-fragment-film]');await expect(film).toHaveAttribute('data-ready','true');
+    const film=section.locator('[data-mobile-fragment-film]');
+    // Await the lazy engine and its CDN texture requests before timing the ready state.
+    await film.locator('canvas').waitFor({state:'attached'});
+    await page.waitForLoadState('networkidle');
+    await expect(film).toHaveAttribute('data-ready','true');
     const viewport=film.locator('[role="group"]');const bounds=await viewport.boundingBox();expect(bounds).not.toBeNull();
     await film.getByRole('button',{name:'写真フィルムの自動送りを一時停止',exact:true}).click();
     const y=bounds!.y+bounds!.height*.55;
