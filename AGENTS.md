@@ -10,5 +10,5 @@
 - 継承CSSの内容・順序と初期化scriptの条件は保持する。画像を元repositoryから削除しない。
 - secret・個人データを保存しない。ブラウザーテストから解析送信、フォーム送信、実メールを行わない。
 - 実装依頼には専用branchへのcommit/push、Draft PR、非本番Previewと確認を含む。
-- 本番merge・deploy、既存project設定、独自ドメイン、DNS、redirect変更は別途明示指示が必要。今回の依頼では本番変更は禁止。
+- 本番merge・deploy、既存project設定、独自ドメイン、DNS、redirect変更はユーザーの指示範囲で行う。2026-11-15の移行では本番切替とCD整備が明示的に承認された。
 - 事実として確認した範囲を報告し、local・CI・Previewと本番の確認を区別する。

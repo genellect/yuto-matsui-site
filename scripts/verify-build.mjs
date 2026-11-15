@@ -21,3 +21,7 @@ for(const route of ['index.html','en/index.html']){
 for(const path of ['functions','out/_worker.js','out/_routes.json']){let exists=false;try{await stat(path);exists=true;}catch{}assert(!exists,`${path}: standalone static export must not include Functions`);}
 for(const path of ['robots.txt','sitemap.xml','1692e67b895d46c0b6124bd047f73fcd.txt','_headers'])await stat('out/'+path);
 console.log(`Verified two routes, ${references} literal image references, exported assets, and static-only boundary. Runtime-composed paths are checked by network E2E.`);
+
+const deliveryHeaders=await readFile('out/_headers','utf8');
+assert(/X-Portfolio-Commit: [a-f0-9]{40}/.test(deliveryHeaders),'deployment identity header');
+for(const [source,target]of [['index.html','founder/index.html'],['robots.txt','founder-robots.txt'],['sitemap.xml','founder-sitemap.xml']])assert((await readFile('out/'+source)).equals(await readFile('out/'+target)),'cutover compatibility: '+target);

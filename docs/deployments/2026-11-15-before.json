@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-11-15",
+  "oldProject": "compass-official",
+  "oldDeployment": "ffdc871a-31b8-4e4a-943f-8ddeb7110caf",
+  "oldCommit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+  "newProject": "yuto-matsui-site",
+  "newMain": "a4ae1a1a417c2bc0c7cc33d2b02453cb5a82a4dc",
+  "dns": [
+    {
+      "type": "CNAME",
+      "name": "yuto-matsui.com",
+      "content": "compass-official.pages.dev",
+      "proxied": true,
+      "ttl": "Auto"
+    },
+    {
+      "type": "CNAME",
+      "name": "www.yuto-matsui.com",
+      "content": "yuto-matsui.com",
+      "proxied": true,
+      "ttl": "Auto"
+    }
+  ],
+  "domainStatus": "Verifying",
+  "returnRule": {
+    "id": "bfe5befe0f2b408bbb0d3b19b6811361",
+    "expression": "(http.host eq \"yuto-matsui.com\" and http.request.uri.path ne \"/\" and http.request.uri.path ne \"/robots.txt\" and http.request.uri.path ne \"/sitemap.xml\" and http.request.uri.path ne \"/1692e67b895d46c0b6124bd047f73fcd.txt\" and not starts_with(http.request.uri.path, \"/_next/\") and not starts_with(http.request.uri.path, \"/images/\") and not starts_with(http.request.uri.path, \"/cdn-cgi/\") and not starts_with(http.request.uri.path, \"/founder\") and not starts_with(http.request.uri.path, \"/en\"))",
+    "destination": "concat(\"https://compass-official.pages.dev\", http.request.uri.path)",
+    "status": 301,
+    "preserveQuery": true
+  },
+  "rewriteRules": [
+    {
+      "id": "2eb5508584224667897c5c3be3e27993",
+      "path": "/",
+      "target": "/founder/",
+      "enabled": true
+    },
+    {
+      "id": "4a8e2946d4f54ecea429be78c9b1d211",
+      "path": "/robots.txt",
+      "target": "/founder-robots.txt",
+      "enabled": true
+    },
+    {
+      "id": "0d8532d14d4c41f19b414530e0c64565",
+      "path": "/sitemap.xml",
+      "target": "/founder-sitemap.xml",
+      "enabled": true
+    }
+  ]
+}

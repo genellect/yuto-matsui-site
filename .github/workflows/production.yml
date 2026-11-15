@@ -1,0 +1,30 @@
+name: Production verification
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: production-verification
+  cancel-in-progress: true
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Verify deployed commit and HTTP contracts
+        env:
+          PRODUCTION_ORIGIN: ${{ vars.PRODUCTION_ORIGIN || 'https://yuto-matsui-site.pages.dev' }}
+          EXPECTED_COMMIT: ${{ github.sha }}
+        run: node scripts/check-deployment.mjs "$PRODUCTION_ORIGIN" "$EXPECTED_COMMIT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-evidence
+          path: comparison-results/
+          retention-days: 30
