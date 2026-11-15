@@ -1,3 +1,4 @@
+import { LinkerUrlCleanup, linkerReadyAfterAnalytics } from "../../shared/analytics/LinkerUrlCleanup";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import type { ReactNode } from "react";
@@ -62,6 +63,7 @@ export default function OfficialLayout({ children }: Readonly<{ children: ReactN
   return (
     <html lang="ja" suppressHydrationWarning>
       <head>
+        <LinkerUrlCleanup />
         <script dangerouslySetInnerHTML={{ __html: 'document.documentElement.classList.add("js")' }} />
       </head>
       <body>
@@ -74,7 +76,8 @@ export default function OfficialLayout({ children }: Readonly<{ children: ReactN
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${COMPASS_PARENT_GA_MEASUREMENT_ID}');`}
+gtag('config', '${COMPASS_PARENT_GA_MEASUREMENT_ID}');
+${linkerReadyAfterAnalytics(COMPASS_PARENT_GA_MEASUREMENT_ID)}`}
         </Script>
       </body>
     </html>

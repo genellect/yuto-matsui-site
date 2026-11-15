@@ -68,7 +68,7 @@ for(const path of ['/','/en/']) for(const [width,height] of matrix) {
    function norm(s){return s.replaceAll(origin,'https://yuto-matsui.com').replaceAll('/habitat/night-v1/top.webp','/images/founder-products/compass/top.webp').replace(/\b([\w-]+?_[\w-]+?)__[\w-]+/g,'$1__HASH').replace(/__(Manrope|Newsreader)(?:_Fallback)?_[a-zA-Z0-9]+/g,m=>m.replace(/_[a-zA-Z0-9]+$/,'_HASH'));}
    const skip=e=>e.tagName==='SCRIPT'&&(!e.type||e.type!=='application/ld+json') || e.tagName==='LINK'&&['stylesheet','preload','modulepreload'].includes(e.rel) || e.tagName==='STYLE';
    const elements=[...document.querySelectorAll('*')].filter(e=>!skip(e)&&!e.closest('script,style')&&!e.closest('canvas'));
-   const dom=elements.map(e=>({tag:e.tagName,attributes:Object.fromEntries([...e.attributes].filter(a=>a.name!=='style'||e.style.cssText).sort((a,b)=>a.name.localeCompare(b.name)).map(a=>[a.name,norm(a.name==='style'?e.style.cssText:a.value)])),text:[...e.childNodes].filter(n=>n.nodeType===Node.TEXT_NODE).map(n=>n.textContent).filter(t=>!(t.includes('\n')&&!t.trim()))}));
+   const dom=elements.map(e=>({tag:e.tagName,attributes:Object.fromEntries([...e.attributes].filter(a=>a.name!=='style'||e.style.cssText).sort((a,b)=>a.name.localeCompare(b.name)).map(a=>[a.name,norm(a.name==='style'?e.style.cssText:a.name==='href'&&a.value==='/en/'?'https://yuto-matsui.com/en/':a.value)])),text:[...e.childNodes].filter(n=>n.nodeType===Node.TEXT_NODE).map(n=>n.textContent).filter(t=>!(t.includes('\n')&&!t.trim()))}));
    const styles=elements.filter(e=>e instanceof HTMLElement||e instanceof SVGElement).map(e=>{
     const style=getComputedStyle(e);return Object.fromEntries([...style].sort().map(k=>[k,norm(style.getPropertyValue(k))]));
    });

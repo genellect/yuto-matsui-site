@@ -64,7 +64,7 @@ test("JP mobile photo art direction, ribbons and balanced external menu", async 
     }
     const panel = page.locator('[class*="mobileExternalPopover"]');
     await expect(panel.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute("href", "https://github.com/genellect");
-    await expect(panel.getByRole("link", { name: "EN", exact: true })).toHaveAttribute("href", "https://yuto-matsui.com/en/");
+    await expect(panel.getByRole("link", { name: "EN", exact: true })).toHaveAttribute("href", "/en/");
     await page.screenshot({ path: testInfo.outputPath(`menu-${width}.png`), animations: "disabled" });
     await page.keyboard.press("Escape");
     await expect(panel).toHaveCount(0);

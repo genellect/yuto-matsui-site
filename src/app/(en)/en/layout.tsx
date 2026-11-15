@@ -1,3 +1,4 @@
+import { LinkerUrlCleanup, linkerReadyAfterAnalytics } from "../../../shared/analytics/LinkerUrlCleanup";
 import type { Metadata, Viewport } from "next";
 import { Manrope, Newsreader } from "next/font/google";
 import Script from "next/script";
@@ -35,6 +36,7 @@ export const viewport: Viewport = {
 export default function EnglishFounderLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" className={`${manrope.variable} ${newsreader.variable}`} suppressHydrationWarning>
+      <head><LinkerUrlCleanup /></head>
       <body>
         {children}
         <Script
@@ -45,7 +47,8 @@ export default function EnglishFounderLayout({ children }: Readonly<{ children: 
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${COMPASS_PARENT_GA_MEASUREMENT_ID}');`}
+gtag('config', '${COMPASS_PARENT_GA_MEASUREMENT_ID}');
+${linkerReadyAfterAnalytics(COMPASS_PARENT_GA_MEASUREMENT_ID)}`}
         </Script>
       </body>
     </html>

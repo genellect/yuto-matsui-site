@@ -1,8 +1,7 @@
 import { pageCopy, japaneseMetadata, fields, products, credentials, experience, offHours, personSchema } from "../../content/ja";
-import { FOUNDER_URL, FOUNDER_EN_URL, COMPASS_ORIGIN } from "../../site";
+import { FOUNDER_URL, site, COMPASS_ORIGIN } from "../../site";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Script from "next/script";
 import { LegacyInteractions } from "../../inherited/interactions/LegacyInteractions";
 import { FounderJapaneseLink } from "../../shared/JapaneseLink";
 import { FounderProducts } from "../../shared/products/FounderProducts";
@@ -64,7 +63,7 @@ export default function FounderPage() {
           <a href="#off-hours">{pageCopy.navOffHours}</a>
           <a href="#contact-cta">{pageCopy.navContact}</a>
           <span className={styles.desktopLanguageSwitch} aria-label={pageCopy.languageLabel}>
-            <FounderJapaneseLink aria-current="page">{pageCopy.japaneseLanguage}</FounderJapaneseLink><span>{pageCopy.languageSeparator}</span><a href={FOUNDER_EN_URL}>{pageCopy.englishLanguage}</a>
+            <FounderJapaneseLink aria-current="page">{pageCopy.japaneseLanguage}</FounderJapaneseLink><span>{pageCopy.languageSeparator}</span><a href={site.englishPath}>{pageCopy.englishLanguage}</a>
           </span>
         </nav>
         <nav className={styles.mobileNavigation} aria-label={pageCopy.mobileNavigationLabel}>
@@ -79,7 +78,7 @@ export default function FounderPage() {
               </div>
               <div className={styles.mobileLanguagePanel}>
                 <span>{pageCopy.mobileLanguagePanel}</span>
-                <div><FounderJapaneseLink aria-current="page">{pageCopy.mobileLanguagePanel2}</FounderJapaneseLink><span>{pageCopy.mobileLanguagePanel3}</span><a href={FOUNDER_EN_URL}>{pageCopy.mobileLanguagePanel4}</a></div>
+                <div><FounderJapaneseLink aria-current="page">{pageCopy.mobileLanguagePanel2}</FounderJapaneseLink><span>{pageCopy.mobileLanguagePanel3}</span><a href={site.englishPath}>{pageCopy.mobileLanguagePanel4}</a></div>
               </div>
             </div>
           </MobileExternalMenu>
@@ -319,7 +318,7 @@ export default function FounderPage() {
         </div>
         <div className={styles.footerLanguageSwitch} aria-label={pageCopy.footerLanguageSwitch}>
           <span>{pageCopy.footerLanguageSwitch2}</span>
-          <div><FounderJapaneseLink aria-current="page">{pageCopy.footerLanguageSwitch3}</FounderJapaneseLink><a href={FOUNDER_EN_URL}>{pageCopy.footerLanguageSwitch4}</a></div>
+          <div><FounderJapaneseLink aria-current="page">{pageCopy.footerLanguageSwitch3}</FounderJapaneseLink><a href={site.englishPath}>{pageCopy.footerLanguageSwitch4}</a></div>
         </div>
         <details className={styles.credits}>
           <summary>{pageCopy.credits}</summary>
@@ -329,15 +328,6 @@ export default function FounderPage() {
       </footer>
 
       <LegacyInteractions />
-      <Script id="founder-linker-url-cleanup" strategy="lazyOnload">
-        {`try {
-  const url = new URL(window.location.href);
-  if (url.searchParams.has('_gl')) {
-    url.searchParams.delete('_gl');
-    window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
-  }
-} catch {}`}
-      </Script>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
     </div>
   );

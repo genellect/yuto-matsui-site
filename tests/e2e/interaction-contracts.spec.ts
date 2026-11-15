@@ -18,7 +18,7 @@ for(const language of ['ja','en'] as const) for(const mobile of [false,true]) {
   await page.waitForLoadState('networkidle');
   const footer=page.locator('footer');
   await expect(footer.getByRole('link',{name:'JP',exact:true})).toHaveAttribute('href','/');
-  await expect(footer.getByRole('link',{name:'EN',exact:true})).toHaveAttribute('href','https://yuto-matsui.com/en/');
+  await expect(footer.getByRole('link',{name:'EN',exact:true})).toHaveAttribute('href','/en/');
   if(mobile){
    await page.evaluate(()=>scrollTo(0,0));
    const toggle=page.getByRole('button',{name:language==='ja'?'外部リンクを表示':'Open navigation',exact:true});
