@@ -1,39 +1,100 @@
-# Yuto Matsui portfolio
+<picture>
+  <source media="(max-width: 600px)" srcset="./assets/yuto-matsui-masthead-mobile.svg">
+  <img src="./assets/yuto-matsui-masthead.svg" alt="Yuto Matsui. AI-native full-stack developer building production systems across education, AI, and science. I turn domain problems into working products—from problem definition and system architecture to implementation, testing, deployment, and operations." width="100%">
+</picture>
 
-`yuto-matsui.com` の日本語 `/`・英語 `/en/` を管理する専用repositoryです。
-2026-11-15に専用Cloudflare Pages `yuto-matsui-site` へ本番を切り替えました。JP `/`・EN `/en/` はこのrepositoryから配信されます。
+<div>&nbsp;</div>
 
-## 開発
+<div align="center">
+  <a href="https://yuto-matsui.com/">
+    <picture>
+      <source media="(max-width: 600px)" srcset="./assets/web-portfolio-wide-mobile.svg">
+      <img src="./assets/web-portfolio-wide.svg" alt="Explore My Web Portfolio →" width="100%">
+    </picture>
+  </a>
+</div>
 
-Nodeは `.node-version`、依存は `package-lock.json` に固定します。Linux・macOS・Windowsで同じnpm commandを使います。
+## Advancing science. Transforming education.
 
-```sh
-bash scripts/dev-bootstrap.sh
-npm run dev
-npm run typecheck
-npm run build
-npm run verify
-npm run test:e2e
-node --test tests/contact-function.test.ts
-```
+I work at the interface of **life science, software, and AI**, building systems that accelerate discovery, improve how knowledge is shared, and make complex work more intelligent and scalable.
 
-静的出力は `out/`、local配信は `npm run serve`（127.0.0.1:8798）です。
-Playwrightはbundled Chromiumを使います。OS依存が不足するLinuxでは `npx playwright install --with-deps chromium` を実行します。
+<br>
 
-## 構成と変更の境界
+### Technical Expertise
 
-- `src/app/(ja)/`・`src/app/(en)/en/`: 言語ごとのroot layoutとページ。
-- `src/ja/`・`src/en/`: 各言語の部品。
-- `src/shared/`: 製品カード、写真フィルム、portfolioの共通部品。
-- `src/inherited/`: 現行表示に必要なCSS・初期化script。移植中は内容と読み込み順を保持。
-- `public/images/`: 現行URLを保持した画像と動画。
-- `src/app/(contact)/contact/`・`src/contact/`: 個人Contact（`/contact/`）の画面、文言、入力検証。
-- `functions/api/contact.ts`: このサイトで唯一のPages Function（`POST /api/contact`）。`public/_routes.json` でこのpathだけを対象にする。
-- Contactの設計・設定・経緯は [Contact実装案](docs/contact/implementation-plan.md)。
-- `tests/compare/baseline/`: 本番から取得した比較基準。
+<p>
+  <strong>Web &amp; Applications</strong><br>
+  <a href="https://nextjs.org/"><img src="./assets/stack/nextjs.svg" alt="Next.js" width="92" height="80"></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="./assets/stack/fastapi.svg" alt="FastAPI" width="92" height="80"></a>
+  <a href="https://dotnet.microsoft.com/"><img src="./assets/stack/dotnet.svg" alt=".NET" width="92" height="80"></a>
+</p>
 
-権利条件は [LICENSE](LICENSE)、素材の出典は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) と [画像の出典](docs/founder-image-credits.md) にあります。
-元ソースと移動先・SHA-256は [source-map.json](docs/source-map.json) に記録しています。
-開発PRではCloudflare PreviewとCIを確認し、CI `verify` 成功後にmainへmergeします。CIは、ブラウザー不要の検査（`build`）とE2E（`e2e`）を同時に走らせ、両方が通ると `verify` が成功します。Contactの範囲（`src/contact/`、`src/app/(contact)/`、`functions/`、Contactのテスト、`docs/contact/`）だけを変えるPRではContactのE2Eだけを、それ以外のPRとmainへのpushでは全E2Eを3分割で実行します。mainは自動build・公開され、`Production verification` が本番ドメインのcommitとHTTPを確認します。
+<p>
+  <strong>Data &amp; Backend</strong><br>
+  <a href="https://www.postgresql.org/"><img src="./assets/stack/postgresql.svg" alt="PostgreSQL" width="92" height="80"></a>
+  <a href="https://supabase.com/"><img src="./assets/stack/supabase.svg" alt="Supabase" width="92" height="80"></a>
+</p>
 
-[本番切替の実績・インフラ設定・復元手順](docs/deployments/2026-11-15-cutover.md) と [比較方法](docs/migration.md) を参照してください。
+<p>
+  <strong>Languages</strong><br>
+  <a href="https://www.typescriptlang.org/"><img src="./assets/stack/typescript.svg" alt="TypeScript" width="92" height="80"></a>
+  <a href="https://www.python.org/"><img src="./assets/stack/python.svg" alt="Python" width="92" height="80"></a>
+  <a href="https://learn.microsoft.com/en-us/dotnet/csharp/"><img src="./assets/stack/csharp.svg" alt="C#" width="92" height="80"></a>
+</p>
+
+<p>
+  <strong>Machine Learning</strong><br>
+  <a href="https://pytorch.org/"><img src="./assets/stack/pytorch.svg" alt="PyTorch" width="92" height="80"></a>
+  <a href="https://www.tensorflow.org/"><img src="./assets/stack/tensorflow.svg" alt="TensorFlow" width="92" height="80"></a>
+  <a href="https://huggingface.co/"><img src="./assets/stack/hugging-face.svg" alt="Hugging Face" width="92" height="80"></a>
+</p>
+
+<p>
+  <strong>AI Integration</strong><br>
+  <a href="https://openai.com/api/"><img src="./assets/stack/openai.svg" alt="OpenAI API" width="92" height="80"></a>
+  <a href="https://www.anthropic.com/"><img src="./assets/stack/anthropic.svg" alt="Anthropic API" width="92" height="80"></a>
+  <a href="https://modelcontextprotocol.io/"><img src="./assets/stack/mcp.svg" alt="MCP" width="92" height="80"></a>
+</p>
+
+<p>
+  <strong>Cloud Platforms</strong><br>
+  <a href="https://cloud.google.com/"><img src="./assets/stack/google-cloud.svg" alt="Google Cloud" width="92" height="80"></a>
+  <a href="https://aws.amazon.com/"><img src="./assets/stack/aws.svg" alt="AWS" width="92" height="80"></a>
+  <a href="https://www.cloudflare.com/"><img src="./assets/stack/cloudflare.svg" alt="Cloudflare" width="92" height="80"></a>
+  <a href="https://modal.com/"><img src="./assets/stack/modal.svg" alt="Modal" width="92" height="80"></a>
+</p>
+
+<p>
+  <strong>Infrastructure</strong><br>
+  <a href="https://www.docker.com/"><img src="./assets/stack/docker.svg" alt="Docker" width="92" height="80"></a>
+  <a href="https://nginx.org/"><img src="./assets/stack/nginx.svg" alt="nginx" width="92" height="80"></a>
+  <a href="https://developer.hashicorp.com/terraform"><img src="./assets/stack/terraform.svg" alt="Terraform" width="92" height="80"></a>
+</p>
+
+<p>
+  <strong>Quality &amp; Delivery</strong><br>
+  <a href="https://github.com/features/actions"><img src="./assets/stack/github-actions.svg" alt="GitHub Actions" width="92" height="80"></a>
+  <a href="https://playwright.dev/"><img src="./assets/stack/playwright.svg" alt="Playwright" width="92" height="80"></a>
+</p>
+
+<p>
+  <strong>3D &amp; Motion</strong><br>
+  <a href="https://threejs.org/"><img src="./assets/stack/threejs.svg" alt="Three.js" width="92" height="80"></a>
+  <a href="https://www.blender.org/"><img src="./assets/stack/blender.svg" alt="Blender" width="92" height="80"></a>
+  <a href="https://www.remotion.dev/"><img src="./assets/stack/remotion.svg" alt="Remotion" width="92" height="80"></a>
+</p>
+
+<br>
+
+## Research Background
+
+I am also a molecular biology researcher studying the molecular mechanisms of ALS/FTD, with a focus on C9orf72-associated neurodegeneration.
+
+I apply software engineering, automation, image analysis, and AI to research and education workflows.
+
+<p>
+  <strong>Bioimage Analysis</strong><br>
+  <a href="https://fiji.sc/"><img src="./assets/stack/fiji.svg" alt="Fiji" width="92" height="80"></a>
+  <a href="https://www.cellpose.org/"><img src="./assets/stack/cellpose.svg" alt="Cellpose" width="92" height="80"></a>
+  <a href="https://github.com/stardist/stardist"><img src="./assets/stack/stardist.svg" alt="StarDist" width="92" height="80"></a>
+</p>

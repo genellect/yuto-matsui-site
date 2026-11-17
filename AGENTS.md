@@ -3,7 +3,7 @@
 このrepositoryは松井優知の個人portfolioです。COMPASSとは独立した編集範囲です。
 
 - 本番の見た目・文言・挙動を、技術的な整理のついでに変更しない。
-- 作業前にREADME、docs/migration.md、対象sourceとtestを読む。未commitの作業を保持し、専用branchで作業する。
+- 作業前にdocs/development.md、docs/migration.md、対象sourceとtestを読む。未commitの作業を保持し、専用branchで作業する。
 - 場所の移動と文言・設定値の抽出は別PRにする。
 - Nodeと依存versionは固定値を使う。`bash scripts/dev-bootstrap.sh` で導入する。
 - 変更に応じてtypecheck、build、verify、Desktop/Mobile E2Eと比較を実行する。失敗を閾値の緩和やsnapshot更新で隠さない。
