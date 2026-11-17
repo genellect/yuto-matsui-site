@@ -56,14 +56,14 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 ### 4.1 route と layout
 
 - `src/app/(contact)/contact/` を新しいroot layoutにする。JPの `(ja)/layout.tsx` は、COMPASS名義のmetadataと継承CSS 9本を読み込んでいる。これは本番の現状なので変更せず、Contactでは継承しない。
-- metadata: title `Contact | Yuto Matsui`、description「Yuto Matsui個人へのご連絡窓口です。」、canonical `https://yuto-matsui.com/contact/`、`robots: { index: false, follow: true }`（COMPASS Contactと同じ公開方針）、sitemapには追加しない。
-- 解析：JPと同じGA4 measurement IDでpage viewだけを送る（**要確認 D4**）。フォームの内容・入力イベントは送らない。
+- metadata: title・descriptionは§4.3のとおり。canonical `https://yuto-matsui.com/contact/`、`robots: { index: false, follow: true }`（COMPASS Contactと同じ公開方針）、sitemapには追加しない。
+- 解析：JPと同じGA4 measurement IDでpage viewだけを送る（D4）。フォームの内容・入力イベントは送らない。
 
 ### 4.2 移植するファイルと変更点
 
 | 移植元（COMPASS） | 移植先 | 変更 |
 |---|---|---|
-| `ContactEntrance.tsx` | `src/contact/ContactEntrance.tsx` | `Target` 型と二択を削除。扉は個人側（左）だけにし、右扉のbuttonと「COMPASSへのお問い合わせ」を削除。見出しを「どちらへのご連絡ですか？」から「Yuto Matsuiへのご連絡」に変更。動画は1本（`entry-{layout}.mp4`）。800msの読み込み期限、2.7秒の全体期限、reduced motion、Save-Data、hidden tab、skip、`onError` はそのまま残す |
+| `ContactEntrance.tsx` | `src/contact/ContactEntrance.tsx` | `Target` 型と二択を削除。扉は個人側（左）だけにし、右扉のbuttonと「COMPASSへのお問い合わせ」を削除。見出しと扉のラベルは§4.3のとおりにする。動画は1本（`entry-{layout}.mp4`）。800msの読み込み期限、2.7秒の全体期限、reduced motion、Save-Data、hidden tab、skip、`onError` はそのまま残す |
 | `ContactForm.tsx` | `src/contact/ContactForm.tsx` | 宛先選択、`TargetCard`、`messagePrefix`、OTPの全state（`challengeId`・`verificationCode`・`verificationProof`・`challengeExpiresAt`・`invalidateChallenge`）、`requestCode`・`verifyCode` を削除。Turnstileは送信ボタンの直前に置き、送信のたびにtokenを使い切ってresetする |
 | `ContactChrome.tsx` | `src/contact/ContactChrome.tsx` | headerのリンクを、JP `/`、EN `/en/` の個人サイトだけにする。COMPASSのPlatform／Interactiveへのリンクと、parent brandの表示を外す。CONTACTのwordmarkと「入口へ戻る」イベントは残す |
 | `contact*.module.css`、`parent-brand.module.css` の使用部分 | `src/contact/*.module.css` | OTP・target cardのclassを削除する以外は、値と順序を保つ |
@@ -71,17 +71,49 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 | `contact-entry-events.ts` | `src/contact/contact-entry-events.ts` | 変更なし |
 | `src/lib/contact-schema.ts`（zod） | `src/contact/schema.ts` | 依存を増やさないため、zodを使わない小さなvalidatorにする（§5）。画面とFunctionで同じものをimportする |
 
-### 4.3 文言（変更する部分だけ）
+### 4.3 文言
 
-| 箇所 | COMPASS | 個人 |
-|---|---|---|
-| 導入 | COMPASSへの公式お問い合わせと、代表へのご連絡を受け付けています。 | Yuto Matsui個人へのご連絡を受け付けています。COMPASSに関するお問い合わせは[COMPASSのContact](https://compass-official.pages.dev/contact/)へお願いします。 |
-| 対象パネル | 「代表へのご連絡」と4区分 | 見出しを「ご連絡いただける内容」に変え、4区分（学生・企業・教職員・研究者）はそのまま残す |
-| 所属 | 必須 | 任意（helperの文言は残す） |
-| 送信ボタン | 代表へ送信 | 送信する |
-| 取扱 | メッセージは代表が直接確認します。 | メッセージはYuto Matsui本人が確認し、入力いただいたメールアドレスへ返信します。 |
-| 完了 | 送信先：代表／受付メールを〜に送信しました。 | 「ご連絡を受け付けました」。返信はメールでお送りします。自動返信はありません。※自動返信がなくなるので、受付メールの文言は残せない |
-| 失敗 | 時間をおいて再度お試しください。 | 送信できませんでした。入力内容は残っています。再度お試しいただくか、[トップページ記載のメール](/#contact-cta)でご連絡ください。 |
+#### 方針
+
+- 一人の研究者・開発者が、相手を迎えて話を伺う窓口として書く。丁寧な敬語で短く書き、温かさと品位を保つ。
+- **COMPASSへの分岐や案内は、画面に一切出さない。** 本文、見出し、ボタン、aria-label、metadata、エラー文のどれにも入れない。
+- 仕組みや内部の事情（自動返信の有無、確認コード、送信先、mock、受付処理など）を説明する文や、「〜はありません」のように相手を突き放す事務的な言い切りを書かない。
+- エラーでは相手を責めない。まずお詫びし、入力が残っていることと次にできることを、穏やかに伝える。
+- 入力欄の見出し、ラベル、helper、検証エラー（「正しい形式で入力してください」）など、COMPASSですでに使われていて、この方針に沿う文言はそのまま使う。
+
+#### 確定する文言
+
+| 箇所 | 文言 |
+|---|---|
+| title | `Contact | Yuto Matsui / 松井優知` |
+| description（meta／OG） | 生命科学研究とAIネイティブ開発に取り組むYuto Matsui / 松井優知へのご連絡はこちらから。共同研究や開発のご相談、講演のご依頼、意見交換など、お気軽にお寄せください。 |
+| 見出し（h1） | お問い合わせ（既存のまま） |
+| 導入 | 研究・開発・教育に関するご相談やご依頼を承っています。 |
+| 導入2 | 学生・教職員・研究者の方、団体・企業の方など、さまざまな方とのご縁を歓迎しています。（既存のまま） |
+| 入口の見出し（h2） | 執務室へご案内します |
+| 扉（aria-label） | 執務室に入り、メッセージを書く |
+| 扉の代わりのボタン | メッセージを書く → |
+| 演出を省くボタン | 演出なしで入力へ →（既存のまま） |
+| 入室中（status） | Yuto Matsui — 入室しています（既存の形のまま） |
+| 対象パネルの見出し | このようなご連絡をお待ちしています（kickerの `WHO THIS IS FOR` と4区分は既存のまま） |
+| 所属 | ラベルの横に、「必須」と同じ形の「任意」badgeを付ける。helperは既存のまま |
+| 送信前の一文 | いただいたメッセージは私自身が拝読し、ご記入のメールアドレス宛にお返事いたします。 |
+| 送信ボタン | メッセージを送信 → ／送信中：送信しています… |
+| 完了 kicker | THANK YOU |
+| 完了 見出し | メッセージをお送りいただき、ありがとうございます |
+| 完了 本文 | 内容を拝読のうえ、{email} 宛にご連絡いたします。お返事まで少しお時間をいただく場合がございますが、どうぞよろしくお願いいたします。 |
+| 完了 リンク | トップページへ戻る |
+
+#### 送信できなかったときの文言（`role="alert"`、入力はすべて残す）
+
+| 状況 | 文言 |
+|---|---|
+| 通信失敗、502、503、timeout、JSON以外の応答 | 申し訳ありません。ただいまメッセージをお送りできませんでした。ご入力いただいた内容はそのまま残っていますので、少し時間をおいて、もう一度お試しください。 |
+| 429（連続送信） | 申し訳ありません。続けてお送りいただいたため、少し時間をおいてから、もう一度お試しください。ご入力いただいた内容はそのまま残っています。 |
+| Turnstileの失敗 | 確認が完了しませんでした。お手数ですが、もう一度お試しください。 |
+| 上記のどれかが2回続いたとき（追記） | お急ぎの場合は、[トップページ](/#contact-cta)に記載のメールアドレスからもご連絡いただけます。 |
+
+文言は `src/contact/copy.ts` にまとめる。E2Eでは、二択・確認コード・自動返信・「代表」・「COMPASS」がDOMにもaria属性にも含まれないことを検査する（§11）。
 
 ### 4.4 状態と操作
 
@@ -101,7 +133,7 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 | name | ✓ | trim後 2–20文字、CR/LF/制御文字は不可 | COMPASSと同じ長さ |
 | affiliation | 任意 | 空、またはtrim後 2–20文字、制御文字は不可 | COMPASSの必須を任意に変える（Issueの指定） |
 | email | ✓ | trim後 5–50文字、`local@domain.tld` 形式、CR/LF不可、小文字化 | `reply_to` に入れる |
-| details | ✓ | trim後 10–1000文字、改行可、改行と`\t`以外の制御文字は不可 | 宛先prefixがなくなるので、上限を980から1000に戻す（**要確認 D3**） |
+| details | ✓ | trim後 10–1000文字、改行可、改行と`\t`以外の制御文字は不可 | 宛先prefixがなくなるので、上限を980から1000に戻す（D3） |
 | turnstileToken | ✓ | 1–2048文字 | |
 | requestId | ✓ | UUID | Turnstileの `idempotency_key` に使う |
 | website | ✓ | 空文字（honeypot） | 値があれば成功を装って送信しない |
@@ -187,7 +219,7 @@ and http.request.uri.path ne "/api/contact"
 ## 8. 素材の再生成
 
 1. `scripts/contact-entry/` をCOMPASSから移し、出典と原本の位置を `docs/source-map.json` と `THIRD_PARTY_NOTICES.md` に記録する。COMPASS側の原本は消さない。
-2. `render.py` の修正は最小限にする。右の部屋の `Room identity compass`（COMPASSの文字）を削除する。右の `会議室` の札も削除するかは **要確認 D1**。建物、家具、照明、左扉、カメラ移動は変えない。
+2. `render.py` の修正は最小限にする。右の部屋の `Room identity compass`（COMPASSの文字）を削除する。右の `会議室` の札も削除する（D1）。建物、家具、照明、左扉、カメラ移動は変えない。
 3. 出力は `representative` の desktop と mobile だけにする（2本、48frame、24fps）。開始静止画も同じ1frame目から作る。`encode.mjs` の出力先を `public/images/contact-entry/` に、名前を `entry-{layout}.mp4`・`lobby-{layout}.webp` に変える。黒frameの検査とSHA-256のmanifestは残す。
 4. Blender 4.5 LTSとライセンス済みの日本語fontが必要なので、オーナーのPCで実行する。このcloud環境では実行できない。
 5. 照合：静止画と動画の1frame目の画素差、projectionの扉の位置とbuttonの位置を、PCとモバイルで確かめる。
@@ -210,8 +242,8 @@ and http.request.uri.path ne "/api/contact"
 | 0 | この設計（本PR） | docsだけ | 済（作成の依頼） |
 | 1 | 送信の疎通確認。送信専用tokenで、本人宛てにREST API 1通を手動で送り、`result` と受信箱を確かめる。成立しなければ、ここで止めて原因と代わりの案を整理する | 非公開の記録 | **必要：tokenの作成と実メール1通** |
 | 2 | Function・validator・unit test。`_routes.json` と `verify-build` の更新 | Draft PR、Previewのmock送信 | — |
-| 3 | 素材の再出力と取り込み | Draft PR（オーナーのPCでrenderした結果をcommit） | D1 |
-| 4 | UIの移植、JP導線の変更、E2E（Desktop／Mobile）、比較 | Draft PR、Preview | D2–D4 |
+| 3 | 素材の再出力と取り込み | Draft PR（オーナーのPCでrenderした結果をcommit） | — |
+| 4 | UIの移植、JP導線の変更、E2E（Desktop／Mobile）、比較 | Draft PR、Preview | — |
 | 5 | Cloudflare設定（§7）をPreviewで確かめ、本番の値を登録 | 非公開の設定記録 | **必要** |
 | 6 | merge、転送規則の変更、本番の受入（承認済みの実メール1通） | 公開記録 | **必要** |
 
@@ -230,11 +262,13 @@ and http.request.uri.path ne "/api/contact"
 2. 必要なら、Pagesの直前の正常なproduction deploymentへrollbackする。
 3. DNSでサイト全体をCOMPASSに戻すことはしない。GASとCOMPASS Contactには手を付けないので、すぐに旧窓口へ戻せる。
 
-## 13. 決めてほしいこと
+## 13. 決定事項
 
-| ID | 内容 | 推奨 |
+2026-11-17、オーナーの指示（COMPASSへの分岐は画面に出さない、それ以外は一任）により決定。
+
+| ID | 内容 | 決定 |
 |---|---|---|
-| D1 | 右の部屋の札（`会議室`）も消すか | 消す。COMPASSの文字だけを消すと、2つ目の行き先があるように見えるため |
-| D2 | 導入文にCOMPASS Contactへの案内リンクを置くか | 置く（1行）。COMPASSあての問い合わせを誤って受けないため |
-| D3 | 本文の上限 | 1000文字（COMPASSのserver上限と同じ。宛先prefixがなくなった分を戻す） |
-| D4 | ContactでGA4のpage viewを送るか | JPと同じIDでpage viewだけ送る。フォームのイベントは送らない |
+| D1 | 右の部屋の札（`会議室`） | 消す。COMPASSの文字だけを消すと、2つ目の行き先があるように見えるため。右の部屋は背景として残す |
+| D2 | COMPASS Contactへの案内 | 置かない。画面・metadata・aria属性のどこにもCOMPASSへの分岐や案内を出さない |
+| D3 | 本文の上限 | 1000文字。COMPASSのserver上限と同じで、宛先prefixがなくなった分を戻す |
+| D4 | ContactでのGA4 | JPと同じIDでpage viewだけを送る。フォームの内容・入力イベントは送らない |
