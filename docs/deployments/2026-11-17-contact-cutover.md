@@ -4,7 +4,7 @@
 
 ## 本番に反映した変更
 
-- `yuto-matsui.com` のみを許可する本番用 Turnstile ウィジェットを作成した。Cloudflare Pages の Production に送信用・ビルド用の変数を保存し、メール送信用トークンと Turnstile の検証キーは Secret とした。設定項目と型は [実装方針 §7.1](../contact/implementation-plan.md#71-環境変数) を参照。
+- `yuto-matsui.com` のみを許可する本番用 Turnstile ウィジェットを作成した。Cloudflare Pages の Production に送信用・ビルド用の変数を保存し、メール送信用トークンと Turnstile の検証キーは Secret とした。設定項目と型は [実装方針 §7.1](../contact/implementation-plan.md#71-pages環境変数) を参照。
 - WAF に、URI Path が `/api/contact` と完全に一致するときだけ適用するレート制限 `Personal Contact API rate limit` を1本追加した。適用前の GET 確認では、`www` は apex に転送され、ゾーン内の他の確認対象ホストは404を返した。
 - [PR #8](https://github.com/genellect/yuto-matsui-site/pull/8) を main にマージし、Cloudflare Pages の本番デプロイ、[main CI](https://github.com/genellect/yuto-matsui-site/actions/runs/44078953043)、[Production verification](https://github.com/genellect/yuto-matsui-site/actions/runs/44078953036) の成功を確認した。デプロイしたコミットは `7da5efb9deb9041b430ca97edf8961741da9dee3`。
 - `Return COMPASS routes to pages.dev` の元の条件に `/contact/`、`/contact`、`/api/contact` の完全一致除外を追加した。既存の転送先、301、クエリ文字列の保持は継続する。
