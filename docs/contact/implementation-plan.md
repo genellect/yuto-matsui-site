@@ -303,11 +303,11 @@ PR #8 に、コードで実装できる範囲をすべて入れた。Cloudflare�
 | # | タスク | 担当 | 前提 | 完了の条件 |
 |---|---|---|---|---|
 | T1 | Previewの見た目と操作をオーナーが確認する | オーナー | PR #8 のPreview | 修正点がなくなる |
-| T2 | 送信専用API tokenを作る（Email Sendingの送信だけ、対象はこのaccountだけ） | オーナー | — | tokenを非公開で保管 |
-| T3 | REST APIで本人宛てに1通送り、`result.delivered`／`queued` と受信箱を確かめる | オーナー承認のもと実施 | T2、送信元のrouting domainと確認済み受信先 | 非公開の記録に結果を残す。失敗したら、原因と最小の代替案を整理するまで先へ進まない |
+| T2 | 送信専用API tokenを作る（Email Sendingの送信だけ、対象はこのaccountだけ） | オーナー | — | **済（2026-11-17）**。tokenは非公開で保管 |
+| T3 | REST APIで本人宛てに1通送り、`result.delivered`／`queued` と受信箱を確かめる | オーナー | T2、送信元のrouting domainと確認済み受信先 | **済（2026-11-17）**。Cloudflare APIから試験メール1通を送信。配送結果は `delivered`。本人の受信トレイへの到着と、Reply-Toが指定どおりであることをオーナーが確認（送信元は `contact@yuto-matsui.com`、Reply-Toは `example.com` の試験アドレス）。受信先は非公開の記録に残す。本番フォームから受信箱までは T10 で確かめる |
 | T4 | 個人用Turnstile widgetを作る（hostnameは `yuto-matsui.com`） | オーナー | — | sitekeyとsecret |
-| T5 | Pages環境変数をPreview（mock、テスト鍵）に設定し、Previewで `/api/contact` まで通しで確かめる | 承認のもと実施 | T4 | Previewで受付画面まで到達する（mock） |
-| T6 | Pages環境変数をProductionに設定する（§7.1） | 承認のもと実施 | T2〜T4 | 設定の記録 |
+| T5 | Pages環境変数をPreview（mock、テスト鍵）に設定し、Previewで `/api/contact` まで通しで確かめる | オーナー | — | **済（2026-11-17）**。Previewのフォームで、Turnstileのテスト鍵とmockモードを使い、受付完了の画面まで到達することをオーナーが確認。Previewの `/api/contact` は、空の送信に設定済みの422を返す |
+| T6 | Pages環境変数をProductionに設定する（§7.1） | 承認のもと実施 | T4（T2・T3は済） | 設定の記録 |
 | T7 | WAFのrate limiting ruleを追加する（URI Pathの完全一致、§7.4） | 承認のもと実施 | 同じゾーンの他のホストでパスが重複しないこと | 閾値を非公開の記録に残す |
 | T8 | PR #8 をmergeし、本番deployを確かめる | オーナーの指示 | T5〜T7。mainのbuildは本番用sitekeyがないと失敗するので、T6を先に済ませる | `Production verification` が成功する |
 | T9 | `Return COMPASS routes` に除外3条件を追加する（§7.3） | オーナーの指示 | T8 | `/contact/` が200、`/api/contact` へのGETが405。他の転送は維持 |
@@ -318,8 +318,8 @@ PR #8 に、コードで実装できる範囲をすべて入れた。Cloudflare�
 
 ```text
 済  設計（Issue #7）→ 実装・素材差し替え・Preview確認（PR #8）
-次  T1 オーナー確認 ─┬─ T2/T3 送信疎通 ─┐
-                    └─ T4 Turnstile ───┴─ T5 Preview通し確認 → T6/T7 本番設定
+済  T2/T3 送信疎通（API → 受信トレイ、Reply-To）、T5 Preview通し確認（mock）
+次  T1 オーナー確認、T4 本番用Turnstile → T6/T7 本番設定
 後  T8 merge → T9 転送除外 → T10 本番受入 → T11 記録
 以降（別PR・別判断）
     - Production verificationとHTTP契約に /contact/ と /api/contact を追加
@@ -331,7 +331,7 @@ PR #8 に、コードで実装できる範囲をすべて入れた。Cloudflare�
 
 | 区分 | 内容 | 対応 |
 |---|---|---|
-| 未検証 | REST APIから本人の受信箱に届くかは、まだ確かめていない（token権限、送信元のrouting domain、確認済み受信先） | T3で確かめる。成立しなければ代替案を整理する |
+| 確認範囲 | REST APIから本人の受信トレイへの到着とReply-Toは、Cloudflare APIを直接呼ぶ試験で確認済み（T3）。本番のフォームとFunctionを通した到着は、まだ確かめていない | 切替後のT10で確かめる |
 | 順序 | mainのbuildは、本番用Turnstile sitekeyがないと失敗する（誤ってテスト鍵で公開しないための安全策） | T6をT8より先に行う |
 | 公開範囲 | mainへmergeすると `yuto-matsui-site.pages.dev/contact/` が先に公開される。送信はhost検証で拒否されるが、画面は見える | T8とT9を間を空けずに行う。ページはnoindex |
 | 依存 | Next.js 16.4.3にはbuild時に既知の脆弱性の警告が出る | 別PRで更新を検討する |
