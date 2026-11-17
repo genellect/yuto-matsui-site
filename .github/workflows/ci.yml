@@ -9,26 +9,55 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  verify:
+  # Fast checks that need no browser: types, the static build, the build contract and the API.
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
           cache: npm
-      - run: bash scripts/dev-bootstrap.sh
-      - run: npx playwright install-deps chromium
+      - run: npm ci --no-audit --no-fund
       - run: npm run typecheck && npm run build && npm run verify
-      - run: node --test tests/deployment-readiness.test.mjs
-      - run: node --test tests/contact-function.test.ts
-      - run: npm run test:e2e
+      - run: node --test tests/deployment-readiness.test.mjs tests/contact-function.test.ts
+
+  # Browser tests, split across three runners that start at the same time.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npx playwright test --shard=${{ matrix.shard }}/3
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: browser-evidence
+          name: browser-evidence-${{ matrix.shard }}
           path: |
             test-results/
             playwright-report/
           retention-days: 14
+
+  # Keeps the single required check name; passes only when every job above passed.
+  verify:
+    if: always()
+    needs: [build, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.build.result }}" = success && test "${{ needs.e2e.result }}" = success

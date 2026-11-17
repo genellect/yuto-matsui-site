@@ -29,7 +29,7 @@ Playwrightはbundled Chromiumを使います。OS依存が不足するLinuxで�
 - `public/images/`: 現行URLを保持した画像と動画。
 - `src/app/(contact)/contact/`・`src/contact/`: 個人Contact（`/contact/`）の画面、文言、入力検証。
 - `functions/api/contact.ts`: このサイトで唯一のPages Function（`POST /api/contact`）。`public/_routes.json` でこのpathだけを対象にする。
-- `scripts/contact-entry/`: Contact入室演出の生成・差し替えscript。設計・設定・残作業は [Contact実装案](docs/contact/implementation-plan.md)。
+- Contactの設計・設定・経緯は [Contact実装案](docs/contact/implementation-plan.md)。
 - `tests/compare/baseline/`: 本番から取得した比較基準。
 
 権利条件は [LICENSE](LICENSE)、素材の出典は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) と [画像の出典](docs/founder-image-credits.md) にあります。
