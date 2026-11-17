@@ -2,69 +2,47 @@
 
 Status: Canonical Index
 Scope: Third-party software and assets used by this repository
-Last verified: 2026-09-10
+Last verified: 2026-11-17
 
-The [COMPASS license](LICENSE) covers only rights owned or controlled by Yuto Matsui.
+The [LICENSE](LICENSE) covers only rights owned or controlled by Yuto Matsui.
 Third-party components keep their own licenses, including permissions for commercial
 use, modification and redistribution where their licenses grant them. Inclusion here
 does not imply endorsement. Missing inventory entries do not override third-party rights.
 
 ## Software
 
-`package-lock.json` and `services/library-api/uv.lock` identify exact dependencies.
-Generate the reviewed inventories with `npm run licenses:check` and
-`uv run --project services/library-api --locked python scripts/audit-python-dependencies.py --licenses-only`. The Python command uses
-installed distribution metadata after `uv sync --locked --dev`; it does not install packages.
-Reports distinguish installed software from the cross-platform npm lockfile inventory.
-
-[Browser core notices](docs/legal/browser-core-notices.txt) preserve the installed
-license texts for Next.js, React, React DOM, Three.js, Zod, Scheduler and styled-jsx.
-This named collection does not cover every vendored module or transitive dependency.
+`package-lock.json` identifies the exact npm dependencies. The website bundle includes
+Next.js, React, React DOM, Three.js and their runtime dependencies; devDependencies
+are build, test or authoring tools.
 
 | Family | License / handling |
 |---|---|
-| Next.js, React, Three.js, Zod and many JS tools | Retain the applicable MIT copyright and permission notices when distributing covered code |
-| Apache-2.0 packages, including sharp's JS wrapper | Retain license/NOTICE material and any required modification notices |
+| Next.js, React, React DOM, Three.js, Scheduler, styled-jsx and many JS tools | MIT; retain the copyright and permission notices when distributing covered code |
+| Apache-2.0 packages, including TypeScript, Playwright and sharp's JS wrapper | Retain license/NOTICE material and any required modification notices |
 | sharp/libvips native components | LGPL-3.0-or-later, sometimes combined with Apache-2.0/MIT; inspect the actual platform binary and redistribution obligations |
-| lightningcss and its platform binaries | MPL-2.0; distinguish build-tool use from distribution or modification of covered files |
 | caniuse-lite | CC-BY-4.0; retain required attribution where applicable |
-| Python API and test dependencies | Inspect each installed distribution's license expression, license files and notices; do not infer a license from the application license |
 
 Build-only use does not by itself make the site's output a derivative work of every
-tool. Conversely, a public Git repository, browser bundle and distributed container
-are different distribution surfaces. Before distributing a new binary or image,
-review the actual included files and satisfy their notice/source/relinking obligations.
-An inventory is not a substitute for shipping required license texts and notices.
+tool. Conversely, a public Git repository and a browser bundle are different
+distribution surfaces. Before distributing a new binary, review the actual included
+files and satisfy their notice/source/relinking obligations.
 
 ## Media and authorship
 
-The `next/font/google` imports use Manrope and Newsreader under SIL OFL 1.1.
+The `next/font/google` imports in `/en/` use Manrope and Newsreader under SIL OFL 1.1.
 Their upstream notices are retained as [Manrope](docs/legal/fonts/Manrope-OFL.txt)
 and [Newsreader](docs/legal/fonts/Newsreader-OFL.txt), obtained from the
 [Google Fonts repository](https://github.com/google/fonts/tree/main/ofl) on
 2026-09-10. The website build downloads and self-hosts the font files. Include
-the applicable notices when distributing those files; changes to deployed notice
-delivery must follow the production approval boundary.
+the applicable notices when distributing those files.
 
-See the [asset register](docs/legal/asset-register.md). Existing notices are preserved:
-
-- [Habitat source credits](scripts/habitat/ASSET_CREDITS.md) and [delivered credits](public/habitat/v3/credits.md)
-- [Parent Desktop night background](public/habitat/night-v1/credits.md): Poly Haven CC0 photographic materials and night panorama; Everett Bumstead's Pexels water footage, edited as a reflection input.
-- [NASA mobile media provenance](docs/mobile-space-media.md) and [manifest](public/habitat/mobile-v1/manifest.json)
 - [Independent portfolio image credits](docs/founder-image-credits.md)
+- COMPASS product card background (`public/images/founder-products/compass/top.webp`): a Blender render of an original COMPASS scene using [Brushed Concrete](https://polyhaven.com/a/brushed_concrete), [Rock 06](https://polyhaven.com/a/rock_06) (Rob Tuytel) and [Qwantani Night](https://polyhaven.com/a/qwantani_night) (Greg Zaal, Jarod Guest) from Poly Haven under [CC0](https://polyhaven.com/license), and Everett Bumstead's [Serene Reflections on Rippling Water Surface](https://www.pexels.com/video/serene-reflections-on-rippling-water-surface-34435555/) footage under the [Pexels License](https://www.pexels.com/license/), edited as a reflection input. Byte-identical to COMPASS `public/habitat/night-v1/top.webp`, whose `credits.md` records these sources.
+- [Topos product image](public/images/founder-products/topos/NOTICE.md): copied from genellect/devfest2026-t167 under MIT.
+- [Cytellect product photograph](public/images/founder-products/cytellect/well-hero-provenance.json): CDC on Pexels under the Pexels License.
+- [Cytellect artwork](public/images/founder-products/cytellect/NOTICE.md) and its [LICENSE](public/images/founder-products/cytellect/LICENSE); the [1BNA coordinates](scripts/art/art-data/README.md) used by the authoring scripts are CC0 1.0.
 - README technology logos (`assets/stack/`): copied from [genellect/genellect](https://github.com/genellect/genellect). Each logo is a trademark of its owner, shown only to name the technology; no endorsement is implied. Not part of the website.
-- [Original Contact rendering](docs/contact-door-entry.md)
-- [COMPASS Experience stock photography](docs/experience-image-credits.md): Fabio Sasso, Bluestonex, Christopher Gower, and Ivenory under the Unsplash License.
-- [PC spatial exploration credits](public/habitat/explorer/v1/credits.txt): NASA photography and timelapse, Kinoton and Kenney CC0 audio, and Inter SIL OFL 1.1 outlines. Existing Habitat CC0 furniture and materials are reused without changing their licenses.
 
-Poly Haven CC0 assets remain CC0. NASA imagery is governed by NASA's media policy
-and any item-specific third-party rights; NASA logos and endorsement are not granted.
-Unsplash and Pexels items retain their source terms. User-supplied photos and original
-artwork must not be described as third-party stock or relicensed without authority.
-
-## Review policy
-
-Unknown or newly introduced license expressions require a recorded review before
-acceptance. Copyleft expressions are reviewed by use and distribution scope, not
-automatically treated as vulnerabilities or automatically waived. See
-[dependency maintenance](docs/dependency-maintenance.md) for checks and review records.
+Poly Haven CC0 assets remain CC0. Unsplash and Pexels items retain their source terms.
+User-supplied photos and original artwork must not be described as third-party stock
+or relicensed without authority.
