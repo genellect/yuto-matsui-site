@@ -923,3 +923,5 @@
 .page .submitStage .securityBox { width: min(100%, 360px); }
 /* Without the destination line, the message keeps the production rhythm below the title. */
 .page .successCard > h1 + p:not(.formKicker):not(.successDestination) { margin-top: 32px; }
+/* Headings receive focus only to place screen readers at the new content; they are not controls. */
+.page h1[tabindex="-1"]:focus { outline: none; }

@@ -102,11 +102,12 @@ export function ContactForm() {
   const successHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const finishEntry = useCallback(() => {
+    // Move focus only when the visitor acted inside the entrance (Skip). When the film
+    // ends on its own, focus stays where it was, as it did when the page opened.
     const active = document.activeElement;
-    const focusForm = active === document.body || (active instanceof HTMLElement && Boolean(active.closest("[data-contact-entrance]")));
+    const focusForm = active instanceof HTMLElement && Boolean(active.closest("[data-contact-entrance]"));
     setEntryComplete(true);
     requestAnimationFrame(() => {
-      // Keep navigation focus if the visitor has opened the header during the film.
       if (!focusForm) return;
       document.getElementById("form-title")?.focus({ preventScroll: true });
       window.scrollTo({ top: 0, behavior: "instant" });

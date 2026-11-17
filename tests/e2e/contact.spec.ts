@@ -70,7 +70,9 @@ for (const layout of layouts) {
       if (codec) await expect.poll(() => page.locator('video').evaluate((video: HTMLVideoElement) => video.currentTime)).toBeGreaterThan(0);
       // Natural end, load deadline or codec failure: all paths arrive within the 2.7s ceiling.
       await expect(page.locator('#contact-flow')).toBeVisible({ timeout: 4000 });
-      await expect(page.locator('#form-title')).toBeFocused();
+      // Nothing was pressed, so focus stays put and no focus ring appears on the heading.
+      expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
+      await expect(page.locator('#form-title')).toHaveCSS('outline-style', 'none');
       expect(filmRequests).toEqual([`/images/contact-entry/${layout.film}`]);
 
       const text = await page.locator('body').innerText();
@@ -94,9 +96,12 @@ for (const layout of layouts) {
       await expect(page.getByRole('heading', { name: 'Yuto Matsuiへのご連絡', level: 2 }).first()).toBeVisible();
       await expect(page.getByRole('status')).toHaveText('Yuto Matsui — 入室しています');
       expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
-      await page.getByRole('button', { name: /スキップ/ }).click();
+      await page.getByRole('button', { name: /スキップ/ }).focus();
+      await page.keyboard.press('Enter');
       await expect(page.locator('#contact-flow')).toBeVisible();
       await expect(page.locator('#form-title')).toBeFocused();
+      // The heading is a focus target, not a control: no ring even after keyboard use.
+      await expect(page.locator('#form-title')).toHaveCSS('outline-style', 'none');
     });
 
     test('reduced motion, Save-Data, failed and stalled films go straight to the form', async ({ page, context }) => {
