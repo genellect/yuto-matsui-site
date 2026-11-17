@@ -12,8 +12,8 @@
     },
     {
       "file": "lobby-mobile.webp",
-      "bytes": 38292,
-      "sha256": "334d33083a59e04fa75103950fc45daeb700b20fbf87519fa06d8a3011a13222"
+      "bytes": 34442,
+      "sha256": "ae603c82e846357195a7c3f906e6f4b7665ddef24d5ec328e54cb5bbd04469d7"
     },
     {
       "file": "entry-desktop.mp4",
@@ -22,8 +22,8 @@
     },
     {
       "file": "entry-mobile.mp4",
-      "bytes": 465857,
-      "sha256": "ea3f95e57ec97cd9c0f9418ab7bd99ae880670d6fc83f71533083c4718ea464a"
+      "bytes": 580715,
+      "sha256": "2aa1059a15efffc6f21df909feb0860b7d5bab731cac6206e24fe5073b576615"
     }
   ]
 }
