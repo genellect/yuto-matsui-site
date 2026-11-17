@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { onRequest, readConfig, notificationText, formatReceivedAt, type ContactEnv } from "../functions/api/contact.ts";
-import { parseContactRequest, normaliseContactField, CONTACT_TURNSTILE_ACTION } from "../src/contact/schema.ts";
+import { parseContactRequest, normaliseContactField, CONTACT_MAX_BODY_BYTES, CONTACT_TURNSTILE_ACTION } from "../src/contact/schema.ts";
 
 // Every outbound request is mocked. No test reaches Turnstile, Cloudflare or a mailbox.
 const HOST = "yuto-matsui.com";
@@ -75,6 +75,16 @@ function request(body: unknown, options: { origin?: string | null; url?: string;
   });
 }
 
+function streamedRequest(body: ReadableStream<Uint8Array>) {
+  const init: RequestInit & { duplex: "half" } = {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Origin: `https://${HOST}` },
+    body,
+    duplex: "half"
+  };
+  return new Request(`https://${HOST}/api/contact`, init);
+}
+
 async function call(req: Request, env: ContactEnv = sendEnv) {
   const response = await onRequest({ request: req, env });
   const text = await response.text();
@@ -126,6 +136,45 @@ describe("request boundary", () => {
     assert.equal(declared.response.status, 413);
     const actual = await call(request(null, { raw: JSON.stringify({ ...validPayload(), details: "あ".repeat(6000) }) }));
     assert.equal(actual.response.status, 413);
+  });
+
+  test("cancels an oversized stream without reading the remaining body", async () => {
+    let pulls = 0;
+    let cancelled = false;
+    const stream = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulls++;
+        if (pulls === 1) controller.enqueue(new Uint8Array(CONTACT_MAX_BODY_BYTES));
+        else if (pulls === 2) controller.enqueue(new Uint8Array([32]));
+        else controller.error(new Error("remaining body should not be read"));
+      },
+      cancel() { cancelled = true; }
+    }, { highWaterMark: 0 });
+    const req = streamedRequest(stream);
+    assert.equal(req.headers.has("Content-Length"), false);
+    const { response, body } = await call(req);
+    assert.equal(response.status, 413);
+    assert.equal(body.code, "body_too_large");
+    assert.equal(pulls, 2);
+    assert.equal(cancelled, true);
+    assert.equal(calls.length, 0);
+  });
+
+  test("decodes Japanese input split inside a UTF-8 character at the body limit", async () => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(JSON.stringify({ ...validPayload(), name: "山田 花子" }));
+    const split = data.indexOf(encoder.encode("山")[0]) + 1;
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(data.subarray(0, split));
+        controller.enqueue(data.subarray(split));
+        controller.enqueue(new Uint8Array(CONTACT_MAX_BODY_BYTES - data.length).fill(32));
+        controller.close();
+      }
+    });
+    const { response } = await call(streamedRequest(stream));
+    assert.equal(response.status, 200);
+    assert.match(JSON.parse(String(emailCalls()[0].init?.body)).text, /山田 花子/);
   });
 
   test("rejects malformed JSON and schema violations", async () => {

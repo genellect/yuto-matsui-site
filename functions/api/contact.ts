@@ -208,14 +208,29 @@ export async function onRequest({ request, env }: PagesContext): Promise<Respons
   if (Number.isFinite(declaredLength) && declaredLength > CONTACT_MAX_BODY_BYTES) {
     return fail({ code: "body_too_large", status: 413 });
   }
-  let bodyText: string;
+  let bodyText = "";
+  const reader = request.body?.getReader();
   try {
-    bodyText = await request.text();
+    if (reader) {
+      const decoder = new TextDecoder();
+      let bytesRead = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        bytesRead += value.byteLength;
+        if (bytesRead > CONTACT_MAX_BODY_BYTES) {
+          // Stop consuming the body without waiting for upstream cancellation.
+          void reader.cancel().catch(() => {});
+          return fail({ code: "body_too_large", status: 413 });
+        }
+        bodyText += decoder.decode(value, { stream: true });
+      }
+      bodyText += decoder.decode();
+    }
   } catch {
     return fail({ code: "body", status: 400 });
-  }
-  if (new TextEncoder().encode(bodyText).byteLength > CONTACT_MAX_BODY_BYTES) {
-    return fail({ code: "body_too_large", status: 413 });
+  } finally {
+    reader?.releaseLock();
   }
 
   let raw: unknown;

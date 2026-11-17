@@ -110,8 +110,9 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 |---|---|
 | 通信失敗、502、503、timeout、JSON以外の応答 | 申し訳ありません。ただいまメッセージをお送りできませんでした。ご入力いただいた内容はそのまま残っていますので、少し時間をおいて、もう一度お試しください。 |
 | 429（連続送信） | 申し訳ありません。続けてお送りいただいたため、少し時間をおいてから、もう一度お試しください。ご入力いただいた内容はそのまま残っています。 |
-| Turnstileの失敗 | 確認が完了しませんでした。お手数ですが、もう一度お試しください。 |
-| 上記のどれかが2回続いたとき（追記） | お急ぎの場合は、[トップページ](/#contact-cta)に記載のメールアドレスからもご連絡いただけます。 |
+| 送信時のTurnstile検証の失敗 | 確認が完了しませんでした。お手数ですが、もう一度お試しください。 |
+| 画面のTurnstileが読み込めない、または確認を15秒待っても完了しない | 送信に必要な確認が完了していません。ご入力いただいた内容はそのまま残っています。既存のメール案内も表示する。確認が完了すればフォームから送信できる。 |
+| 通信・配送エラーまたは429が2回以上あったとき（追記） | お急ぎの場合は、[トップページ](/#contact-cta)に記載のメールアドレスからもご連絡いただけます。 |
 
 文言は `src/contact/copy.ts` にまとめる。E2Eでは、二択・確認コード・自動返信・「代表」・「COMPASS」がDOMにもaria属性にも含まれないことを検査する（§11）。
 
@@ -150,7 +151,7 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 | 2 | Content-Type が `application/json` でない | 415 |
 | 3 | 設定の不足（§7のどれか1つでも欠けている） | 503 `configuration`（送信しないで失敗を返す） |
 | 4 | host ≠ `CONTACT_ALLOWED_HOST`、または Origin ≠ `https://` + 同host（mockでは request URL と同じorigin） | 403 `origin` |
-| 5 | Content-Length か実際のbodyが16KiBを超える | 413 |
+| 5 | Content-Lengthが16 KiBを超える、または本文の読み取り中に16 KiBを超える | 読み取りを打ち切り、413 |
 | 6 | JSONとして不正、またはschema違反 | 400 / 422（`fieldErrors`付き） |
 | 7 | honeypot に値がある | 200（送信しない） |
 | 8 | Turnstileが `success`・`hostname`・`action` のどれかで失敗、または通信失敗 | 422 `turnstile` |
@@ -210,7 +211,7 @@ and http.request.uri.path ne "/api/contact"
 
 ### 7.4 連続アクセスの制限
 
-既存のWAF rate limiting ruleを1本使う（host=`yuto-matsui.com` AND path=`/api/contact` AND method=POST）。閾値と動作は非公開の記録で管理する。DBによる長期間の送信数制限は作らない。
+Cloudflare FreeのWAF rate limiting ruleを1本使い、条件はURI Pathが `/api/contact` と一致することに絞る。Freeの計数条件はIPで、HostとMethodはルール式に指定できない。正式ホスト・同一Origin・POSTの判定はPages Functionが行う。パスだけで一致するため、適用前に同じゾーンの他のホストでこのパスを使用していないことを確認する。閾値と動作は非公開の記録で管理する。[プラン別の制限](https://developers.cloudflare.com/waf/rate-limiting-rules/#availability)
 
 ### 7.5 `_routes.json`
 
@@ -307,7 +308,7 @@ PR #8 に、コードで実装できる範囲をすべて入れた。Cloudflare�
 | T4 | 個人用Turnstile widgetを作る（hostnameは `yuto-matsui.com`） | オーナー | — | sitekeyとsecret |
 | T5 | Pages環境変数をPreview（mock、テスト鍵）に設定し、Previewで `/api/contact` まで通しで確かめる | 承認のもと実施 | T4 | Previewで受付画面まで到達する（mock） |
 | T6 | Pages環境変数をProductionに設定する（§7.1） | 承認のもと実施 | T2〜T4 | 設定の記録 |
-| T7 | WAFのrate limiting ruleを追加する（host、path、POSTに限定） | 承認のもと実施 | — | 閾値を非公開の記録に残す |
+| T7 | WAFのrate limiting ruleを追加する（URI Pathの完全一致、§7.4） | 承認のもと実施 | 同じゾーンの他のホストでパスが重複しないこと | 閾値を非公開の記録に残す |
 | T8 | PR #8 をmergeし、本番deployを確かめる | オーナーの指示 | T5〜T7。mainのbuildは本番用sitekeyがないと失敗するので、T6を先に済ませる | `Production verification` が成功する |
 | T9 | `Return COMPASS routes` に除外3条件を追加する（§7.3） | オーナーの指示 | T8 | `/contact/` が200、`/api/contact` へのGETが405。他の転送は維持 |
 | T10 | 本番の受入：承認済みのテストで1通送り、Reply-Toと受付画面を確かめる | オーナーの指示 | T9 | 公開記録（`docs/deployments/`）を作る |

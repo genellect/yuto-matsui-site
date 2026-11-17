@@ -34,6 +34,7 @@ declare global {
 }
 
 const initialForm: ContactFields = { name: "", affiliation: "", email: "", details: "" };
+const TURNSTILE_WAIT_MS = 15_000;
 
 // Preview builds use Cloudflare's public test key; production must provide its own.
 const turnstileSiteKey = process.env.NEXT_PUBLIC_CONTACT_TURNSTILE_SITE_KEY?.trim() || "1x00000000000000000000AA";
@@ -96,6 +97,7 @@ export function ContactForm() {
   const [submittedEmail, setSubmittedEmail] = useState("");
   const [turnstileReady, setTurnstileReady] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileUnavailable, setTurnstileUnavailable] = useState(false);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const turnstileWidgetRef = useRef<string | null>(null);
   const honeypotRef = useRef<HTMLInputElement>(null);
@@ -148,28 +150,52 @@ export function ContactForm() {
   for (const [field, message] of Object.entries(serverErrors)) if (message) visibleErrors[field as ContactFieldName] = message;
   const canSubmit = validation.ok && Boolean(turnstileToken) && status === "idle";
 
+  const showTurnstileFallback = useCallback(() => {
+    setTurnstileToken("");
+    setTurnstileUnavailable(true);
+    return true;
+  }, []);
+
   useEffect(() => {
-    if (!turnstileReady || !turnstileContainerRef.current || !window.turnstile) return;
-    const widgetId = window.turnstile.render(turnstileContainerRef.current, {
-      sitekey: turnstileSiteKey,
-      action: CONTACT_TURNSTILE_ACTION,
-      appearance: "always",
-      language: "ja",
-      size: "flexible",
-      theme: "light",
-      callback: (token: string) => setTurnstileToken(token),
-      "error-callback": () => {
-        setTurnstileToken("");
-        setNotice("turnstile");
-      },
-      "expired-callback": () => setTurnstileToken("")
-    });
+    if (!entryComplete || turnstileToken || turnstileUnavailable || status !== "idle") return;
+    const deadline = window.setTimeout(() => setTurnstileUnavailable(true), TURNSTILE_WAIT_MS);
+    return () => window.clearTimeout(deadline);
+  }, [entryComplete, turnstileToken, turnstileUnavailable, status]);
+
+  useEffect(() => {
+    if (!turnstileReady || !turnstileContainerRef.current) return;
+    const api = window.turnstile;
+    if (!api) {
+      showTurnstileFallback();
+      return;
+    }
+    let widgetId: string;
+    try {
+      widgetId = api.render(turnstileContainerRef.current, {
+        sitekey: turnstileSiteKey,
+        action: CONTACT_TURNSTILE_ACTION,
+        appearance: "always",
+        language: "ja",
+        size: "flexible",
+        theme: "light",
+        callback: (token: string) => {
+          setTurnstileToken(token);
+          setTurnstileUnavailable(false);
+        },
+        "error-callback": showTurnstileFallback,
+        "timeout-callback": showTurnstileFallback,
+        "expired-callback": () => setTurnstileToken("")
+      });
+    } catch {
+      showTurnstileFallback();
+      return;
+    }
     turnstileWidgetRef.current = widgetId;
     return () => {
-      if (window.turnstile && turnstileWidgetRef.current) window.turnstile.remove(turnstileWidgetRef.current);
+      api.remove(widgetId);
       turnstileWidgetRef.current = null;
     };
-  }, [turnstileReady]);
+  }, [turnstileReady, showTurnstileFallback]);
 
   const resetTurnstile = () => {
     setTurnstileToken("");
@@ -256,7 +282,10 @@ export function ContactForm() {
     );
   }
 
-  const noticeText = notice === "validation" ? CONTACT_FORM_ERROR_MESSAGE : notice ? copy[notice] : "";
+  const showEmailFallback = turnstileUnavailable && !turnstileToken;
+  const noticeText = showEmailFallback
+    ? copy.turnstileUnavailable
+    : notice === "validation" ? CONTACT_FORM_ERROR_MESSAGE : notice ? copy[notice] : "";
 
   return (
     <section className={styles.contactSurface} aria-labelledby="form-title" data-entry-complete={entryComplete}>
@@ -334,7 +363,15 @@ export function ContactForm() {
             <input ref={honeypotRef} id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
           </div>
 
-          {entryComplete ? <Script id="cloudflare-turnstile-contact" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" strategy="afterInteractive" onLoad={() => setTurnstileReady(true)} onReady={() => setTurnstileReady(true)} /> : null}
+          {entryComplete ? (
+            <Script
+              id="cloudflare-turnstile-contact"
+              src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+              strategy="afterInteractive"
+              onReady={() => setTurnstileReady(true)}
+              onError={showTurnstileFallback}
+            />
+          ) : null}
 
           <section className={styles.submitStage} aria-label={copy.submitLabel}>
             <p className={styles.handlingNote}>{copy.handlingNote}</p>
@@ -342,7 +379,7 @@ export function ContactForm() {
             {noticeText ? (
               <div className={styles.statusError} role="alert">
                 <p>{noticeText}</p>
-                {failures >= 2 && (notice === "failure" || notice === "rateLimited") ? (
+                {showEmailFallback || (failures >= 2 && (notice === "failure" || notice === "rateLimited")) ? (
                   <p>{copy.fallbackBefore}<a href="/#contact-cta">{copy.fallbackLink}</a>{copy.fallbackAfter}</p>
                 ) : null}
               </div>

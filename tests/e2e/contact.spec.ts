@@ -166,6 +166,47 @@ for (const layout of layouts) {
       await expect(page.locator('#details')).toHaveAttribute('maxlength', '1000');
     });
 
+    test('blocked Turnstile script offers the email route without losing the draft', async ({ page }) => {
+      await page.route('https://challenges.cloudflare.com/**', (route) => route.abort('blockedbyclient'));
+      await page.goto('/contact/');
+      await enterByBypass(page);
+      await fill(page);
+
+      const alert = page.getByRole('alert').filter({ hasText: '送信に必要な確認が完了していません' });
+      await expect(alert.getByRole('link', { name: 'トップページ' })).toHaveAttribute('href', '/#contact-cta');
+      await expect(submit(page)).toBeDisabled();
+      await expect(page.locator('#email')).toHaveValue('hanako@example.com');
+      await expect(page.locator('#details')).toHaveValue(/共同研究について/);
+    });
+
+    test('a stalled Turnstile offers email and recovers when a token arrives', async ({ page }) => {
+      await page.clock.install();
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.route('https://challenges.cloudflare.com/**', (route) => route.fulfill({
+        contentType: 'application/javascript',
+        body: `window.turnstile = {
+          render(container, options) {
+            container.dataset.testTurnstile = 'waiting';
+            setTimeout(() => options.callback('test-token'), 20000);
+            return 'test-widget';
+          },
+          remove() {}
+        };`
+      }));
+      await page.goto('/contact/');
+      await expect(page.locator('[data-test-turnstile="waiting"]')).toBeAttached();
+      await fill(page);
+
+      const alert = page.getByRole('alert').filter({ hasText: '送信に必要な確認が完了していません' });
+      await page.clock.fastForward(16000);
+      await expect(alert.getByRole('link', { name: 'トップページ' })).toBeVisible();
+      await expect(submit(page)).toBeDisabled();
+      await page.clock.fastForward(5000);
+      await expect(submit(page)).toBeEnabled();
+      await expect(alert).toHaveCount(0);
+      await expect(page.locator('#details')).toHaveValue(/共同研究について/);
+    });
+
     test('successful message: one request with only the expected fields', async ({ page }) => {
       await issueTurnstileTokens(page);
       const bodies: Record<string, unknown>[] = [];
