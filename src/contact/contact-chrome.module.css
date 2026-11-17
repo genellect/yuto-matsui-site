@@ -20,9 +20,9 @@
 
 /* The base rules the top page gets from its global styles (src/inherited/styles/legacy.css),
    at zero specificity so the top page's own module rules still win. */
-.portfolio :where(a) { color: inherit; text-decoration: none; }
-.portfolio :where(button) { color: inherit; font: inherit; }
-.portfolio :where(p) { margin: 0; }
+:where(.portfolio a) { color: inherit; text-decoration: none; }
+:where(.portfolio button) { color: inherit; font: inherit; }
+:where(.portfolio p) { margin: 0; }
 
 .portfolio *, .portfolio *::before, .portfolio *::after { box-sizing: border-box; }
 .portfolio a:focus-visible, .portfolio button:focus-visible { outline: 3px solid #316fd7; outline-offset: 4px; }
