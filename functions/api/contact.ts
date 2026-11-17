@@ -2,7 +2,9 @@ import {
   CONTACT_MAX_BODY_BYTES,
   CONTACT_TURNSTILE_ACTION,
   parseContactRequest,
+  affiliationLabels,
   contactTopics,
+  detailsLabels,
   type ContactRequest
 } from "../../src/contact/schema.ts";
 
@@ -131,12 +133,13 @@ export function notificationText(payload: ContactRequest, receivedAt: Date) {
     "yuto-matsui.com のContactからメッセージが届きました。",
     "",
     `受信日時: ${formatReceivedAt(receivedAt)}`,
-    `ご用件: ${contactTopics[payload.topic]}`,
+    `種類: ${contactTopics[payload.topic]}`,
+    `${affiliationLabels[payload.topic]}: ${payload.affiliation}`,
+    ...(payload.topic === "student" ? [`学年: ${payload.grade}`] : []),
     `お名前: ${payload.name}`,
-    `所属: ${payload.affiliation || "（未記入）"}`,
     `メールアドレス: ${payload.email}`,
     "",
-    "メッセージ:",
+    `${detailsLabels[payload.topic]}:`,
     payload.details,
     "",
     "このメールに返信すると、送信者のメールアドレス宛に届きます。"

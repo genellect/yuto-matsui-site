@@ -7,9 +7,13 @@ import { contactCopy as copy } from "./copy";
 import {
   CONTACT_ENDPOINT,
   CONTACT_TURNSTILE_ACTION,
+  affiliationLabels,
+  contactGrades,
   contactLimits,
   contactTopics,
+  detailsLabels,
   describeContactField,
+  describeContactGrade,
   describeContactTopic,
   validateContactFields,
   type ContactFieldErrors,
@@ -22,7 +26,8 @@ import sheet from "./contact-sheet.module.css";
 
 type SubmissionState = "idle" | "submitting" | "success";
 type Notice = "" | "failure" | "rateLimited" | "turnstile" | "turnstilePending" | "validation";
-type Receipt = ContactFields & { topic: ContactTopic };
+type Receipt = ContactFields & { topic: ContactTopic; grade: string };
+type ErrorKey = ContactFieldName | "grade";
 
 type TurnstileApi = {
   remove: (widgetId: string) => void;
@@ -36,7 +41,8 @@ declare global {
   }
 }
 
-const initialForm: ContactFields = { name: "", affiliation: "", email: "", details: "" };
+const initialForm = { name: "", email: "", details: "" };
+type SharedField = keyof typeof initialForm;
 const TURNSTILE_WAIT_MS = 15_000;
 const COUNTER_FROM = contactLimits.details.max - 100;
 const topicEntries = Object.entries(contactTopics) as [ContactTopic, string][];
@@ -56,14 +62,21 @@ async function readResult(response: Response) {
 
 export function ContactForm() {
   const [entryComplete, setEntryComplete] = useState(false);
-  const [topic, setTopic] = useState<ContactTopic | "">("");
-  const [form, setForm] = useState<ContactFields>(initialForm);
-  const [touched, setTouched] = useState<Partial<Record<ContactFieldName, boolean>>>({});
+  // The form is complete from the start: the first choice is selected and its fields are shown.
+  const [topic, setTopic] = useState<ContactTopic | "">("work");
+  const [shared, setShared] = useState(initialForm);
+  // Each choice keeps its own affiliation, so switching back restores what was typed.
+  const [affiliations, setAffiliations] = useState<Record<ContactTopic, string>>({ work: "", student: "" });
+  const [grade, setGrade] = useState("");
+  const [touched, setTouched] = useState<Partial<Record<ErrorKey, boolean>>>({});
   const [attempted, setAttempted] = useState(false);
   const [serverErrors, setServerErrors] = useState<ContactFieldErrors>({});
   const [status, setStatus] = useState<SubmissionState>("idle");
   const [notice, setNotice] = useState<Notice>("");
   const [failures, setFailures] = useState(0);
+  const form: ContactFields = { ...shared, affiliation: topic ? affiliations[topic] : "" };
+  const gradeValue = topic === "student" ? grade : "";
+  const dirty = Boolean(shared.name || shared.email || shared.details || affiliations.work || affiliations.student || grade);
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [turnstileReady, setTurnstileReady] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
@@ -85,6 +98,17 @@ export function ContactForm() {
       window.scrollTo({ top: 0, behavior: "instant" });
     });
   }, []);
+
+  // Leaving with an unsent draft asks first; the browser supplies the wording.
+  useEffect(() => {
+    if (!dirty || status === "success") return;
+    const guard = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", guard);
+    return () => window.removeEventListener("beforeunload", guard);
+  }, [dirty, status]);
 
   useEffect(() => {
     if (status !== "success") return;
@@ -146,33 +170,43 @@ export function ContactForm() {
     if (window.turnstile && turnstileWidgetRef.current) window.turnstile.reset(turnstileWidgetRef.current);
   };
 
-  const updateField = (field: ContactFieldName, value: string) => {
-    if (status !== "idle") return;
-    setForm((current) => ({ ...current, [field]: value }));
-    setServerErrors((current) => ({ ...current, [field]: undefined }));
+  const clearProblem = (key: ErrorKey) => {
+    setServerErrors((current) => ({ ...current, [key]: undefined }));
     if (notice === "validation") setNotice("");
   };
 
-  const markTouched = (field: ContactFieldName) => setTouched((current) => ({ ...current, [field]: true }));
+  const updateField = (field: ContactFieldName, value: string) => {
+    if (status !== "idle") return;
+    if (field === "affiliation") {
+      if (topic) setAffiliations((current) => ({ ...current, [topic]: value }));
+    } else {
+      setShared((current) => ({ ...current, [field]: value }));
+    }
+    clearProblem(field);
+  };
 
-  const fieldError = (field: ContactFieldName) => {
-    if (!attempted && !touched[field]) return undefined;
-    return describeContactField(field, form[field]) ?? serverErrors[field];
+  const markTouched = (key: ErrorKey) => setTouched((current) => ({ ...current, [key]: true }));
+
+  const fieldError = (key: ErrorKey) => {
+    if (!attempted && !touched[key]) return undefined;
+    if (key === "grade") return describeContactGrade(topic, gradeValue) ?? serverErrors.grade;
+    return describeContactField(key, form[key], topic || undefined) ?? serverErrors[key];
   };
   const topicError = attempted ? describeContactTopic(topic) ?? serverErrors.topic : undefined;
-  const describedBy = (field: ContactFieldName, helperId?: string) => (
-    [helperId, fieldError(field) ? `${field}-error` : undefined].filter(Boolean).join(" ") || undefined
-  );
+  const describedBy = (key: ErrorKey) => (fieldError(key) ? `${key}-error` : undefined);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (status !== "idle") return;
     setAttempted(true);
-    const parsed = validateContactFields(form);
+    const parsed = validateContactFields(form, topic || undefined);
     const topicProblem = describeContactTopic(topic);
-    if (!parsed.ok || topicProblem || !topic) {
-      // Take the visitor straight to the first thing to fix.
-      const first = topicProblem ? "topic-work" : (["name", "email", "affiliation", "details"] as const).find((field) => !parsed.ok && parsed.fieldErrors[field]);
+    const gradeProblem = describeContactGrade(topic, gradeValue);
+    if (!parsed.ok || topicProblem || gradeProblem || !topic) {
+      // Take the visitor straight to the first thing to fix, in the order it appears.
+      const first = topicProblem ? "topic-work" : (["affiliation", "grade", "name", "email", "details"] as const).find((key) => (
+        key === "grade" ? Boolean(gradeProblem) : !parsed.ok && Boolean(parsed.fieldErrors[key])
+      ));
       if (first) document.getElementById(first)?.focus();
       return;
     }
@@ -191,6 +225,7 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           topic,
+          grade: gradeValue,
           ...parsed.data,
           requestId: crypto.randomUUID(),
           turnstileToken,
@@ -199,7 +234,7 @@ export function ContactForm() {
       });
       const result = await readResult(response);
       if (response.ok && result.ok === true) {
-        setReceipt({ topic, ...parsed.data });
+        setReceipt({ topic, grade: gradeValue, ...parsed.data });
         setStatus("success");
         return;
       }
@@ -221,17 +256,17 @@ export function ContactForm() {
   if (status === "success" && receipt) {
     return (
       <section className={`${styles.contactSurface} ${styles.successCard}`} aria-labelledby="success-title">
-        <div className={styles.successIcon} aria-hidden="true">✓</div>
         <h1 id="success-title" ref={successHeadingRef} tabIndex={-1}>{copy.successTitle}</h1>
         <p>{copy.successBefore}<span>{receipt.email}</span>{copy.successAfter}</p>
         <section className={sheet.receipt} aria-labelledby="receipt-title">
           <h2 id="receipt-title">{copy.receiptTitle}</h2>
           <dl>
             <div><dt>{copy.receiptTopic}</dt><dd>{contactTopics[receipt.topic]}</dd></div>
+            <div><dt>{affiliationLabels[receipt.topic]}</dt><dd>{receipt.affiliation}</dd></div>
+            {receipt.topic === "student" ? <div><dt>{copy.receiptGrade}</dt><dd>{receipt.grade}</dd></div> : null}
             <div><dt>{copy.receiptName}</dt><dd>{receipt.name}</dd></div>
             <div><dt>{copy.receiptEmail}</dt><dd>{receipt.email}</dd></div>
-            {receipt.affiliation ? <div><dt>{copy.receiptAffiliation}</dt><dd>{receipt.affiliation}</dd></div> : null}
-            <div><dt>{copy.receiptMessage}</dt><dd className={sheet.receiptMessage}>{receipt.details}</dd></div>
+            <div><dt>{detailsLabels[receipt.topic]}</dt><dd className={sheet.receiptMessage}>{receipt.details}</dd></div>
           </dl>
         </section>
         <a className={sheet.homeLink} href="/">{copy.home}</a>
@@ -243,18 +278,22 @@ export function ContactForm() {
   const noticeText = showEmailFallback ? copy.turnstileUnavailable : notice ? copy[notice] : "";
   const remaining = contactLimits.details.max - form.details.length;
 
-  const textField = (field: "name" | "email" | "affiliation", label: string, props: React.InputHTMLAttributes<HTMLInputElement>, optional = false) => {
+  const textField = (field: "name" | "email" | "affiliation", label: string, props: React.InputHTMLAttributes<HTMLInputElement>) => {
     const error = fieldError(field);
     return (
-      <div className={`${sheet.field} ${field === "affiliation" ? sheet.wide : ""}`}>
-        <label htmlFor={field}>{label}{optional ? <span className={sheet.optional}>（{copy.optional}）</span> : null}</label>
-        <input id={field} name={field} value={form[field]} maxLength={contactLimits[field].max} aria-invalid={Boolean(error)} aria-describedby={describedBy(field)} onBlur={() => markTouched(field)} onChange={(event) => updateField(field, event.target.value)} {...props} />
+      <div className={sheet.field}>
+        <label htmlFor={field}>{label}</label>
+        <input id={field} name={field} value={form[field]} maxLength={contactLimits[field].max} required aria-invalid={Boolean(error)} aria-describedby={describedBy(field)} onBlur={() => markTouched(field)} onChange={(event) => updateField(field, event.target.value)} {...props} />
         {error ? <p className={sheet.error} id={`${field}-error`}>{error}</p> : null}
       </div>
     );
   };
 
+  const gradeError = fieldError("grade");
   const detailsError = fieldError("details");
+  const affiliationField = topic ? textField("affiliation", affiliationLabels[topic], { type: "text", autoComplete: "organization" }) : null;
+  const nameField = textField("name", copy.name, { type: "text", autoComplete: "name" });
+  const emailField = textField("email", copy.email, { type: "email", autoComplete: "email", inputMode: "email" });
 
   return (
     <section className={styles.contactSurface} aria-labelledby="form-title" data-entry-complete={entryComplete}>
@@ -267,34 +306,50 @@ export function ContactForm() {
         </div>
 
         <div className={sheet.flow} id="contact-flow" hidden={!entryComplete}>
+          {/* The two choices are the page's statement of what it is for; the fields follow the choice. */}
+          <fieldset className={sheet.choices} aria-describedby={topicError ? "topic-error" : undefined}>
+            <legend className={styles.srOnly}>{copy.topicLegend}</legend>
+            {topicEntries.map(([value, label]) => (
+              <label key={value} className={sheet.choice} data-checked={topic === value}>
+                <input id={`topic-${value}`} type="radio" name="topic" value={value} checked={topic === value} aria-invalid={Boolean(topicError)} onChange={() => { if (status === "idle") { setTopic(value); clearProblem("affiliation"); setServerErrors((current) => ({ ...current, topic: undefined, grade: undefined })); } }} />
+                <span>{label}</span>
+              </label>
+            ))}
+            {topicError ? <p className={sheet.error} id="topic-error">{topicError}</p> : null}
+          </fieldset>
+
           <div className={sheet.sheet}>
-            <fieldset className={sheet.topics} aria-describedby={topicError ? "topic-error" : undefined}>
-              <legend>{copy.topicLegend}</legend>
-              <div className={sheet.segments}>
-                {topicEntries.map(([value, label]) => (
-                  <label key={value} className={sheet.segment} data-checked={topic === value}>
-                    <input id={`topic-${value}`} type="radio" name="topic" value={value} checked={topic === value} aria-invalid={Boolean(topicError)} onChange={() => { if (status === "idle") { setTopic(value); setServerErrors((current) => ({ ...current, topic: undefined })); } }} />
-                    <span>{label}</span>
-                  </label>
-                ))}
+            {topic === "student" ? (
+              <div className={sheet.grid}>
+                {affiliationField}
+                <div className={sheet.field}>
+                  <label htmlFor="grade">{copy.grade}</label>
+                  <select id="grade" name="grade" value={grade} required aria-invalid={Boolean(gradeError)} aria-describedby={describedBy("grade")} onBlur={() => markTouched("grade")} onChange={(event) => { if (status === "idle") { setGrade(event.target.value); clearProblem("grade"); } }}>
+                    <option value="" disabled>{copy.gradePlaceholder}</option>
+                    {contactGrades.map((value) => <option key={value} value={value}>{value}</option>)}
+                  </select>
+                  {gradeError ? <p className={sheet.error} id="grade-error">{gradeError}</p> : null}
+                </div>
+                {nameField}
+                {emailField}
               </div>
-              {topicError ? <p className={sheet.error} id="topic-error">{topicError}</p> : null}
-            </fieldset>
-
-            <div className={sheet.grid}>
-              {textField("name", copy.name, { type: "text", autoComplete: "name", required: true })}
-              {textField("email", copy.email, { type: "email", autoComplete: "email", inputMode: "email", required: true })}
-              {textField("affiliation", copy.affiliation, { type: "text", autoComplete: "organization" }, true)}
-            </div>
-
-            <div className={`${sheet.field} ${sheet.message}`}>
-              <label htmlFor="details">{copy.message}</label>
-              <p className={sheet.hint} id="details-hint" aria-live="polite">{topic ? copy.topicHints[topic] : null}</p>
-              <textarea id="details" name="details" rows={9} maxLength={contactLimits.details.max} required value={form.details} aria-invalid={Boolean(detailsError)} aria-describedby={describedBy("details", "details-hint")} onBlur={() => markTouched("details")} onChange={(event) => updateField("details", event.target.value)} />
-              <div className={sheet.messageMeta}>
-                {detailsError ? <p className={sheet.error} id="details-error">{detailsError}</p> : <span />}
-                {form.details.length >= COUNTER_FROM ? <span className={sheet.counter}>残り{remaining}文字</span> : null}
+            ) : (
+              <div className={sheet.grid}>
+                {affiliationField}
+                {nameField}
+                <div className={sheet.wide}>{emailField}</div>
               </div>
+            )}
+
+            <div className={sheet.field}>
+              <label htmlFor="details">{detailsLabels[topic || "work"]}</label>
+              <textarea id="details" name="details" rows={6} maxLength={contactLimits.details.max} required value={form.details} aria-invalid={Boolean(detailsError)} aria-describedby={describedBy("details")} onBlur={() => markTouched("details")} onChange={(event) => updateField("details", event.target.value)} />
+              {detailsError || form.details.length >= COUNTER_FROM ? (
+                <div className={sheet.messageMeta}>
+                  {detailsError ? <p className={sheet.error} id="details-error">{detailsError}</p> : <span />}
+                  {form.details.length >= COUNTER_FROM ? <span className={sheet.counter}>残り{remaining}文字</span> : null}
+                </div>
+              ) : null}
             </div>
 
             <div className={sheet.verify} ref={turnstileContainerRef} />
@@ -309,7 +364,6 @@ export function ContactForm() {
             ) : null}
 
             <div className={sheet.footer}>
-              <p className={sheet.note}>{copy.handlingNote}</p>
               <button className={sheet.submit} type="submit" disabled={status === "submitting"}>
                 {status === "submitting" ? copy.submitting : copy.submit}
               </button>

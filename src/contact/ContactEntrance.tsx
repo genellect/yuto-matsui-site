@@ -78,10 +78,7 @@ export function ContactEntrance({ onComplete }: Props) {
   }, [entering]);
 
   return (
-    <section className={styles.entrance} aria-labelledby="entrance-title" data-contact-entrance>
-      <div className={styles.heading}>
-        <h2 id="entrance-title">{copy.entranceTitle}</h2>
-      </div>
+    <div className={styles.entrance} data-contact-entrance>
       <div className={styles.scene} data-entering={entering} data-film-layout={entering ? layout : undefined} data-finishing={finishing}>
         <picture className={styles.poster}>
           <source media="(max-width: 700px)" srcSet={`${mediaRoot}/lobby-mobile.webp`} />
@@ -94,9 +91,8 @@ export function ContactEntrance({ onComplete }: Props) {
         </> : null}
       </div>
       <div className={styles.controls}>
-        <p className={styles.status} role="status">{copy.entering}</p>
         <button type="button" className={styles.skip} onClick={finish}>{copy.skip} <span aria-hidden="true">→</span></button>
       </div>
-    </section>
+    </div>
   );
 }

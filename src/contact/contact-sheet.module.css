@@ -2,14 +2,14 @@
    Tokens follow the approved Contact palette (contact.module.css .page). */
 
 .flow {
-  --sheet-ink: #182f3d;
-  --sheet-copy: #52636d;
-  --sheet-accent: #386c73;
-  --sheet-line: #d3dedc;
-  --sheet-field: #fbfcfc;
+  --sheet-ink: #142b3c;
+  --sheet-copy: #405868;
+  --sheet-accent: #278b96;
+  --sheet-line: #d5e1e8;
+  --sheet-field: #fbfdfe;
   --sheet-error: #b3263b;
   display: grid;
-  gap: 0;
+  gap: 20px;
   min-width: 0;
 }
 
@@ -20,22 +20,69 @@
   gap: 32px;
   min-width: 0;
   padding: clamp(28px, 4.5vw, 52px);
-  border: 1px solid #d9e1df;
+  border: 1px solid #dbe5ec;
   border-radius: 4px 20px 4px 4px;
   background: #fff;
   box-shadow: 0 14px 48px #1b354608;
   color: var(--sheet-ink);
 }
 
-/* Topic: three plain choices that double as the statement of what this inbox is for. */
-.topics {
+/* The two choices: set large, in type alone, directly under the heading. They state what this
+   page receives; the sheet below always shows the fields for the current choice. */
+.choices {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   min-width: 0;
   margin: 0;
   padding: 0;
-  border: 0;
+  border: 1px solid #cdd9e1;
+  border-radius: 4px 20px 4px 4px;
+  overflow: hidden;
 }
 
-.topics legend,
+.choice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(84px, 9vw, 112px);
+  padding: 14px 20px;
+  color: var(--sheet-ink);
+  font-size: clamp(1.1rem, 1.9vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.choice + .choice { border-left: 1px solid #cdd9e1; }
+.choice:hover { background: #ffffffb3; }
+
+.choice input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.choice[data-checked="true"] { background: var(--sheet-ink); color: #fff; }
+.choices:has([data-checked="true"]) .choice[data-checked="false"] { color: var(--sheet-copy); }
+
+.choice:has(input:focus-visible) {
+  z-index: 1;
+  outline: 2px solid var(--sheet-accent);
+  outline-offset: -4px;
+}
+
+.choices .error { grid-column: 1 / -1; margin: 0; padding: 10px 16px; border-top: 1px solid #cdd9e1; }
+
+/* Fields */
 .field > label {
   display: block;
   margin: 0 0 10px;
@@ -46,58 +93,6 @@
   line-height: 1.6;
 }
 
-.segments {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  border: 1px solid var(--sheet-line);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.segment {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 52px;
-  padding: 10px 14px;
-  background: var(--sheet-field);
-  color: var(--sheet-copy);
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.45;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 140ms ease, color 140ms ease;
-}
-
-.segment + .segment { border-left: 1px solid var(--sheet-line); }
-.segment:hover { background: #f1f5f4; color: var(--sheet-ink); }
-
-.segment input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.segment[data-checked="true"] {
-  background: var(--sheet-ink);
-  color: #fff;
-}
-
-.segment:has(input:focus-visible) {
-  z-index: 1;
-  outline: 2px solid var(--sheet-accent);
-  outline-offset: -2px;
-}
-
-.topics:has([aria-invalid="true"]) .segments { border-color: var(--sheet-error); }
-
-/* Fields */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -113,16 +108,11 @@
 
 .wide { grid-column: 1 / -1; }
 
-.optional {
-  margin-left: 4px;
-  color: var(--sheet-copy);
-  font-weight: 500;
-}
-
 .field input,
+.field select,
 .field textarea {
   width: 100%;
-  border: 1px solid #c9d3d6;
+  border: 1px solid #cbd7df;
   border-radius: 10px;
   outline: 0;
   background: var(--sheet-field);
@@ -132,13 +122,26 @@
   transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
 }
 
-.field input {
+.field input,
+.field select {
   min-height: 52px;
   padding: 0 16px;
 }
 
+.field select {
+  appearance: none;
+  padding-right: 42px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--sheet-copy) 50%), linear-gradient(135deg, var(--sheet-copy) 50%, transparent 50%);
+  background-position: calc(100% - 21px) 50%, calc(100% - 16px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.field select:invalid { color: #7a8a91; }
+
 .field textarea {
-  min-height: 240px;
+  min-height: 168px;
   max-height: 560px;
   padding: 15px 16px;
   line-height: 1.8;
@@ -146,26 +149,22 @@
 }
 
 .field input:hover,
+.field select:hover,
 .field textarea:hover { border-color: #97a9b0; }
 
 .field input:focus,
+.field select:focus,
 .field textarea:focus {
   border-color: var(--sheet-accent);
   background: #fff;
-  box-shadow: 0 0 0 3px #386c731f;
+  box-shadow: 0 0 0 3px #278b9624;
 }
 
 .field input[aria-invalid="true"],
+.field select[aria-invalid="true"],
 .field textarea[aria-invalid="true"] { border-color: var(--sheet-error); }
 
-.hint:empty { display: none; }
-
-.hint {
-  margin: -4px 0 10px;
-  color: var(--sheet-copy);
-  font-size: 0.82rem;
-  line-height: 1.7;
-}
+.wide > .field { min-width: 0; }
 
 .messageMeta {
   display: flex;
@@ -208,19 +207,7 @@
 
 .footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding-top: 28px;
-  border-top: 1px solid var(--sheet-line);
-}
-
-.note {
-  max-width: 42em;
-  margin: 0;
-  color: var(--sheet-copy);
-  font-size: 0.84rem;
-  line-height: 1.75;
+  justify-content: flex-end;
 }
 
 .submit {
@@ -240,7 +227,7 @@
   transition: background-color 140ms ease;
 }
 
-.submit:hover:not(:disabled) { background: #22465a; }
+.submit:hover:not(:disabled) { background: #22445a; }
 .submit:focus-visible { outline: 2px solid var(--sheet-accent); outline-offset: 3px; }
 .submit:disabled { cursor: progress; opacity: 0.7; }
 
@@ -253,7 +240,7 @@
   margin-top: 36px;
   padding: 0 28px;
   border-radius: 10px;
-  background: #182f3d;
+  background: #142b3c;
   color: #fff;
   font-size: 0.95rem;
   font-weight: 700;
@@ -262,7 +249,7 @@
 }
 
 .homeLink:hover { background: #22465a; }
-.homeLink:focus-visible { outline: 2px solid #386c73; outline-offset: 3px; }
+.homeLink:focus-visible { outline: 2px solid #278b96; outline-offset: 3px; }
 
 /* Receipt shown after sending: what was sent, so the sender keeps a record. */
 .receipt {
@@ -274,7 +261,7 @@
 
 .receipt h2 {
   margin: 0 0 14px;
-  color: #182f3d;
+  color: #142b3c;
   font-size: 0.9rem;
   font-weight: 700;
   line-height: 1.6;
@@ -292,14 +279,14 @@
 
 .receipt dt {
   margin: 0;
-  color: #52636d;
+  color: #405868;
   font-size: 0.84rem;
   line-height: 1.75;
 }
 
 .receipt dd {
   margin: 0;
-  color: #182f3d;
+  color: #142b3c;
   font-size: 0.9rem;
   line-height: 1.75;
   overflow-wrap: anywhere;
@@ -309,9 +296,7 @@
 
 @media (max-width: 700px) {
   .sheet { gap: 28px; padding: 24px 20px; }
-  .segments { grid-template-columns: minmax(0, 1fr); }
-  .segment { justify-content: flex-start; min-height: 50px; text-align: left; }
-  .segment + .segment { border-top: 1px solid var(--sheet-line); border-left: 0; }
+  .choice { min-height: 72px; padding: 10px 8px; font-size: 1rem; letter-spacing: 0; }
   .grid { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .footer { flex-direction: column; align-items: stretch; }
   .submit { width: 100%; }
@@ -320,9 +305,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .segment, .field input, .field textarea, .submit { transition: none; }
+  .choice, .field input, .field select, .field textarea, .submit { transition: none; }
 }
 
 /* Focusing the first invalid field must not tuck it under the fixed header. */
 .sheet input,
+.sheet select,
 .sheet textarea { scroll-margin-top: 128px; }

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { onRequest, readConfig, notificationText, formatReceivedAt, type ContactEnv } from "../functions/api/contact.ts";
-import { parseContactRequest, normaliseContactField, describeContactField, CONTACT_MAX_BODY_BYTES, CONTACT_TURNSTILE_ACTION } from "../src/contact/schema.ts";
+import { parseContactRequest, normaliseContactField, describeContactField, describeContactGrade, CONTACT_MAX_BODY_BYTES, CONTACT_TURNSTILE_ACTION } from "../src/contact/schema.ts";
 
 // Every outbound request is mocked. No test reaches Turnstile, Cloudflare or a mailbox.
 const HOST = "yuto-matsui.com";
@@ -21,9 +21,10 @@ const sendEnv: ContactEnv = {
 };
 
 const validPayload = () => ({
-  topic: "work" as const,
+  topic: "work" as "work" | "student",
+  grade: "" as "" | "3年",
   name: "山田 花子",
-  affiliation: "",
+  affiliation: "株式会社サンプル 開発部",
   email: " Hanako@Example.COM ",
   details: "共同研究についてご相談させてください。",
   requestId: "3f1c2a4e-5b6d-4e7f-8a9b-0c1d2e3f4a5b",
@@ -187,7 +188,11 @@ describe("request boundary", () => {
     assert.deepEqual(invalid.body.fieldErrors, { email: "メールアドレスの形式を確認してください" });
     const noTopic = await call(request({ ...validPayload(), topic: "other" }));
     assert.equal(noTopic.response.status, 422);
-    assert.deepEqual(noTopic.body.fieldErrors, { topic: "ご用件を選んでください" });
+    assert.deepEqual(noTopic.body.fieldErrors, { topic: "お問い合わせの種類を選んでください" });
+    const noAffiliation = await call(request({ ...validPayload(), affiliation: " " }));
+    assert.deepEqual(noAffiliation.body.fieldErrors, { affiliation: "会社名・所属を入力してください" });
+    const noGrade = await call(request({ ...validPayload(), topic: "student", affiliation: "北里大学" }));
+    assert.deepEqual(noGrade.body.fieldErrors, { grade: "学年を選んでください" });
     assert.equal(calls.length, 0);
   });
 });
@@ -229,7 +234,7 @@ describe("verification", () => {
 
 describe("delivery", () => {
   test("sends one plain-text notification to the fixed recipient with Reply-To", async () => {
-    const { response, body } = await call(request({ ...validPayload(), name: "山田 花子", affiliation: "北里大学" }));
+    const { response, body } = await call(request(validPayload()));
     assert.equal(response.status, 200);
     assert.deepEqual(body, { ok: true });
     const sent = emailCalls();
@@ -241,10 +246,11 @@ describe("delivery", () => {
     assert.deepEqual(message.to, [RECIPIENT]);
     assert.equal(message.from, SENDER);
     assert.equal(message.reply_to, "hanako@example.com");
-    assert.equal(message.subject, "[yuto-matsui.com] お仕事のご相談");
-    assert.match(message.text, /ご用件: お仕事のご相談/);
+    assert.equal(message.subject, "[yuto-matsui.com] お仕事のご依頼");
+    assert.match(message.text, /種類: お仕事のご依頼/);
+    assert.match(message.text, /会社名・所属: 株式会社サンプル 開発部/);
+    assert.doesNotMatch(message.text, /学年:/);
     assert.match(message.text, /お名前: 山田 花子/);
-    assert.match(message.text, /所属: 北里大学/);
     assert.match(message.text, /共同研究についてご相談させてください。/);
   });
 
@@ -282,7 +288,7 @@ describe("delivery", () => {
     const payload = { ...validPayload(), name: "Name Bcc", details: "Subject: injected\nBcc: other@example.test\n本文です。" };
     await call(request(payload));
     const message = JSON.parse(String(emailCalls()[0].init?.body));
-    assert.equal(message.subject, "[yuto-matsui.com] お仕事のご相談");
+    assert.equal(message.subject, "[yuto-matsui.com] お仕事のご依頼");
     const joined = logs.join("\n");
     for (const secret of ["山田", "hanako", "injected", TOKEN, RECIPIENT, "192.0.2"]) assert.ok(!joined.includes(secret), secret);
   });
@@ -302,7 +308,7 @@ describe("delivery", () => {
 describe("schema", () => {
   test("normalises fields like the form", () => {
     assert.equal(normaliseContactField("email", " A@B.CO "), "a@b.co");
-    assert.equal(normaliseContactField("affiliation", "  "), "");
+    assert.equal(normaliseContactField("affiliation", "  "), undefined);
     assert.equal(normaliseContactField("affiliation", "A"), "A");
     assert.equal(normaliseContactField("affiliation", "a".repeat(51)), undefined);
     assert.equal(normaliseContactField("name", "名"), "名");
@@ -322,7 +328,13 @@ describe("schema", () => {
   test("request parser is strict", () => {
     assert.equal(parseContactRequest(validPayload()).ok, true);
     const { affiliation: _omitted, ...withoutAffiliation } = validPayload();
-    assert.equal(parseContactRequest(withoutAffiliation).ok, true);
+    assert.equal(parseContactRequest(withoutAffiliation).ok, false);
+    const { grade: _noGrade, ...withoutGrade } = validPayload();
+    assert.equal(parseContactRequest(withoutGrade).ok, false);
+    assert.equal(parseContactRequest({ ...validPayload(), topic: "student", affiliation: "北里大学", grade: "3年" }).ok, true);
+    assert.equal(parseContactRequest({ ...validPayload(), topic: "student", affiliation: "北里大学", grade: "7年" }).ok, false);
+    assert.equal(parseContactRequest({ ...validPayload(), grade: "3年" }).ok, false);
+    assert.equal(parseContactRequest({ ...validPayload(), topic: "media" }).ok, false);
     assert.equal(parseContactRequest({ ...validPayload(), requestId: "x" }).ok, false);
     assert.equal(parseContactRequest({ ...validPayload(), turnstileToken: "" }).ok, false);
     assert.equal(parseContactRequest({ ...validPayload(), name: 1 }).ok, false);
@@ -337,8 +349,14 @@ describe("schema", () => {
     assert.equal(describeContactField("email", ""), "メールアドレスを入力してください");
     assert.equal(describeContactField("email", "hanako@"), "メールアドレスの形式を確認してください");
     assert.equal(describeContactField("details", " \n "), "メッセージを入力してください");
+    assert.equal(describeContactField("details", "", "work"), "ご用件を入力してください");
+    assert.equal(describeContactField("details", "", "student"), "ご相談内容を入力してください");
     assert.equal(describeContactField("details", "a".repeat(1001)), "1000文字以内で入力してください");
-    assert.equal(describeContactField("affiliation", ""), undefined);
+    assert.equal(describeContactField("affiliation", "", "work"), "会社名・所属を入力してください");
+    assert.equal(describeContactField("affiliation", "", "student"), "大学名を入力してください");
+    assert.equal(describeContactGrade("student", ""), "学年を選んでください");
+    assert.equal(describeContactGrade("student", "大学院"), undefined);
+    assert.equal(describeContactGrade("work", ""), undefined);
   });
 
   test("configuration reader", () => {
@@ -348,9 +366,9 @@ describe("schema", () => {
   });
 
   test("notification text", () => {
-    const text = notificationText({ ...validPayload(), email: "a@b.co" }, new Date("2026-11-17T05:00:00Z"));
+    const text = notificationText({ ...validPayload(), topic: "student", affiliation: "北里大学", grade: "3年", email: "a@b.co" }, new Date("2026-11-17T05:00:00Z"));
     assert.match(text, /受信日時: 2026\/11\/17 14:00 \(JST\)/);
-    assert.match(text, /所属: （未記入）/);
+    assert.match(text, /種類: 学生からの相談\n大学名: 北里大学\n学年: 3年\nお名前: 山田 花子[\s\S]*\nご相談内容:\n共同研究/);
     assert.equal(formatReceivedAt(new Date("2026-01-01T15:30:00Z")), "2026/01/02 00:30 (JST)");
   });
 });
