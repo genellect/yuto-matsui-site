@@ -1,12 +1,14 @@
 """CONTACT residence, original procedural architecture. Blender 4.5 LTS.
 The web hit areas are projected from the same door geometry and camera as the film.
+Personal edition: only the study (Yuto Matsui) is an entrance. The right room stays
+as architecture without signage, so the lobby presents a single destination.
 """
 import bpy, math, argparse, sys, os, random, json
 from mathutils import Vector, Matrix
 from bpy_extras.object_utils import world_to_camera_view
 p=argparse.ArgumentParser()
 p.add_argument('--output',required=True)
-p.add_argument('--target',choices=['representative','compass'],default='representative')
+p.add_argument('--target',choices=['representative'],default='representative')
 p.add_argument('--layout',choices=['desktop','mobile'],default='desktop')
 p.add_argument('--still',action='store_true');p.add_argument('--frame',type=int,default=1)
 p.add_argument('--preview',action='store_true');p.add_argument('--samples',type=int,default=16)
@@ -228,8 +230,10 @@ for target,x in centers.items():
  box('Door header track',(x,2,3.6),(2.65,.5,.085),bronze,.01)
  box('Flush stone threshold',(x,2,.043),(2.6,.8,.028),stone,.006)
  # Quiet lettering is mounted onto the solid wall, never a floating HTML card.
- text('Room name '+target,'執務室' if target=='representative' else '会議室',(x,1.752,4.82),.34,black)
- text('Room identity '+target,'Yuto Matsui' if target=='representative' else 'COMPASS',(x,1.75,4.25),.62,black)
+ # The right room keeps its doors and walls but carries no name or identity.
+ if target=='representative':
+  text('Room name '+target,'執務室',(x,1.752,4.82),.34,black)
+  text('Room identity '+target,'Yuto Matsui',(x,1.75,4.25),.62,black)
  leaves=[]
  for side in [-1,1]:
   h=bpy.data.objects.new(target+' leaf '+str(side),None);s.collection.objects.link(h);h.location=(x+side*.615,2.025,0)
@@ -263,6 +267,7 @@ s.frame_set(1);bpy.context.view_layer.update()
 # Geometry-derived bounding boxes keep transparent web controls on the doors.
 regions={}
 for target,x in centers.items():
+ if target!='representative':continue
  pts=[world_to_camera_view(s,cam,Vector((xx,1.72,z))) for xx in [x-1.3,x+1.3] for z in [.04,4.48]]
  regions[target]={'left':round(min(v.x for v in pts)*100,4),'top':round((1-max(v.y for v in pts))*100,4),'width':round((max(v.x for v in pts)-min(v.x for v in pts))*100,4),'height':round((max(v.y for v in pts)-min(v.y for v in pts))*100,4)}
 with open(os.path.join(a.output,'projection-'+a.layout+'.json'),'w') as f:json.dump(regions,f,indent=2)
