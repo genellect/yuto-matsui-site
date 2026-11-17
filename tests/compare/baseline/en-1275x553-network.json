@@ -6,19 +6,22 @@
     "alt-svc": "h3=\":443\"; ma=86400",
     "cache-control": "public, max-age=0, must-revalidate",
     "cf-cache-status": "DYNAMIC",
-    "cf-ray": "a5aafefb6a36da22-NRT",
+    "cf-ray": "a5c05b67182c4615-ATL",
+    "connection": "close, keep-alive",
     "content-encoding": "br",
     "content-type": "text/html; charset=utf-8",
-    "date": "Sun, 15 Nov 2026 02:58:45 GMT",
+    "date": "Tue, 17 Nov 2026 17:11:52 GMT",
     "link": "</images/founder-portfolio/yuto-matsui-nagano-lake-hero-20260831.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/life-science-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/software-development-unsplash.jpg>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-life-science.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-development.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/source/experience-education.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-drive.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-shogi.webp>; rel=\"preload\"; as=image, </images/founder-portfolio/off-hours-climbing.webp>; rel=\"preload\"; as=image, <https://www.googletagmanager.com/gtag/js?id=G-EHKJ8B8N0Y>; rel=\"preload\"; as=script",
     "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
     "permissions-policy": "camera=(), microphone=(), geolocation=()",
     "referrer-policy": "strict-origin-when-cross-origin",
-    "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=1irbPlUBXu88aymjNO3zX%2Ftli5l7kHI6qvLnZY7XSbL3sY3CnCnNN0wPO%2F%2B2J781T5HZq7GGTygr%2F3hPlE7bcHFRZaY0wAb%2B8g95e%2BEq7T%2BO3KF7bXQNdp%2FuG3In6WII6ok%3D\"}]}",
+    "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=NpOP6f28kPzHxkJspef7vcZSx%2FtW5U2u4iK%2F2CH%2BJwam3FG97ZHPZ2ZgBL2uc1S4BB6ayVCoskawgiglDAR3IgXDHFR5qQxIRhJ6x%2FYDnK6fZlIrnTUydBSYjCLQ5g6oYb4%3D\"}]}",
     "server": "cloudflare",
-    "server-timing": "cfCacheStatus;desc=\"DYNAMIC\", cfEdge;dur=11,cfOrigin;dur=20",
+    "server-timing": "cfCacheStatus;desc=\"DYNAMIC\", cfEdge;dur=46,cfOrigin;dur=84",
+    "transfer-encoding": "chunked",
     "vary": "accept-encoding",
-    "x-content-type-options": "nosniff"
+    "x-content-type-options": "nosniff",
+    "x-portfolio-commit": "3d4a2ce38ad87f553cd7615b7379874288e18936"
   },
   "failures": [],
   "compassRequests": [],
@@ -40,29 +43,29 @@
       "type": "script"
     },
     {
+      "url": "https://yuto-matsui.com/_next/static/css/1fb37fdea126bb8e.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/css/740da7ae25cf9e51.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/css/550d467f913b182e.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
       "url": "https://yuto-matsui.com/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js",
       "status": 200,
       "type": "script"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/css/f6315883b99f1697.css",
+      "url": "https://yuto-matsui.com/_next/static/media/5611c55482296524-s.p.woff2",
       "status": 200,
-      "type": "stylesheet"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/source/software-development-unsplash.jpg",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/css/5030ccfd336d2d53.css",
-      "status": 200,
-      "type": "stylesheet"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/source/experience-development.webp",
-      "status": 200,
-      "type": "image"
+      "type": "font"
     },
     {
       "url": "https://yuto-matsui.com/images/founder-portfolio/source/life-science-unsplash.jpg",
@@ -70,19 +73,24 @@
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/off-hours-climbing.webp",
+      "url": "https://yuto-matsui.com/images/founder-portfolio/source/software-development-unsplash.jpg",
       "status": 200,
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/css/99b1d3360e61d154.css",
+      "url": "https://yuto-matsui.com/images/founder-portfolio/source/experience-life-science.webp",
       "status": 200,
-      "type": "stylesheet"
+      "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/css/c02793f148a2dc3c.css",
+      "url": "https://yuto-matsui.com/_next/static/media/8760c4774489e4ba-s.p.woff2",
       "status": 200,
-      "type": "stylesheet"
+      "type": "font"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/source/experience-development.webp",
+      "status": 200,
+      "type": "image"
     },
     {
       "url": "https://yuto-matsui.com/images/founder-portfolio/source/experience-education.webp",
@@ -95,37 +103,62 @@
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/off-hours-shogi.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/css/e71e52a390643d4c.css",
-      "status": 200,
-      "type": "stylesheet"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/source/experience-life-science.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
       "url": "https://yuto-matsui.com/images/founder-portfolio/off-hours-drive.webp",
       "status": 200,
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/media/8760c4774489e4ba-s.p.woff2",
+      "url": "https://yuto-matsui.com/images/founder-portfolio/off-hours-shogi.webp",
       "status": 200,
-      "type": "font"
+      "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/media/5611c55482296524-s.p.woff2",
+      "url": "https://yuto-matsui.com/_next/static/chunks/webpack-31ec8229e7454b9f.js",
       "status": 200,
-      "type": "font"
+      "type": "script"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/yuto-matsui-illuminated-steps-hero-20260901.jpg",
+      "url": "https://yuto-matsui.com/images/founder-portfolio/off-hours-climbing.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/chunks/794-f09dc234193e386a.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/chunks/4bd1b696-c7408084347438ae.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/chunks/main-app-07af05715322fcb6.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/chunks/772-6e635c0ef925e7a4.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/chunks/224-46855695e9d6baea.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/chunks/460-4e020ce0ac5a65cc.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/chunks/app/(en)/en/page-4bfe79937adec37a.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-696-1566.webp",
       "status": 200,
       "type": "image"
     },
@@ -145,57 +178,17 @@
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-696-1566.webp",
+      "url": "https://yuto-matsui.com/_next/static/chunks/app/(en)/en/layout-83064a7ee6465198.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/yuto-matsui-illuminated-steps-hero-20260901.jpg",
       "status": 200,
       "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/chunks/webpack-74cd2e7feeaef018.js",
-      "status": 200,
-      "type": "script"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/chunks/main-app-328b04bc709e8de5.js",
-      "status": 200,
-      "type": "script"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/chunks/app/(founder-en)/en/layout-11304a2cc345b259.js",
-      "status": 200,
-      "type": "script"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/chunks/8437-089640f862298fe0.js",
-      "status": 200,
-      "type": "script"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/chunks/1553-535f7b8a26daf750.js",
-      "status": 200,
-      "type": "script"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/chunks/app/(founder-en)/en/page-dd2d0644964e1547.js",
-      "status": 200,
-      "type": "script"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/chunks/4bd1b696-e199e788e58acf79.js",
-      "status": 200,
-      "type": "script"
-    },
-    {
-      "url": "https://yuto-matsui.com/_next/static/chunks/3794-4471ba88dc13de05.js",
-      "status": 200,
-      "type": "script"
     },
     {
       "url": "https://yuto-matsui.com/images/founder-portfolio/yuto-matsui-front.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-products/cytellect/well-hero.webp",
       "status": 200,
       "type": "image"
     },
@@ -205,22 +198,22 @@
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/habitat/night-v1/top.webp",
-      "status": 301,
+      "url": "https://yuto-matsui.com/images/founder-products/compass/top.webp",
+      "status": 200,
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/chunks/3262.3e2b737f1d39297e.js",
+      "url": "https://yuto-matsui.com/_next/static/chunks/bd904a5c.cdf3e0245141bd4b.js",
       "status": 200,
       "type": "script"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/chunks/b536a0f1.d17d9368bd4c3387.js",
+      "url": "https://yuto-matsui.com/_next/static/chunks/187.58648b2ea8e1c9e3.js",
       "status": 200,
       "type": "script"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/chunks/bd904a5c.f5dfe1b5a17c75f8.js",
+      "url": "https://yuto-matsui.com/_next/static/chunks/b536a0f1.5ed73e1f6bd61605.js",
       "status": 200,
       "type": "script"
     },
@@ -230,12 +223,12 @@
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-706-1044.webp",
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/microfluidic-1920.webp",
       "status": 200,
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/microfluidic-1920.webp",
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-706-1044.webp",
       "status": 200,
       "type": "image"
     },
@@ -245,37 +238,7 @@
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-2339-rain-1044.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-2360-anchor-1566.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-698-atmosphere-1477.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-699-1044.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
       "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/microscope-pawel-1108.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-yokohama-city-1600.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://compass-official.pages.dev/habitat/night-v1/top.webp",
       "status": 200,
       "type": "image"
     },
@@ -290,86 +253,6 @@
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/code-data-1920.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-nagano-highland-1566.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/servers-1920.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-mist-lift-1477.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/silicon-wafer-1920.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-697-1044.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-704-1372.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/microfluidic-1920.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-697-1044.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-yokohama-city-1600.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-698-atmosphere-1477.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-704-1372.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/silicon-wafer-1920.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/code-terminal-1920.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/microscope-pawel-1108.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/pipette-1920.webp",
-      "status": 200,
-      "type": "image"
-    },
-    {
       "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-2360-anchor-1566.webp",
       "status": 200,
       "type": "image"
@@ -390,12 +273,27 @@
       "type": "image"
     },
     {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-mist-lift-1477.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-yokohama-city-1600.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
       "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/servers-1920.webp",
       "status": 200,
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-mist-lift-1477.webp",
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/silicon-wafer-1920.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-697-1044.webp",
       "status": 200,
       "type": "image"
     },
@@ -405,14 +303,115 @@
       "type": "image"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/chunks/3882.b9c87203b4ecde5d.js",
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-698-atmosphere-1477.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-704-1372.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-products/cytellect/well-hero.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/microscope-pawel-1108.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/code-terminal-1920.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/microfluidic-1920.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/pipette-1920.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-2360-anchor-1566.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-yokohama-city-1600.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-2339-rain-1044.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/code-data-1920.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-mist-lift-1477.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-nagano-highland-1566.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/silicon-wafer-1920.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-697-1044.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-699-1044.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/servers-1920.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-704-1372.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/images/founder-portfolio/fragments/yuto-698-atmosphere-1477.webp",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "https://yuto-matsui.com/_next/static/chunks/203.6568b92b493798c0.js",
       "status": 200,
       "type": "script"
     },
     {
-      "url": "https://yuto-matsui.com/_next/static/chunks/8203.541986df921ea93e.js",
+      "url": "https://yuto-matsui.com/_next/static/chunks/782.cfe845e0698ce320.js",
       "status": 200,
       "type": "script"
+    }
+  ],
+  "rendererMessages": [
+    {
+      "type": "error",
+      "text": "Failed to find a valid digest in the 'integrity' attribute for resource 'https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092' with computed SHA-512 integrity 'z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg=='. The resource has been blocked."
     }
   ]
 }
