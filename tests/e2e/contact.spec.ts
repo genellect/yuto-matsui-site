@@ -40,14 +40,15 @@ async function enterByBypass(page: Page) {
   await expect(page.locator('#contact-flow')).toBeVisible();
 }
 
-async function fill(page: Page, values: { name?: string; affiliation?: string; email?: string; details?: string } = {}) {
+async function fill(page: Page, values: { topic?: string | null; name?: string; affiliation?: string; email?: string; details?: string } = {}) {
+  if (values.topic !== null) await page.getByRole('radio', { name: values.topic ?? 'お仕事のご相談' }).check();
   await page.locator('#name').fill(values.name ?? '山田 花子');
   if (values.affiliation !== undefined) await page.locator('#affiliation').fill(values.affiliation);
   await page.locator('#email').fill(values.email ?? 'hanako@example.com');
   await page.locator('#details').fill(values.details ?? '共同研究についてご相談させてください。よろしくお願いいたします。');
 }
 
-const submit = (page: Page) => page.getByRole('button', { name: /メッセージを送信/ });
+const submit = (page: Page) => page.getByRole('button', { name: /送信する|送信しています/ });
 
 for (const layout of layouts) {
   test.describe(`${layout.name} Contact`, () => {
@@ -81,7 +82,10 @@ for (const layout of layouts) {
       expect(text).not.toMatch(forbiddenWording);
       expect(labels).not.toMatch(forbiddenWording);
       expect(meta).not.toMatch(/COMPASSへ|代表|compass-official/);
-      expect(await page.locator('input[type="radio"], #verificationCode').count()).toBe(0);
+      expect(await page.locator('#verificationCode').count()).toBe(0);
+      // No intro copy or audience panel: the topic choices are the only statement of scope.
+      await expect(page.getByRole('radio')).toHaveCount(3);
+      await expect(page.locator('#contact-flow h2')).toHaveCount(0);
       await page.waitForLoadState('networkidle');
       expect(compass).toEqual([]);
       expect(errors).toEqual([]);
@@ -131,39 +135,45 @@ for (const layout of layouts) {
       }
     });
 
-    test('header CONTACT returns to the top of the form and the draft survives', async ({ page }) => {
-      await page.emulateMedia({ reducedMotion: 'reduce' });
+    test('header and footer lead back to the portfolio; a return visit skips the film', async ({ page }) => {
       await page.goto('/contact/');
+      await expect(page.locator('#contact-flow')).toBeVisible({ timeout: 4000 });
+      await expect(page.locator('header').getByRole('link', { name: 'Yuto Matsui' })).toHaveAttribute('href', '/');
+      await expect(page.locator('footer').getByRole('link', { name: 'ポートフォリオ' })).toHaveAttribute('href', '/');
+      await expect(page.locator('footer').getByRole('link', { name: 'Portfolio in English' })).toHaveAttribute('href', '/en/');
+      await page.reload();
       await expect(page.locator('#contact-flow')).toBeVisible();
-      await fill(page, { affiliation: '北里大学' });
-      await page.locator('#details').focus();
-      await page.getByRole('link', { name: 'CONTACT — お問い合わせの先頭へ' }).click();
-      await expect(page).toHaveURL(/\/contact\/$/);
-      await expect(page.locator('#form-title')).toBeFocused();
       await expect(page.locator('video')).toHaveCount(0);
-      await expect(page.locator('#name')).toHaveValue('山田 花子');
-      await expect(page.locator('#affiliation')).toHaveValue('北里大学');
-      await expect(page.locator('#details')).toHaveValue(/共同研究/);
-      expect(await page.evaluate(() => scrollY)).toBe(0);
     });
 
-    test('field validation and the optional affiliation', async ({ page }) => {
+    test('every field reports its own problem and the first one receives focus', async ({ page }) => {
       await issueTurnstileTokens(page);
+      let requests = 0;
+      await page.route('**/api/contact', (route) => { requests++; return route.fulfill({ status: 200, body: '{"ok":true}' }); });
       await page.goto('/contact/');
       await enterByBypass(page);
+      await expect(submit(page)).toBeEnabled();
+      await submit(page).click();
+      await expect(page.locator('#topic-error')).toHaveText('ご用件を選んでください');
+      await expect(page.locator('#name-error')).toHaveText('お名前を入力してください');
+      await expect(page.locator('#email-error')).toHaveText('メールアドレスを入力してください');
+      await expect(page.locator('#details-error')).toHaveText('メッセージを入力してください');
+      await expect(page.locator('#affiliation-error')).toHaveCount(0);
+      await expect(page.locator('#topic-work')).toBeFocused();
+
+      await fill(page, { email: 'hanako@', name: '林' });
+      await expect(page.locator('#email-error')).toHaveText('メールアドレスの形式を確認してください');
+      await expect(page.locator('#email')).toHaveAttribute('aria-invalid', 'true');
+      await expect(page.locator('#name-error')).toHaveCount(0);
+      await submit(page).click();
+      await expect(page.locator('#email')).toBeFocused();
+      expect(requests).toBe(0);
+
       await expect(page.locator('label[for="affiliation"]')).toContainText('任意');
       await expect(page.locator('#affiliation')).not.toHaveAttribute('required', '');
-      await fill(page, { email: 'not-an-address' });
-      await page.locator('#details').focus();
-      await expect(page.locator('#email-error')).toHaveText('正しい形式で入力してください');
-      await expect(page.locator('#email')).toHaveAttribute('aria-invalid', 'true');
-      await expect(submit(page)).toBeDisabled();
-      await page.locator('#email').fill('hanako@example.com');
-      await page.locator('#affiliation').fill('A');
-      await expect(submit(page)).toBeDisabled();
-      await page.locator('#affiliation').fill('');
-      await expect(submit(page)).toBeEnabled();
       await expect(page.locator('#details')).toHaveAttribute('maxlength', '1000');
+      await page.getByRole('radio', { name: '取材・講演' }).check();
+      await expect(page.locator('#details-hint')).toHaveText('媒体や催しの名称と、希望する日程をお書きください。');
     });
 
     test('blocked Turnstile script offers the email route without losing the draft', async ({ page }) => {
@@ -176,7 +186,8 @@ for (const layout of layouts) {
       const emailLink = alert.getByRole('link', { name: 'トップページ' });
       await expect(emailLink).toHaveAttribute('href', '/#contact-cta');
       await expect(emailLink).toHaveAttribute('target', '_blank');
-      await expect(submit(page)).toBeDisabled();
+      await submit(page).click();
+      await expect(alert).toBeVisible();
       await expect(page.locator('#email')).toHaveValue('hanako@example.com');
       await expect(page.locator('#details')).toHaveValue(/共同研究について/);
     });
@@ -202,9 +213,7 @@ for (const layout of layouts) {
       const alert = page.getByRole('alert').filter({ hasText: '送信に必要な確認が完了していません' });
       await page.clock.fastForward(16000);
       await expect(alert.getByRole('link', { name: 'トップページ' })).toBeVisible();
-      await expect(submit(page)).toBeDisabled();
       await page.clock.fastForward(5000);
-      await expect(submit(page)).toBeEnabled();
       await expect(alert).toHaveCount(0);
       await expect(page.locator('#details')).toHaveValue(/共同研究について/);
     });
@@ -224,9 +233,14 @@ for (const layout of layouts) {
       await expect(page.locator('body')).toContainText('ご連絡いただき、ありがとうございます。内容を拝読のうえ、hanako@example.com 宛にご連絡いたします。');
       await expect(page.locator('body')).not.toContainText(/自動返信|受付メール|代表|COMPASS/);
       await expect(page.getByRole('link', { name: 'トップページへ', exact: true })).toHaveAttribute('href', '/');
+      // The sender keeps a record of what was sent.
+      const receipt = page.getByRole('region', { name: '送信した内容' });
+      await expect(receipt).toContainText('お仕事のご相談');
+      await expect(receipt).toContainText('山田 花子');
+      await expect(receipt).toContainText('共同研究についてご相談させてください。');
       expect(bodies).toHaveLength(1);
-      expect(Object.keys(bodies[0]).sort()).toEqual(['affiliation', 'details', 'email', 'name', 'requestId', 'turnstileToken', 'website']);
-      expect(bodies[0]).toMatchObject({ name: '山田 花子', affiliation: '', email: 'hanako@example.com', website: '' });
+      expect(Object.keys(bodies[0]).sort()).toEqual(['affiliation', 'details', 'email', 'name', 'requestId', 'topic', 'turnstileToken', 'website']);
+      expect(bodies[0]).toMatchObject({ topic: 'work', name: '山田 花子', affiliation: '', email: 'hanako@example.com', website: '' });
     });
 
     test('failures keep the draft, apologise and offer the email route after repeated trouble', async ({ page }) => {
@@ -242,7 +256,7 @@ for (const layout of layouts) {
       await page.goto('/contact/');
       await enterByBypass(page);
       await fill(page);
-      const alert = page.locator('[class*="statusError"]');
+      const alert = page.locator('[class*="notice"]');
 
       await submit(page).click();
       await expect(alert).toContainText('申し訳ありません。ただいまメッセージをお送りできませんでした。');

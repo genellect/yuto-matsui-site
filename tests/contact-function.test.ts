@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { onRequest, readConfig, notificationText, formatReceivedAt, type ContactEnv } from "../functions/api/contact.ts";
-import { parseContactRequest, normaliseContactField, CONTACT_MAX_BODY_BYTES, CONTACT_TURNSTILE_ACTION } from "../src/contact/schema.ts";
+import { parseContactRequest, normaliseContactField, describeContactField, CONTACT_MAX_BODY_BYTES, CONTACT_TURNSTILE_ACTION } from "../src/contact/schema.ts";
 
 // Every outbound request is mocked. No test reaches Turnstile, Cloudflare or a mailbox.
 const HOST = "yuto-matsui.com";
@@ -21,6 +21,7 @@ const sendEnv: ContactEnv = {
 };
 
 const validPayload = () => ({
+  topic: "work" as const,
   name: "山田 花子",
   affiliation: "",
   email: " Hanako@Example.COM ",
@@ -183,7 +184,10 @@ describe("request boundary", () => {
     assert.equal(unknownKey.response.status, 422);
     const invalid = await call(request({ ...validPayload(), email: "invalid" }));
     assert.equal(invalid.response.status, 422);
-    assert.deepEqual(invalid.body.fieldErrors, { email: "正しい形式で入力してください" });
+    assert.deepEqual(invalid.body.fieldErrors, { email: "メールアドレスの形式を確認してください" });
+    const noTopic = await call(request({ ...validPayload(), topic: "other" }));
+    assert.equal(noTopic.response.status, 422);
+    assert.deepEqual(noTopic.body.fieldErrors, { topic: "ご用件を選んでください" });
     assert.equal(calls.length, 0);
   });
 });
@@ -237,7 +241,8 @@ describe("delivery", () => {
     assert.deepEqual(message.to, [RECIPIENT]);
     assert.equal(message.from, SENDER);
     assert.equal(message.reply_to, "hanako@example.com");
-    assert.equal(message.subject, "[yuto-matsui.com] Contact");
+    assert.equal(message.subject, "[yuto-matsui.com] お仕事のご相談");
+    assert.match(message.text, /ご用件: お仕事のご相談/);
     assert.match(message.text, /お名前: 山田 花子/);
     assert.match(message.text, /所属: 北里大学/);
     assert.match(message.text, /共同研究についてご相談させてください。/);
@@ -277,7 +282,7 @@ describe("delivery", () => {
     const payload = { ...validPayload(), name: "Name Bcc", details: "Subject: injected\nBcc: other@example.test\n本文です。" };
     await call(request(payload));
     const message = JSON.parse(String(emailCalls()[0].init?.body));
-    assert.equal(message.subject, "[yuto-matsui.com] Contact");
+    assert.equal(message.subject, "[yuto-matsui.com] お仕事のご相談");
     const joined = logs.join("\n");
     for (const secret of ["山田", "hanako", "injected", TOKEN, RECIPIENT, "192.0.2"]) assert.ok(!joined.includes(secret), secret);
   });
@@ -298,9 +303,14 @@ describe("schema", () => {
   test("normalises fields like the form", () => {
     assert.equal(normaliseContactField("email", " A@B.CO "), "a@b.co");
     assert.equal(normaliseContactField("affiliation", "  "), "");
-    assert.equal(normaliseContactField("affiliation", "A"), undefined);
-    assert.equal(normaliseContactField("name", "名"), undefined);
-    assert.equal(normaliseContactField("name", "a".repeat(21)), undefined);
+    assert.equal(normaliseContactField("affiliation", "A"), "A");
+    assert.equal(normaliseContactField("affiliation", "a".repeat(51)), undefined);
+    assert.equal(normaliseContactField("name", "名"), "名");
+    assert.equal(normaliseContactField("name", "a".repeat(50)), "a".repeat(50));
+    assert.equal(normaliseContactField("name", "a".repeat(51)), undefined);
+    assert.equal(normaliseContactField("name", "   "), undefined);
+    assert.equal(normaliseContactField("email", `${"a".repeat(60)}@example.co.jp`), `${"a".repeat(60)}@example.co.jp`);
+    assert.equal(normaliseContactField("details", "了解"), "了解");
     assert.equal(normaliseContactField("name", "山田\n花子"), undefined);
     assert.equal(normaliseContactField("email", "a@b.co\r\nBcc: x@y.z"), undefined);
     assert.equal(normaliseContactField("details", "改行を\r\n含む本文です。"), "改行を\n含む本文です。");
@@ -317,6 +327,18 @@ describe("schema", () => {
     assert.equal(parseContactRequest({ ...validPayload(), turnstileToken: "" }).ok, false);
     assert.equal(parseContactRequest({ ...validPayload(), name: 1 }).ok, false);
     assert.equal(parseContactRequest([]).ok, false);
+    assert.equal(parseContactRequest({ ...validPayload(), topic: "toString" }).ok, false);
+    const { topic: _noTopic, ...withoutTopic } = validPayload();
+    assert.equal(parseContactRequest(withoutTopic).ok, false);
+  });
+
+  test("field problems are described specifically", () => {
+    assert.equal(describeContactField("name", ""), "お名前を入力してください");
+    assert.equal(describeContactField("email", ""), "メールアドレスを入力してください");
+    assert.equal(describeContactField("email", "hanako@"), "メールアドレスの形式を確認してください");
+    assert.equal(describeContactField("details", " \n "), "メッセージを入力してください");
+    assert.equal(describeContactField("details", "a".repeat(1001)), "1000文字以内で入力してください");
+    assert.equal(describeContactField("affiliation", ""), undefined);
   });
 
   test("configuration reader", () => {

@@ -2,6 +2,7 @@ import {
   CONTACT_MAX_BODY_BYTES,
   CONTACT_TURNSTILE_ACTION,
   parseContactRequest,
+  contactTopics,
   type ContactRequest
 } from "../../src/contact/schema.ts";
 
@@ -11,7 +12,8 @@ import {
 const TURNSTILE_ENDPOINT = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const TURNSTILE_TIMEOUT_MS = 8_000;
 const DELIVERY_TIMEOUT_MS = 10_000;
-const NOTIFICATION_SUBJECT = "[yuto-matsui.com] Contact";
+/** Fixed prefix plus the chosen topic label; visitor-typed text never reaches the subject. */
+export const notificationSubject = (topic: ContactRequest["topic"]) => `[yuto-matsui.com] ${contactTopics[topic]}`;
 
 export type ContactEnv = {
   CONTACT_MODE?: string;
@@ -129,6 +131,7 @@ export function notificationText(payload: ContactRequest, receivedAt: Date) {
     "yuto-matsui.com のContactからメッセージが届きました。",
     "",
     `受信日時: ${formatReceivedAt(receivedAt)}`,
+    `ご用件: ${contactTopics[payload.topic]}`,
     `お名前: ${payload.name}`,
     `所属: ${payload.affiliation || "（未記入）"}`,
     `メールアドレス: ${payload.email}`,
@@ -150,7 +153,7 @@ async function deliver(config: Extract<Config, { mode: "send" }>, payload: Conta
         from: config.from,
         to: [config.to],
         reply_to: payload.email,
-        subject: NOTIFICATION_SUBJECT,
+        subject: notificationSubject(payload.topic),
         text: notificationText(payload, new Date())
       }),
       signal: AbortSignal.timeout(DELIVERY_TIMEOUT_MS)

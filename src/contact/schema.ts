@@ -3,21 +3,31 @@
 
 export const CONTACT_ENDPOINT = "/api/contact";
 export const CONTACT_TURNSTILE_ACTION = "personal_contact";
-export const CONTACT_FORM_ERROR_MESSAGE = "正しい形式で入力してください";
+export const CONTACT_FORM_ERROR_MESSAGE = "入力内容を確認してください";
 export const CONTACT_MAX_BODY_BYTES = 16 * 1024;
 
+// Limits only guard against abuse; they should never refuse an ordinary message.
 export const contactLimits = {
-  name: { min: 2, max: 20 },
-  affiliation: { min: 2, max: 20 },
-  email: { min: 5, max: 50 },
-  details: { min: 10, max: 1000 }
+  name: { min: 1, max: 50 },
+  affiliation: { min: 0, max: 50 },
+  email: { min: 3, max: 254 },
+  details: { min: 1, max: 1000 }
 } as const;
 
+/** What the visitor is writing about. The label also becomes the notification subject. */
+export const contactTopics = {
+  work: "お仕事のご相談",
+  media: "取材・講演",
+  student: "学生の方"
+} as const;
+
+export type ContactTopic = keyof typeof contactTopics;
 export type ContactFieldName = keyof typeof contactLimits;
 export type ContactFields = Record<ContactFieldName, string>;
-export type ContactFieldErrors = Partial<Record<ContactFieldName, string>>;
+export type ContactFieldErrors = Partial<Record<ContactFieldName | "topic", string>>;
 
 export type ContactRequest = ContactFields & {
+  topic: ContactTopic;
   requestId: string;
   turnstileToken: string;
   website: string;
@@ -30,37 +40,51 @@ const messageForbidden = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u
 const emailPattern = /^(?!\.)(?!.*\.\.)[A-Za-z0-9_'+\-.]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/;
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-function withinLength(value: string, field: ContactFieldName) {
+const emptyMessages: Record<ContactFieldName, string> = {
+  name: "お名前を入力してください",
+  affiliation: "",
+  email: "メールアドレスを入力してください",
+  details: "メッセージを入力してください"
+};
+
+function clean(field: ContactFieldName, raw: string) {
+  return field === "details" ? raw.replace(/\r\n?/g, "\n").trim() : raw.trim();
+}
+
+/** The specific problem with one field, in words the visitor can act on, or undefined. */
+export function describeContactField(field: ContactFieldName, raw: string): string | undefined {
+  const value = clean(field, raw);
   const { min, max } = contactLimits[field];
-  return value.length >= min && value.length <= max;
+  if (value.length < Math.max(min, 1)) return field === "affiliation" ? undefined : emptyMessages[field];
+  if ((field === "details" ? messageForbidden : singleLineForbidden).test(value)) return "使用できない文字が含まれています";
+  if (field === "email") return value.length > max || !emailPattern.test(value) ? "メールアドレスの形式を確認してください" : undefined;
+  if (value.length > max) return `${max}文字以内で入力してください`;
+  return undefined;
+}
+
+export function describeContactTopic(topic: string): string | undefined {
+  return Object.hasOwn(contactTopics, topic) ? undefined : "ご用件を選んでください";
 }
 
 /** Normalises one field exactly as the server will, or returns undefined when invalid. */
 export function normaliseContactField(field: ContactFieldName, raw: string): string | undefined {
-  if (field === "details") {
-    const value = raw.replace(/\r\n?/g, "\n").trim();
-    return withinLength(value, field) && !messageForbidden.test(value) ? value : undefined;
-  }
-  const value = raw.trim();
-  if (singleLineForbidden.test(value)) return undefined;
-  if (field === "affiliation" && value === "") return "";
-  if (!withinLength(value, field)) return undefined;
-  if (field === "email") return emailPattern.test(value) ? value.toLowerCase() : undefined;
-  return value;
+  if (describeContactField(field, raw)) return undefined;
+  const value = clean(field, raw);
+  return field === "email" ? value.toLowerCase() : value;
 }
 
 export function validateContactFields(form: ContactFields) {
   const data = {} as ContactFields;
   const fieldErrors: ContactFieldErrors = {};
   for (const field of Object.keys(contactLimits) as ContactFieldName[]) {
-    const value = normaliseContactField(field, form[field]);
-    if (value === undefined) fieldErrors[field] = CONTACT_FORM_ERROR_MESSAGE;
-    else data[field] = value;
+    const problem = describeContactField(field, form[field]);
+    if (problem) fieldErrors[field] = problem;
+    else data[field] = normaliseContactField(field, form[field]) as string;
   }
   return Object.keys(fieldErrors).length ? { ok: false as const, fieldErrors } : { ok: true as const, data };
 }
 
-const requestKeys = new Set(["name", "affiliation", "email", "details", "requestId", "turnstileToken", "website"]);
+const requestKeys = new Set(["topic", "name", "affiliation", "email", "details", "requestId", "turnstileToken", "website"]);
 
 /** Strict request parser: unknown keys, non-string values and missing fields are rejected. */
 export function parseContactRequest(raw: unknown):
@@ -79,12 +103,15 @@ export function parseContactRequest(raw: unknown):
     email: input.email as string,
     details: input.details as string
   });
-  if (!fields.ok) return fields;
+  const topicProblem = describeContactTopic(input.topic as string);
+  if (!fields.ok || topicProblem) {
+    return { ok: false, fieldErrors: { ...(fields.ok ? {} : fields.fieldErrors), ...(topicProblem ? { topic: topicProblem } : {}) } };
+  }
   const requestId = input.requestId as string;
   const turnstileToken = input.turnstileToken as string;
   const website = input.website as string;
   if (!uuidPattern.test(requestId) || turnstileToken.length < 1 || turnstileToken.length > 2048 || website.length > 200) {
     return { ok: false, fieldErrors: {} };
   }
-  return { ok: true, data: { ...fields.data, requestId, turnstileToken, website } };
+  return { ok: true, data: { ...fields.data, topic: input.topic as ContactTopic, requestId, turnstileToken, website } };
 }

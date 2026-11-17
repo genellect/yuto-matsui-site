@@ -925,3 +925,15 @@
 .page .successCard > h1 + p:not(.formKicker):not(.successDestination) { margin-top: 32px; }
 /* Headings receive focus only to place screen readers at the new content; they are not controls. */
 .page h1[tabindex="-1"]:focus { outline: none; }
+
+/* After the entrance the heading stands on the page, directly above the single writing sheet. */
+.page [data-entry-complete="true"] .introStage { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; overflow: visible; }
+.page [data-entry-complete="true"] .introStage::before { display: none; }
+.page [data-entry-complete="true"] .formHeading h1 { font-size: clamp(1.9rem, 3vw, 2.5rem); letter-spacing: -0.03em; }
+.page [data-entry-complete="true"] form { gap: 22px; }
+.page .successCard { max-width: none; }
+/* The confirmation shares the writing sheet's scale rather than the old poster-sized title. */
+.page .successCard { min-height: 0; padding: clamp(28px, 4.5vw, 52px); }
+.page .successCard h1 { font-size: clamp(1.7rem, 2.8vw, 2.3rem); letter-spacing: -0.03em; line-height: 1.3; }
+.page .successCard .successIcon { width: 40px; height: 40px; margin-bottom: 22px; font-size: 1.05rem; }
+.page .successCard > p:not(.formKicker):not(.successDestination) { margin-top: 14px; }

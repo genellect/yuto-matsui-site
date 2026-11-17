@@ -69,3 +69,11 @@
 @media (max-height: 380px) { .bubble { max-height: calc(100dvh - 90px); overflow-y: auto; } }
 @keyframes bubbleIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .bubble:not([hidden]) { animation: none; } .menuGlyph i { transition: none; } }
+
+/* Personal Contact chrome: the portfolio owner's name instead of a separate brand mark. */
+.brandName { color: #142d3a; font-size: 17px; font-weight: 700; letter-spacing: 0.02em; text-decoration: none; }
+.brandName:hover { color: #386c73; }
+.footerLinks { display: flex; flex-wrap: wrap; gap: 12px 40px; margin-top: 38px; padding: 24px 0; border-block: 1px solid #c7e4e51c; }
+.footerLinks a { display: inline-flex; align-items: center; min-height: 44px; color: #c8d6dc; font-size: 12px; text-decoration: none; }
+.footerLinks a:hover { color: #fff; }
+.footer a:focus-visible { outline: 2px solid #9fcfcf; outline-offset: 4px; border-radius: 3px; }
