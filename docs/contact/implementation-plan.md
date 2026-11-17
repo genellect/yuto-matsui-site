@@ -302,7 +302,7 @@ PR #8 に、コードで実装できる範囲をすべて入れた。Cloudflare�
 
 | # | タスク | 担当 | 前提 | 完了の条件 |
 |---|---|---|---|---|
-| T1 | Previewの見た目と操作をオーナーが確認する | オーナー | PR #8 のPreview | 修正点がなくなる |
+| T1 | Previewの見た目と操作をオーナーが確認する | オーナー | PR #8 のPreview | **済（2026-11-17）**。オーナーが確認を完了 |
 | T2 | 送信専用API tokenを作る（Email Sendingの送信だけ、対象はこのaccountだけ） | オーナー | — | **済（2026-11-17）**。tokenは非公開で保管 |
 | T3 | REST APIで本人宛てに1通送り、`result.delivered`／`queued` と受信箱を確かめる | オーナー | T2、送信元のrouting domainと確認済み受信先 | **済（2026-11-17）**。Cloudflare APIから試験メール1通を送信。配送結果は `delivered`。本人の受信トレイへの到着と、Reply-Toが指定どおりであることをオーナーが確認（送信元は `contact@yuto-matsui.com`、Reply-Toは `example.com` の試験アドレス）。受信先は非公開の記録に残す。本番フォームから受信箱までは T10 で確かめる |
 | T4 | 個人用Turnstile widgetを作る（hostnameは `yuto-matsui.com`） | オーナー | — | sitekeyとsecret |
@@ -319,7 +319,8 @@ PR #8 に、コードで実装できる範囲をすべて入れた。Cloudflare�
 ```text
 済  設計（Issue #7）→ 実装・素材差し替え・Preview確認（PR #8）
 済  T2/T3 送信疎通（API → 受信トレイ、Reply-To）、T5 Preview通し確認（mock）
-次  T1 オーナー確認、T4 本番用Turnstile → T6/T7 本番設定
+済  T1 オーナー確認
+次  T4 本番用Turnstile → T6/T7 本番設定
 後  T8 merge → T9 転送除外 → T10 本番受入 → T11 記録
 以降（別PR・別判断）
     - Production verificationとHTTP契約に /contact/ と /api/contact を追加
