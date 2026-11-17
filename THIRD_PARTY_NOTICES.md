@@ -52,6 +52,7 @@ See the [asset register](docs/legal/asset-register.md). Existing notices are pre
 - [Parent Desktop night background](public/habitat/night-v1/credits.md): Poly Haven CC0 photographic materials and night panorama; Everett Bumstead's Pexels water footage, edited as a reflection input.
 - [NASA mobile media provenance](docs/mobile-space-media.md) and [manifest](public/habitat/mobile-v1/manifest.json)
 - [Independent portfolio image credits](docs/founder-image-credits.md)
+- README technology logos (`assets/stack/`): copied from [genellect/genellect](https://github.com/genellect/genellect). Each logo is a trademark of its owner, shown only to name the technology; no endorsement is implied. Not part of the website.
 - [Original Contact rendering](docs/contact-door-entry.md)
 - [COMPASS Experience stock photography](docs/experience-image-credits.md): Fabio Sasso, Bluestonex, Christopher Gower, and Ivenory under the Unsplash License.
 - [PC spatial exploration credits](public/habitat/explorer/v1/credits.txt): NASA photography and timelapse, Kinoton and Kenney CC0 audio, and Inter SIL OFL 1.1 outlines. Existing Habitat CC0 furniture and materials are reused without changing their licenses.
