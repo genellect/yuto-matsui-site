@@ -3034,7 +3034,7 @@
 .mobileOriginalView { display:contents; }
 @media (max-width:700px) {
   .fragments { padding:22px 0 18px; min-height:max(460px,80svh); overflow:clip; }
-  .fragments[data-fragment-view="3d"] { background:linear-gradient(155deg,#f5fbfa,#e9f3f4 48%,#eeebf6 82%,#f5f9fa); }
+  .fragments[data-mobile-view="3d"] { background:linear-gradient(155deg,#f5fbfa,#e9f3f4 48%,#eeebf6 82%,#f5f9fa); }
   .fragmentsHeader { display:flex; align-items:center; gap:10px; margin-bottom:6px; position:relative; z-index:3; }
   .fragmentsHeader h2 { font-size:clamp(23px,6.9vw,36px); margin:0; }
   .fragments .fragmentViewSwitch { display:flex; margin-left:auto; padding:0; gap:0; border:1px solid #40647630; border-radius:24px; }
@@ -3042,11 +3042,11 @@
   .fragments .fragmentViewSwitch button[aria-pressed="true"] { background:#263f4d; color:#f7fafb; }
   .fragments .fragmentViewSwitch button:focus-visible { outline:2px solid #34788b; outline-offset:3px; }
   .fragments .fragmentSequence { display:none; }
-  .fragments[data-fragment-view="3d"] .mobileFilmView { display:block; }
-  .fragments[data-fragment-view="3d"] .mobileOriginalView,
-  .fragments[data-fragment-view="3d"] .fragmentSignalField { display:none; }
-  .fragments[data-fragment-view="3d"]::after { display:none; }
-  .fragments[data-fragment-view="original"] .mobileOriginalView { display:block; min-height:max(372px,calc(80svh - 108px)); padding-block:24px; }
+  .fragments[data-mobile-view="3d"] .mobileFilmView { display:block; }
+  .fragments[data-mobile-view="3d"] .mobileOriginalView,
+  .fragments[data-mobile-view="3d"] .fragmentSignalField { display:none; }
+  .fragments[data-mobile-view="3d"]::after { display:none; }
+  .fragments[data-mobile-view="original"] .mobileOriginalView { display:block; min-height:max(372px,calc(80svh - 108px)); padding-block:24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
