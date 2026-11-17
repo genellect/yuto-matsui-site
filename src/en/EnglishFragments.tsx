@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { FragmentFilm, FragmentFilmAtmosphere } from "../shared/fragment-film/FragmentFilm";
 import { MobileFragmentFilm } from "../shared/fragment-film/MobileFragmentFilm";
+import { useFragmentView } from "../shared/fragment-film/useFragmentView";
 import styles from "./english-founder.module.css";
 
 const resumeDelayMs = 4_000;
@@ -45,9 +46,8 @@ export function EnglishFragments() {
   const manuallyPausedRef = useRef(false);
   const resumeTimerRef = useRef<number | null>(null);
   const dragRef = useRef({ active: false, startX: 0, startScroll: 0 });
-  const [view, setView] = useState<"3d" | "original">("3d");
+  const { view, mobileView, mobile, choose } = useFragmentView();
   const [wide, setWide] = useState(false);
-  const [mobile, setMobile] = useState(false);
   const currentPhoto = useRef(fragmentPhotos[0].key);
   const changeView = (next: "3d" | "original") => {
     if (mobile && view === "original" && next === "3d") {
@@ -56,7 +56,7 @@ export function EnglishFragments() {
       const nearest = Array.from(rail?.querySelectorAll<HTMLElement>("[data-fragment-photo]") ?? []).sort((a,b)=>Math.abs(a.getBoundingClientRect().left-left)-Math.abs(b.getBoundingClientRect().left-left))[0];
       if (nearest) currentPhoto.current=nearest.dataset.fragmentPhoto!;
     }
-    setView(next);
+    choose(next);
   };
 
   useEffect(() => {
@@ -64,13 +64,6 @@ export function EnglishFragments() {
     const update = () => setWide(media.matches);
     update();
     media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    const media = matchMedia("(max-width: 700px)");
-    const update = () => setMobile(media.matches);
-    update(); media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
   }, []);
 
@@ -149,7 +142,7 @@ export function EnglishFragments() {
   };
 
   return (
-    <section id="fragments" className={styles.fragments} aria-labelledby="fragments-title" data-fragment-view={view}>
+    <section id="fragments" className={styles.fragments} aria-labelledby="fragments-title" data-fragment-view={view} data-mobile-view={mobileView}>
       <FragmentFilmAtmosphere variant="en" />
       <div className={styles.sectionShell}>
         <header className={styles.fragmentsHeading}>
@@ -168,7 +161,7 @@ export function EnglishFragments() {
           <FragmentFilm photos={fragmentPhotos} active={wide && view === "3d"} language="en" />
         </div>
         <div className={styles.mobileFilmView} id="english-fragment-mobile-film">
-          {mobile && view === "3d" && <MobileFragmentFilm photos={fragmentPhotos} active language="en" currentPhoto={currentPhoto.current} onCurrentPhoto={key => { currentPhoto.current=key; }} onFailure={() => setView("original")} />}
+          {mobile && view === "3d" && <MobileFragmentFilm photos={fragmentPhotos} active language="en" currentPhoto={currentPhoto.current} onCurrentPhoto={key => { currentPhoto.current=key; }} onFailure={() => choose("original")} />}
         </div>
         <div
           ref={railRef}

@@ -224,7 +224,7 @@ export const pageCopy = {
   "expertiseTitle": "Expertise",
   "experienceIndex": "03 / Experience & Credentials",
   "experienceTitle": "EXPERIENCE",
-  "evidenceHeading": "As of August 2026",
+  "evidenceHeading": "As of November 2026",
   "experienceLink": "Development — Yuto Matsui’s GitHub profile (opens in a new tab)",
   "credentialsGrid": "English language credentials",
   "statementIndex": "05 / Personal Statement",

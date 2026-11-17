@@ -42,7 +42,7 @@ for (const route of ["/","/en/"]) {
     });
     await page.setViewportSize({width:390,height:844});
     await page.goto(route);
-    const section=page.locator('#fragments');await section.scrollIntoViewIfNeeded();
+    const section=page.locator('#fragments');await section.scrollIntoViewIfNeeded();await section.getByRole('button',{name:'3D',exact:true}).click();
     const film=section.locator('[data-mobile-fragment-film]');
     await expect(film).toHaveAttribute('data-ready','true',{timeout:20000});
     await expect(section.locator('canvas:visible')).toHaveCount(1);
@@ -88,14 +88,14 @@ for (const route of ["/","/en/"]) {
 test('Mobile WebGL failure retains Original photographs',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(this:HTMLCanvasElement,name:string,...args:unknown[]){if(name.startsWith('webgl'))return null;return Reflect.apply(original,this,[name,...args]);} as typeof original;});
-  await page.goto('/');const section=page.locator('#fragments');await section.scrollIntoViewIfNeeded();
+  await page.goto('/');const section=page.locator('#fragments');await section.scrollIntoViewIfNeeded();await section.getByRole('button',{name:'3D',exact:true}).click();
   await expect(section).toHaveAttribute('data-fragment-view','original');await expect(section.locator('img:visible').first()).toBeVisible();
 });
 
 test.describe('iPhone-sized touch gestures',()=>{
   test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   test('horizontal drag keeps its position and vertical touch scroll remains native',async({page,context},info)=>{
-    await page.goto('/');const section=page.locator('#fragments');await section.scrollIntoViewIfNeeded();
+    await page.goto('/');const section=page.locator('#fragments');await section.scrollIntoViewIfNeeded();await section.getByRole('button',{name:'3D',exact:true}).click();
     const film=section.locator('[data-mobile-fragment-film]');
     // Await the lazy engine and its CDN texture requests before timing the ready state.
     await film.locator('canvas').waitFor({state:'attached'});

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./founder.module.css";
 import { FragmentFilm, FragmentFilmAtmosphere } from "../shared/fragment-film/FragmentFilm";
 import { MobileFragmentFilm } from "../shared/fragment-film/MobileFragmentFilm";
+import { useFragmentView } from "../shared/fragment-film/useFragmentView";
 
 const spreadDurationMs = 9_000;
 
@@ -133,9 +134,8 @@ function FragmentMobileReel({ currentPhoto }: { currentPhoto: string }) {
 
 export function FounderFragments() {
   const [activeSpread, setActiveSpread] = useState(0);
-  const [view, setView] = useState<"3d" | "original">("3d");
+  const { view, mobileView, mobile, choose } = useFragmentView();
   const [wide, setWide] = useState(false);
-  const [mobile, setMobile] = useState(false);
   const currentPhoto = useRef(fragmentPhotos[0].key);
   const section = useRef<HTMLElement>(null);
   const changeView = (next: "3d" | "original") => {
@@ -145,18 +145,11 @@ export function FounderFragments() {
       const nearest = Array.from(pictures ?? []).filter(p => { const r=p.getBoundingClientRect(); return r.right>0 && r.left<window.innerWidth; }).sort((a,b)=>Math.abs(a.getBoundingClientRect().left+a.offsetWidth/2-center)-Math.abs(b.getBoundingClientRect().left+b.offsetWidth/2-center))[0];
       if (nearest) currentPhoto.current = nearest.dataset.reelSlot!;
     }
-    setView(next);
+    choose(next);
   };
   useEffect(() => {
     const media = matchMedia("(min-width: 901px) and (orientation: landscape)");
     const update = () => setWide(media.matches);
-    update(); media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    const media = matchMedia("(max-width: 700px)");
-    const update = () => setMobile(media.matches);
     update(); media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
   }, []);
@@ -173,7 +166,7 @@ export function FounderFragments() {
   }, [activeSpread, wide, mobile, view]);
 
   return (
-    <section ref={section} id="fragments" className={styles.fragments} aria-labelledby="fragments-title" data-fragment-view={view}>
+    <section ref={section} id="fragments" className={styles.fragments} aria-labelledby="fragments-title" data-fragment-view={view} data-mobile-view={mobileView}>
       <FragmentSignalField />
       <FragmentFilmAtmosphere />
       <div className={styles.sectionShell}>
@@ -200,7 +193,7 @@ export function FounderFragments() {
           <FragmentFilm photos={fragmentPhotos} active={wide && view === "3d"} />
         </div>
         <div className={styles.mobileFilmView} id="fragment-mobile-film-view">
-          {mobile && view === "3d" && <MobileFragmentFilm photos={fragmentPhotos} active currentPhoto={currentPhoto.current} onCurrentPhoto={key => { currentPhoto.current=key; }} onFailure={() => setView("original")} />}
+          {mobile && view === "3d" && <MobileFragmentFilm photos={fragmentPhotos} active currentPhoto={currentPhoto.current} onCurrentPhoto={key => { currentPhoto.current=key; }} onFailure={() => choose("original")} />}
         </div>
         <div className={styles.fragmentsEssay} id="fragment-original-view">
           {fragmentSpreads.map((spread, spreadIndex) => (

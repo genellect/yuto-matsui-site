@@ -513,7 +513,7 @@ export const pageCopy = {
   "productsTitle": "プロダクト紹介",
   "experienceKicker": "Area / Experience / Focus",
   "experienceTitle": "EXPERIENCE",
-  "experienceHeading": "2026年8月現在",
+  "experienceHeading": "2026年11月現在",
   "experienceLink": "Development — Yuto MatsuiのGitHubプロフィール（新しいタブで開く）",
   "areaLabel": "Area",
   "tenureLabel": "Experience",
