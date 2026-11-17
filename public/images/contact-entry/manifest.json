@@ -1,0 +1,29 @@
+{
+  "author": "Yuto Matsui / CONTACT",
+  "source": "Approved COMPASS-era films (genellect/compass 6bb78ff) with the right-room lettering replaced by scripts/contact-entry/render-plate.py + patch-signage.mjs",
+  "frames": 48,
+  "fps": 24,
+  "durationSeconds": 2,
+  "assets": [
+    {
+      "file": "lobby-desktop.webp",
+      "bytes": 51774,
+      "sha256": "2df417f476406d75ab9e76859280f3543ca76bf8ee48fcabe49b31572d38c29b"
+    },
+    {
+      "file": "lobby-mobile.webp",
+      "bytes": 34442,
+      "sha256": "ae603c82e846357195a7c3f906e6f4b7665ddef24d5ec328e54cb5bbd04469d7"
+    },
+    {
+      "file": "entry-desktop.mp4",
+      "bytes": 800449,
+      "sha256": "be2a0cc57d2c1208170468e4dfb94d0ff905a204a3b5c67e0c654171d58ffc9c"
+    },
+    {
+      "file": "entry-mobile.mp4",
+      "bytes": 580715,
+      "sha256": "2aa1059a15efffc6f21df909feb0860b7d5bab731cac6206e24fe5073b576615"
+    }
+  ]
+}

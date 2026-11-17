@@ -22,6 +22,7 @@ jobs:
       - run: npx playwright install-deps chromium
       - run: npm run typecheck && npm run build && npm run verify
       - run: node --test tests/deployment-readiness.test.mjs
+      - run: node --test tests/contact-function.test.ts
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
