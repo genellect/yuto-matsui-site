@@ -55,7 +55,7 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 
 ### 4.1 route と layout
 
-- `src/app/(contact)/contact/` を新しいroot layoutにする。JPの `(ja)/layout.tsx` は、COMPASS名義のmetadataと継承CSS 9本を読み込んでいる。これは本番の現状なので変更せず、Contactでは継承しない。
+- `src/app/(contact)/contact/` を新しいroot layoutにする。metadataはContact専用にする。本番のCOMPASS Contactは継承CSS 9本の上に作られているため、見た目を本番と同じに保つよう、JPと同じ9本を同じ順序で読み込む（このrepoの `src/inherited/styles/` はCOMPASSの同名ファイルとSHA-256が一致することを確認済み）。
 - metadata: title・descriptionは§4.3のとおり。canonical `https://yuto-matsui.com/contact/`、`robots: { index: false, follow: true }`（COMPASS Contactと同じ公開方針）、sitemapには追加しない。
 - 解析：JPと同じGA4 measurement IDでpage viewだけを送る（D4）。フォームの内容・入力イベントは送らない。
 
@@ -66,7 +66,7 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 | `ContactEntrance.tsx` | `src/contact/ContactEntrance.tsx` | `Target` 型と二択を削除。扉は個人側（左）だけにし、右扉のbuttonと「COMPASSへのお問い合わせ」を削除。見出しと扉のラベルは§4.3のとおりにする。動画は1本（`entry-{layout}.mp4`）。800msの読み込み期限、2.7秒の全体期限、reduced motion、Save-Data、hidden tab、skip、`onError` はそのまま残す |
 | `ContactForm.tsx` | `src/contact/ContactForm.tsx` | 宛先選択、`TargetCard`、`messagePrefix`、OTPの全state（`challengeId`・`verificationCode`・`verificationProof`・`challengeExpiresAt`・`invalidateChallenge`）、`requestCode`・`verifyCode` を削除。Turnstileは送信ボタンの直前に置き、送信のたびにtokenを使い切ってresetする |
 | `ContactChrome.tsx` | `src/contact/ContactChrome.tsx` | headerのリンクを、JP `/`、EN `/en/` の個人サイトだけにする。COMPASSのPlatform／Interactiveへのリンクと、parent brandの表示を外す。CONTACTのwordmarkと「入口へ戻る」イベントは残す |
-| `contact*.module.css`、`parent-brand.module.css` の使用部分 | `src/contact/*.module.css` | OTP・target cardのclassを削除する以外は、値と順序を保つ |
+| `contact*.module.css`、`parent-brand.module.css` の使用部分 | `src/contact/*.module.css` 本番のカスケードを崩さないよう、内容と順序はそのまま複製し、未使用になったOTP・target cardのruleも残す（画像pathだけ `/images/contact-entry/` に変更）。個人用の追加ruleは末尾に追記する |
 | `contact-door-projection.json` | `src/contact/contact-door-projection.json` | 再出力で生成される `{desktop,mobile}.entry` の1扉分 |
 | `contact-entry-events.ts` | `src/contact/contact-entry-events.ts` | 変更なし |
 | `src/lib/contact-schema.ts`（zod） | `src/contact/schema.ts` | 依存を増やさないため、zodを使わない小さなvalidatorにする（§5）。画面とFunctionで同じものをimportする |
@@ -92,17 +92,17 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 | 導入2 | 学生・教職員・研究者の方、団体・企業の方など、さまざまな方とのご縁を歓迎しています。（既存のまま） |
 | 入口の見出し（h2） | 執務室へご案内します |
 | 扉（aria-label） | 執務室に入り、メッセージを書く |
-| 扉の代わりのボタン | メッセージを書く → |
+| 扉の代わりのボタン | メッセージを書く ↗（本番の「代表へのご連絡 ↗」と同じ形） |
 | 演出を省くボタン | 演出なしで入力へ →（既存のまま） |
 | 入室中（status） | Yuto Matsui — 入室しています（既存の形のまま） |
-| 対象パネルの見出し | このようなご連絡をお待ちしています（kickerの `WHO THIS IS FOR` と4区分は既存のまま） |
+| 対象パネルの見出し | Yuto Matsuiへのご連絡（本番の「代表へのご連絡」と同じ位置づけ。kickerの `WHO THIS IS FOR` と4区分は本番のまま） |
 | 所属 | ラベルの横に、「必須」と同じ形の「任意」badgeを付ける。helperは既存のまま |
 | 送信前の一文 | いただいたメッセージは私自身が拝読し、ご記入のメールアドレス宛にお返事いたします。 |
 | 送信ボタン | メッセージを送信 → ／送信中：送信しています… |
-| 完了 kicker | THANK YOU |
-| 完了 見出し | メッセージをお送りいただき、ありがとうございます |
-| 完了 本文 | 内容を拝読のうえ、{email} 宛にご連絡いたします。お返事まで少しお時間をいただく場合がございますが、どうぞよろしくお願いいたします。 |
-| 完了 リンク | トップページへ戻る |
+| 完了 kicker | MESSAGE RECEIVED（本番のまま） |
+| 完了 見出し | メッセージを承りました |
+| 完了 本文 | ご連絡いただき、ありがとうございます。内容を拝読のうえ、{email} 宛にご連絡いたします。お返事まで少しお時間をいただく場合がございますが、どうぞよろしくお願いいたします。 |
+| 完了 リンク | トップページへ（本番のまま） |
 
 #### 送信できなかったときの文言（`role="alert"`、入力はすべて残す）
 
@@ -148,10 +148,10 @@ yuto-matsui.com (既存Pages: yuto-matsui-site)
 |---|---|---|
 | 1 | `POST` 以外 | 405 + `Allow: POST` |
 | 2 | Content-Type が `application/json` でない | 415 |
-| 3 | host ≠ `CONTACT_ALLOWED_HOST`、または Origin ≠ `https://` + 同host | 403 `origin` |
-| 4 | Content-Length か実際のbodyが16KiBを超える | 413 |
-| 5 | JSONとして不正、またはschema違反 | 400 / 422（`fieldErrors`付き） |
-| 6 | 設定の不足（§7のどれか1つでも欠けている） | 503 `configuration`（送信しないで失敗を返す） |
+| 3 | 設定の不足（§7のどれか1つでも欠けている） | 503 `configuration`（送信しないで失敗を返す） |
+| 4 | host ≠ `CONTACT_ALLOWED_HOST`、または Origin ≠ `https://` + 同host（mockでは request URL と同じorigin） | 403 `origin` |
+| 5 | Content-Length か実際のbodyが16KiBを超える | 413 |
+| 6 | JSONとして不正、またはschema違反 | 400 / 422（`fieldErrors`付き） |
 | 7 | honeypot に値がある | 200（送信しない） |
 | 8 | Turnstileが `success`・`hostname`・`action` のどれかで失敗、または通信失敗 | 422 `turnstile` |
 | 9 | REST送信が10秒で打ち切り、非2xx、`success:false` | 502 `delivery` |
@@ -272,3 +272,19 @@ and http.request.uri.path ne "/api/contact"
 | D2 | COMPASS Contactへの案内 | 置かない。画面・metadata・aria属性のどこにもCOMPASSへの分岐や案内を出さない |
 | D3 | 本文の上限 | 1000文字。COMPASSのserver上限と同じで、宛先prefixがなくなった分を戻す |
 | D4 | ContactでのGA4 | JPと同じIDでpage viewだけを送る。フォームの内容・入力イベントは送らない |
+
+## 14. 実装状況（2026-11-17）
+
+このPRで実装した範囲と、まだ残っている範囲を分けて記録する。
+
+| 項目 | 状況 |
+|---|---|
+| Function（`functions/api/contact.ts`）、共通validator（`src/contact/schema.ts`）、`public/_routes.json` | 実装済み。unit test 20件（`node --test tests/contact-function.test.ts`）。外部通信はすべてmock |
+| 画面（`src/app/(contact)/contact/`、`src/contact/`） | 実装済み。本番COMPASS Contactの「代表へのご連絡」側と同じCSS・構造。本番にない部分（送信欄のTurnstile、任意badge、失敗時の文言、受付後の文言）だけを本番の配色・書体・余白に合わせて追加した |
+| JPトップの導線 | `/contact/` に変更。比較scriptでは、この1属性だけを意図した変更として扱う |
+| E2E | `tests/e2e/contact.spec.ts` 17件（Desktop／Mobile）。送信はすべてブラウザー内のmock |
+| build検証 | `verify-build.mjs` を「Function 1本だけ」の検査に置き換えた。mainのbuildでは本番用のTurnstile site keyが必須 |
+| 素材 | **暫定**。COMPASSの `representative-{desktop,mobile}.mp4` と `lobby-*.webp` をそのまま `entry-*` / `lobby-*` として置いている。開始画像と動画に、まだCOMPASSの看板が映っている。`render.py` と `encode.mjs` は個人用に修正済みで、オーナーのPC（Blender 4.5、日本語font）で再出力して差し替える。扉の位置とカメラは変えていないので、projectionは再出力後も同じになる見込み（`encode.mjs` が再生成する） |
+| Cloudflare設定（§7）、送信の疎通確認（段階1）、本番切替 | 未実施。オーナーの承認が必要 |
+
+画面の確認は、実機の表示に近づけるため日本語フォント（Noto Sans CJK JP）を入れた環境で、本番と並べて撮影して行った。この作業環境は標準では日本語フォントを持たず、中国語フォントで描画されるので、フォントを入れない状態のスクリーンショットでは字形が崩れて見える。
