@@ -2,29 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./contact-entry.module.css";
-import projection from "./contact-door-projection.json";
 import { contactCopy as copy } from "./copy";
 
 type Props = { onComplete: () => void };
 const mediaRoot = "/images/contact-entry";
 
-/** Blender-authored film; presentation only. Every path reaches the same form. */
+/**
+ * Blender-authored film; presentation only. With a single destination there is
+ * nothing to choose, so the entry plays as soon as the page opens. Reduced motion,
+ * Save-Data, a hidden tab, a slow or failed film and Skip all reach the same form.
+ */
 export function ContactEntrance({ onComplete }: Props) {
   const [entering, setEntering] = useState(false);
   const [layout, setLayout] = useState<"desktop" | "mobile">("desktop");
   const [finishing, setFinishing] = useState(false);
   const video = useRef<HTMLVideoElement>(null);
-  const skip = useRef<HTMLButtonElement>(null);
   const completed = useRef(false);
-
-  useEffect(() => {
-    if (entering) return;
-    const mobile = matchMedia("(max-width: 700px)");
-    const sync = () => setLayout(mobile.matches ? "mobile" : "desktop");
-    sync();
-    mobile.addEventListener("change", sync);
-    return () => mobile.removeEventListener("change", sync);
-  }, [entering]);
 
   const finish = () => {
     if (completed.current) return;
@@ -34,6 +27,17 @@ export function ContactEntrance({ onComplete }: Props) {
   };
   const finishRef = useRef(finish);
   useEffect(() => { finishRef.current = finish; });
+
+  useEffect(() => {
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || saveData || document.hidden) {
+      finishRef.current();
+      return;
+    }
+    // Freeze the framing through playback, including device rotation.
+    setLayout(matchMedia("(max-width: 700px)").matches ? "mobile" : "desktop");
+    setEntering(true);
+  }, []);
 
   useEffect(() => {
     if (!entering) return;
@@ -49,7 +53,6 @@ export function ContactEntrance({ onComplete }: Props) {
     element.addEventListener("playing", playing);
     reduced.addEventListener("change", onReduced);
     document.addEventListener("visibilitychange", onHidden);
-    skip.current?.focus({ preventScroll: true });
     void element.play().catch(() => finishRef.current());
     return () => {
       window.clearTimeout(loadDeadline);
@@ -61,18 +64,8 @@ export function ContactEntrance({ onComplete }: Props) {
     };
   }, [entering]);
 
-  const enter = () => {
-    if (entering || completed.current) return;
-    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches || saveData) { finish(); return; }
-    // Freeze the framing through playback, including device rotation.
-    setLayout(matchMedia("(max-width: 700px)").matches ? "mobile" : "desktop");
-    setEntering(true);
-  };
-
-  const area = projection[layout];
   return (
-    <section className={styles.entrance} aria-labelledby={entering ? undefined : "entrance-title"} aria-label={entering ? copy.enteringLabel : undefined} data-contact-entrance>
+    <section className={styles.entrance} aria-labelledby="entrance-title" data-contact-entrance>
       <div className={styles.heading}>
         <h2 id="entrance-title">{copy.entranceTitle}</h2>
       </div>
@@ -82,26 +75,14 @@ export function ContactEntrance({ onComplete }: Props) {
           {/* The first rendered frame exactly matches the film. */}
           <img src={`${mediaRoot}/lobby-desktop.webp`} alt="" width="1280" height="720" fetchPriority="high" />
         </picture>
-        {!entering ? (
-          <div className={styles.doors}>
-            <button className={styles.door} type="button" onClick={enter} data-door="study" aria-label={copy.doorLabel}
-              style={{ left: `${area.left + area.width / 2}%`, top: `${area.top}%`, width: `max(44px, ${area.width}%)`, height: `${area.height}%` }} />
-          </div>
-        ) : <>
+        {entering ? <>
           <video ref={video} className={styles.film} src={`${mediaRoot}/entry-${layout}.mp4`} muted playsInline preload="auto" aria-hidden="true" onEnded={finish} onError={finish} onTimeUpdate={() => { if ((video.current?.currentTime ?? 0) >= 1.7) setFinishing(true); }} />
           <div className={styles.fade} />
-        </>}
+        </> : null}
       </div>
       <div className={styles.controls}>
-        {!entering ? <>
-          <div className={styles.alternatives}>
-            <button type="button" onClick={enter}>{copy.writeMessage} <span aria-hidden="true">↗</span></button>
-          </div>
-          <button className={styles.bypass} type="button" onClick={finish}>{copy.bypass} <span aria-hidden="true">→</span></button>
-        </> : <>
-          <p className={styles.status} role="status">{copy.entering}</p>
-          <button ref={skip} type="button" className={styles.skip} onClick={finish}>{copy.skip} <span aria-hidden="true">→</span></button>
-        </>}
+        <p className={styles.status} role="status">{copy.entering}</p>
+        <button type="button" className={styles.skip} onClick={finish}>{copy.skip} <span aria-hidden="true">→</span></button>
       </div>
     </section>
   );

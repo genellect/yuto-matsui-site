@@ -10,16 +10,6 @@ const [frameDirectory, ffmpeg, only] = process.argv.slice(2);
 if (!frameDirectory || !ffmpeg) throw new Error("Provide the frame directory and ffmpeg executable.");
 const output = path.resolve("public/images/contact-entry");
 mkdirSync(output, { recursive: true });
-// Camera-derived hit areas travel with the rendered assets, avoiding hand-aligned UI.
-const projectionFiles = ["desktop", "mobile"].map(layout => path.join(frameDirectory, `projection-${layout}.json`));
-if (projectionFiles.every(existsSync)) {
-  const projection = Object.fromEntries(["desktop", "mobile"].map((layout, i) => {
-    const area = JSON.parse(readFileSync(projectionFiles[i], "utf8")).representative;
-    if (!area || ![area.left, area.top, area.width, area.height].every(Number.isFinite) || area.left < 0 || area.top < 0 || area.width <= 0 || area.height <= 0 || area.left + area.width > 100 || area.top + area.height > 100) throw new Error("Door projection leaves the rendered frame.");
-    return [layout, area];
-  }));
-  writeFileSync("src/contact/contact-door-projection.json", JSON.stringify(projection, null, 2) + "\n");
-}
 for (const layout of ["desktop", "mobile"]) {
   if (only && only !== layout) continue;
   const key = `representative-${layout}`;

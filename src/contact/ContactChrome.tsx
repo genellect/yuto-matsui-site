@@ -49,7 +49,7 @@ export function ContactHeader() {
     <header className={styles.header} data-contact-header>
       <a className={styles.skip} href="#main">本文へスキップ</a>
       <div className={styles.headerInner}>
-        <a className={`site-logo ${brand.parentBrand} ${styles.brand}`} href="/contact/" aria-label="CONTACT — 入口へ戻る" onClick={(event) => {
+        <a className={`site-logo ${brand.parentBrand} ${styles.brand}`} href="/contact/" aria-label="CONTACT — お問い合わせの先頭へ" onClick={(event) => {
           if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
           setOpen(false);
           if (!window.dispatchEvent(new Event(CONTACT_RETURN_TO_ENTRANCE, { cancelable: true }))) event.preventDefault();

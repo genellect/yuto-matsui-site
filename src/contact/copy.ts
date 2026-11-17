@@ -13,12 +13,8 @@ export const contactCopy = {
   intro: "研究・開発・教育に関するご相談やご依頼を承っています。",
   intro2: "学生・教職員・研究者の方、団体・企業の方など、さまざまな方とのご縁を歓迎しています。",
 
-  entranceTitle: "執務室へご案内します",
-  doorLabel: "執務室に入り、メッセージを書く",
-  writeMessage: "メッセージを書く",
-  bypass: "演出なしで入力へ",
+  entranceTitle: "Yuto Matsuiへのご連絡",
   entering: "Yuto Matsui — 入室しています",
-  enteringLabel: "入室しています",
   skip: "スキップ",
 
   audienceKicker: "WHO THIS IS FOR",

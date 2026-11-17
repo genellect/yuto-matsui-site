@@ -33,8 +33,10 @@ async function issueTurnstileTokens(page: Page) {
   await page.route('https://challenges.cloudflare.com/**', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: turnstileIssuingTokens }));
 }
 
+/** The film starts on its own; skip it (if it is still playing) to reach the form. */
 async function enterByBypass(page: Page) {
-  await page.getByRole('button', { name: /演出なしで入力へ/ }).click();
+  const skip = page.getByRole('button', { name: /スキップ/ });
+  if (await skip.isVisible().catch(() => false)) await skip.click().catch(() => {});
   await expect(page.locator('#contact-flow')).toBeVisible();
 }
 
@@ -51,29 +53,26 @@ for (const layout of layouts) {
   test.describe(`${layout.name} Contact`, () => {
     test.beforeEach(async ({ page }) => { await page.setViewportSize(layout.viewport); });
 
-    test('entrance offers one personal destination and no COMPASS routing', async ({ page }) => {
+    test('opening Contact plays the entry film at once and reaches the form', async ({ page }) => {
       const { errors, compass } = await watch(page);
-      await page.emulateMedia({ reducedMotion: 'reduce' });
+      const filmRequests: string[] = [];
+      page.on('request', (request) => { if (request.url().endsWith('.mp4')) filmRequests.push(new URL(request.url()).pathname); });
       const response = await page.goto('/contact/');
       expect(response?.status()).toBe(200);
       await expect(page).toHaveTitle('Contact | Yuto Matsui / 松井優知');
-      await expect(page.locator('h1')).toHaveCount(1);
-      await expect(page.getByRole('heading', { name: '執務室へご案内します' })).toBeVisible();
-      await expect(page.locator('[data-door]')).toHaveCount(1);
-      await expect(page.getByRole('button', { name: '執務室に入り、メッセージを書く' })).toBeVisible();
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://yuto-matsui.com/contact/');
+      const codec = await page.evaluate(() => document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'));
+      // No door to choose: the film is mounted without any interaction.
+      await expect(page.locator('video')).toHaveAttribute('src', `/images/contact-entry/${layout.film}`);
+      await expect(page.locator('[data-door]')).toHaveCount(0);
+      await expect(page.getByRole('button', { name: /演出なしで入力へ|メッセージを書く/ })).toHaveCount(0);
+      if (codec) await expect.poll(() => page.locator('video').evaluate((video: HTMLVideoElement) => video.currentTime)).toBeGreaterThan(0);
+      // Natural end, load deadline or codec failure: all paths arrive within the 2.7s ceiling.
+      await expect(page.locator('#contact-flow')).toBeVisible({ timeout: 4000 });
+      await expect(page.locator('#form-title')).toBeFocused();
+      expect(filmRequests).toEqual([`/images/contact-entry/${layout.film}`]);
 
-      // The door hit area lies within the rendered scene and is at least 44px.
-      const scene = await page.locator('[data-contact-entrance] [data-entering]').boundingBox();
-      const door = await page.locator('[data-door]').boundingBox();
-      expect(scene && door).toBeTruthy();
-      expect(door!.width).toBeGreaterThanOrEqual(44);
-      expect(door!.x).toBeGreaterThanOrEqual(scene!.x);
-      expect(door!.x + door!.width).toBeLessThanOrEqual(scene!.x + scene!.width + 1);
-      expect(door!.y + door!.height).toBeLessThanOrEqual(scene!.y + scene!.height + 1);
-
-      await enterByBypass(page);
       const text = await page.locator('body').innerText();
       const labels = await page.locator('[aria-label]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('aria-label')).join(' '));
       const meta = await page.locator('head').innerHTML();
@@ -87,29 +86,22 @@ for (const layout of layouts) {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     });
 
-    test('door starts the film and always reaches the form', async ({ page }) => {
-      const { errors } = await watch(page);
-      const filmRequests: string[] = [];
-      page.on('request', (request) => { if (request.url().endsWith('.mp4')) filmRequests.push(new URL(request.url()).pathname); });
+    test('the film shows its status and Skip reaches the form without moving focus on load', async ({ page }) => {
+      // Hold the film and the page clock so the entrance stays on screen for inspection.
+      await page.route('**/*.mp4', () => new Promise<void>(() => {}));
+      await page.clock.install();
       await page.goto('/contact/');
-      expect(filmRequests).toEqual([]);
-      const codec = await page.evaluate(() => document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'));
-      await page.locator('[data-door]').click();
+      await expect(page.getByRole('heading', { name: 'Yuto Matsuiへのご連絡', level: 2 }).first()).toBeVisible();
       await expect(page.getByRole('status')).toHaveText('Yuto Matsui — 入室しています');
-      await expect(page.locator('video')).toHaveAttribute('src', `/images/contact-entry/${layout.film}`);
-      await expect(page.getByRole('button', { name: /スキップ/ })).toBeFocused();
-      if (codec) await expect.poll(() => page.locator('video').evaluate((video: HTMLVideoElement) => video.currentTime)).toBeGreaterThan(0);
-      // Natural end, load deadline or codec failure: all paths arrive within the 2.7s ceiling.
-      await expect(page.locator('#contact-flow')).toBeVisible({ timeout: 4000 });
+      expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
+      await page.getByRole('button', { name: /スキップ/ }).click();
+      await expect(page.locator('#contact-flow')).toBeVisible();
       await expect(page.locator('#form-title')).toBeFocused();
-      expect(filmRequests).toEqual([`/images/contact-entry/${layout.film}`]);
-      expect(errors).toEqual([]);
     });
 
     test('reduced motion, Save-Data, failed and stalled films go straight to the form', async ({ page, context }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto('/contact/');
-      await page.locator('[data-door]').click();
       await expect(page.locator('#contact-flow')).toBeVisible();
       await expect(page.locator('video')).toHaveCount(0);
 
@@ -117,7 +109,6 @@ for (const layout of layouts) {
       await saveData.setViewportSize(layout.viewport);
       await saveData.addInitScript(() => Object.defineProperty(navigator, 'connection', { value: { saveData: true } }));
       await saveData.goto('/contact/');
-      await saveData.getByRole('button', { name: 'メッセージを書く', exact: true }).click();
       await expect(saveData.locator('#contact-flow')).toBeVisible();
       await expect(saveData.locator('video')).toHaveCount(0);
       await saveData.close();
@@ -130,28 +121,25 @@ for (const layout of layouts) {
         await film.setViewportSize(layout.viewport);
         await film.route('**/*.mp4', handler);
         await film.goto('/contact/');
-        await film.locator('[data-door]').click();
         await expect(film.locator('#contact-flow')).toBeVisible({ timeout: 2500 });
         await film.close();
       }
     });
 
-    test('keyboard entry, return to the entrance and the draft survive', async ({ page }) => {
+    test('header CONTACT returns to the top of the form and the draft survives', async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto('/contact/');
-      await page.locator('[data-door]').focus();
-      await page.keyboard.press('Enter');
-      await expect(page.locator('#form-title')).toBeFocused();
+      await expect(page.locator('#contact-flow')).toBeVisible();
       await fill(page, { affiliation: '北里大学' });
-
-      if (layout.name === 'Mobile') await expect(page.getByRole('link', { name: 'CONTACT — 入口へ戻る' })).toBeVisible();
-      await page.getByRole('link', { name: 'CONTACT — 入口へ戻る' }).click();
+      await page.locator('#details').focus();
+      await page.getByRole('link', { name: 'CONTACT — お問い合わせの先頭へ' }).click();
       await expect(page).toHaveURL(/\/contact\/$/);
-      await expect(page.locator('[data-door]')).toBeVisible();
-      await enterByBypass(page);
+      await expect(page.locator('#form-title')).toBeFocused();
+      await expect(page.locator('video')).toHaveCount(0);
       await expect(page.locator('#name')).toHaveValue('山田 花子');
       await expect(page.locator('#affiliation')).toHaveValue('北里大学');
       await expect(page.locator('#details')).toHaveValue(/共同研究/);
+      expect(await page.evaluate(() => scrollY)).toBe(0);
     });
 
     test('field validation and the optional affiliation', async ({ page }) => {

@@ -115,20 +115,21 @@ export function ContactForm() {
 
   useEffect(() => {
     let focusFrame = 0;
-    const returnToEntrance = (event: Event) => {
+    const returnToForm = (event: Event) => {
       // After a completed message, the ordinary link starts a fresh visit.
       if (status === "success") return;
+      // Otherwise the header returns to the top of the form; the draft stays.
       event.preventDefault();
-      setEntryComplete(false);
+      setEntryComplete(true);
       cancelAnimationFrame(focusFrame);
       focusFrame = requestAnimationFrame(() => {
         document.getElementById("form-title")?.focus({ preventScroll: true });
         window.scrollTo({ top: 0, behavior: "instant" });
       });
     };
-    window.addEventListener(CONTACT_RETURN_TO_ENTRANCE, returnToEntrance);
+    window.addEventListener(CONTACT_RETURN_TO_ENTRANCE, returnToForm);
     return () => {
-      window.removeEventListener(CONTACT_RETURN_TO_ENTRANCE, returnToEntrance);
+      window.removeEventListener(CONTACT_RETURN_TO_ENTRANCE, returnToForm);
       cancelAnimationFrame(focusFrame);
     };
   }, [status]);
