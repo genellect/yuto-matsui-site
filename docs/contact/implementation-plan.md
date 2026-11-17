@@ -216,13 +216,19 @@ and http.request.uri.path ne "/api/contact"
 
 `public/_routes.json` を `{"version":1,"include":["/api/contact"],"exclude":[]}` にする。静的配信ではFunctionsを呼ばない。
 
-## 8. 素材の再生成
+## 8. 素材（看板の差し替え）
 
-1. `scripts/contact-entry/` をCOMPASSから移し、出典と原本の位置を `docs/source-map.json` と `THIRD_PARTY_NOTICES.md` に記録する。COMPASS側の原本は消さない。
-2. `render.py` の修正は最小限にする。右の部屋の `Room identity compass`（COMPASSの文字）を削除する。右の `会議室` の札も削除する（D1）。建物、家具、照明、左扉、カメラ移動は変えない。
-3. 出力は `representative` の desktop と mobile だけにする（2本、48frame、24fps）。開始静止画も同じ1frame目から作る。`encode.mjs` の出力先を `public/images/contact-entry/` に、名前を `entry-{layout}.mp4`・`lobby-{layout}.webp` に変える。黒frameの検査とSHA-256のmanifestは残す。
-4. Blender 4.5 LTSとライセンス済みの日本語fontが必要なので、オーナーのPCで実行する。このcloud環境では実行できない。
-5. 照合：静止画と動画の1frame目の画素差、projectionの扉の位置とbuttonの位置を、PCとモバイルで確かめる。
+全体を描き直すと、描画環境の違いで承認済みの見た目から離れてしまう。そこで、承認済みの映像（COMPASS `6bb78ff` の `representative-{desktop,mobile}.mp4` と `lobby-*.webp`）はそのまま使い、右の部屋の札（会議室・COMPASS）が映っていた画素だけを差し替える。
+
+1. `render.py`（個人用に修正済み）は、右の部屋の札を作らない。建物、家具、照明、左扉、カメラ移動、執務室の札は変えない。
+2. `render-plate.py` は、`render.py --bake-only` で作った場面から、札があった範囲だけをコマごとに描く（承認済み映像と同じ16 sample、同じdenoise）。
+3. `patch-signage.mjs` は次の処理を行う。
+   - 承認済みファイルのSHA-256を確かめる。
+   - 映像をコマに分け、差し替え画像の位置を±2pxの範囲で合わせる。
+   - 周りの壁から色の対応を最小二乗で求め、文字の画素だけを境目をぼかして置き換える。
+   - 開始画像（`lobby-*.webp`）も同じ方法で差し替え、映像はH.264（crf 18）に戻して書き出す。manifestも作る。
+4. 実施環境：このcloud環境のBlender 4.5.9 LTSで、Vulkan（ソフトウェア描画）を使った。描くのは差し替える範囲だけで、そこには日本語の文字が含まれないため、ライセンス済みfontは不要。
+5. 確認：開始画像と動画の1コマ目を拡大して、文字が残っていないこと、壁の質感と目地がつながっていることを確かめた。札が映るのは、PCでは1〜29コマ目。執務室の札を含む、その他の画素は変えていない。
 
 ## 9. 既存の契約に対する意図した変更
 
@@ -236,6 +242,8 @@ and http.request.uri.path ne "/api/contact"
 | `public/_headers` | Contact用のpreload Linkを追加するかはbuild後に判断する。既存の `/` と `/en/` の行は変えない |
 
 ## 10. 作業順とPR
+
+> 2026-11-17 更新：オーナーの指示により、段階2〜4（素材の差し替えを含む）はすべてPR #8にまとめた。素材はオーナーのPCではなく、このcloud環境で差し替えた（§8）。残りの段階は§15で管理する。
 
 | 段階 | 内容 | 成果 | 承認 |
 |---|---|---|---|
@@ -275,16 +283,60 @@ and http.request.uri.path ne "/api/contact"
 
 ## 14. 実装状況（2026-11-17）
 
-このPRで実装した範囲と、まだ残っている範囲を分けて記録する。
+PR #8 に、コードで実装できる範囲をすべて入れた。Cloudflareの設定と本番切替は、オーナーの承認を待っている。
 
 | 項目 | 状況 |
 |---|---|
-| Function（`functions/api/contact.ts`）、共通validator（`src/contact/schema.ts`）、`public/_routes.json` | 実装済み。unit test 20件（`node --test tests/contact-function.test.ts`）。外部通信はすべてmock |
-| 画面（`src/app/(contact)/contact/`、`src/contact/`） | 実装済み。本番COMPASS Contactの「代表へのご連絡」側と同じCSS・構造。本番にない部分（送信欄のTurnstile、任意badge、失敗時の文言、受付後の文言）だけを本番の配色・書体・余白に合わせて追加した |
-| JPトップの導線 | `/contact/` に変更。比較scriptでは、この1属性だけを意図した変更として扱う |
-| E2E | `tests/e2e/contact.spec.ts` 17件（Desktop／Mobile）。送信はすべてブラウザー内のmock |
-| build検証 | `verify-build.mjs` を「Function 1本だけ」の検査に置き換えた。mainのbuildでは本番用のTurnstile site keyが必須 |
-| 素材 | **暫定**。COMPASSの `representative-{desktop,mobile}.mp4` と `lobby-*.webp` をそのまま `entry-*` / `lobby-*` として置いている。開始画像と動画に、まだCOMPASSの看板が映っている。`render.py` と `encode.mjs` は個人用に修正済みで、オーナーのPC（Blender 4.5、日本語font）で再出力して差し替える。扉の位置とカメラは変えていないので、projectionは再出力後も同じになる見込み（`encode.mjs` が再生成する） |
-| Cloudflare設定（§7）、送信の疎通確認（段階1）、本番切替 | 未実施。オーナーの承認が必要 |
+| 受付Function、共通validator、`_routes.json` | 実装済み。unit test 20件 |
+| 画面 | 実装済み。本番の「代表へのご連絡」側と同じCSS・構造。Contactを開くとすぐ入室演出を再生し、入力画面へ進む（宛先を選ぶ操作はない） |
+| 本番にない部分 | 送信欄のTurnstile、任意badge、失敗時・受付後の文言を、本番の配色・書体・余白で追加 |
+| 素材 | 右の部屋の札を消した映像と開始画像に差し替え済み（§8） |
+| JPトップの導線 | `/contact/` に変更 |
+| テスト | Contact E2E 17件（Desktop／Mobile）、build検証（Function 1本の境界、本番用Turnstile鍵の必須化） |
+| Preview | branch Previewで、ページ・素材・`/api/contact` の405・設定なしの503、E2E 17件を確認 |
 
-画面の確認は、実機の表示に近づけるため日本語フォント（Noto Sans CJK JP）を入れた環境で、本番と並べて撮影して行った。この作業環境は標準では日本語フォントを持たず、中国語フォントで描画されるので、フォントを入れない状態のスクリーンショットでは字形が崩れて見える。
+画面は、日本語フォントを入れた環境で、本番と並べて撮影して確認した。この作業環境は標準では日本語フォントを持たず、中国語フォントで描画されるので、フォントを入れない状態のスクリーンショットでは字形が崩れて見える。
+
+## 15. 残るタスク
+
+| # | タスク | 担当 | 前提 | 完了の条件 |
+|---|---|---|---|---|
+| T1 | Previewの見た目と操作をオーナーが確認する | オーナー | PR #8 のPreview | 修正点がなくなる |
+| T2 | 送信専用API tokenを作る（Email Sendingの送信だけ、対象はこのaccountだけ） | オーナー | — | tokenを非公開で保管 |
+| T3 | REST APIで本人宛てに1通送り、`result.delivered`／`queued` と受信箱を確かめる | オーナー承認のもと実施 | T2、送信元のrouting domainと確認済み受信先 | 非公開の記録に結果を残す。失敗したら、原因と最小の代替案を整理するまで先へ進まない |
+| T4 | 個人用Turnstile widgetを作る（hostnameは `yuto-matsui.com`） | オーナー | — | sitekeyとsecret |
+| T5 | Pages環境変数をPreview（mock、テスト鍵）に設定し、Previewで `/api/contact` まで通しで確かめる | 承認のもと実施 | T4 | Previewで受付画面まで到達する（mock） |
+| T6 | Pages環境変数をProductionに設定する（§7.1） | 承認のもと実施 | T2〜T4 | 設定の記録 |
+| T7 | WAFのrate limiting ruleを追加する（host、path、POSTに限定） | 承認のもと実施 | — | 閾値を非公開の記録に残す |
+| T8 | PR #8 をmergeし、本番deployを確かめる | オーナーの指示 | T5〜T7。mainのbuildは本番用sitekeyがないと失敗するので、T6を先に済ませる | `Production verification` が成功する |
+| T9 | `Return COMPASS routes` に除外3条件を追加する（§7.3） | オーナーの指示 | T8 | `/contact/` が200、`/api/contact` へのGETが405。他の転送は維持 |
+| T10 | 本番の受入：承認済みのテストで1通送り、Reply-Toと受付画面を確かめる | オーナーの指示 | T9 | 公開記録（`docs/deployments/`）を作る |
+| T11 | 切替記録と復元手順を文書化する | 実装担当 | T10 | 機密を含まない記録 |
+
+## 16. ロードマップ
+
+```text
+済  設計（Issue #7）→ 実装・素材差し替え・Preview確認（PR #8）
+次  T1 オーナー確認 ─┬─ T2/T3 送信疎通 ─┐
+                    └─ T4 Turnstile ───┴─ T5 Preview通し確認 → T6/T7 本番設定
+後  T8 merge → T9 転送除外 → T10 本番受入 → T11 記録
+以降（別PR・別判断）
+    - Production verificationとHTTP契約に /contact/ と /api/contact を追加
+    - Next.jsのsecurity更新（buildが既知の脆弱性を警告している）
+    - COMPASS側の旧Contact・GASの扱い（停止や改変は別の判断）
+```
+
+## 17. 課題とリスク
+
+| 区分 | 内容 | 対応 |
+|---|---|---|
+| 未検証 | REST APIから本人の受信箱に届くかは、まだ確かめていない（token権限、送信元のrouting domain、確認済み受信先） | T3で確かめる。成立しなければ代替案を整理する |
+| 順序 | mainのbuildは、本番用Turnstile sitekeyがないと失敗する（誤ってテスト鍵で公開しないための安全策） | T6をT8より先に行う |
+| 公開範囲 | mainへmergeすると `yuto-matsui-site.pages.dev/contact/` が先に公開される。送信はhost検証で拒否されるが、画面は見える | T8とT9を間を空けずに行う。ページはnoindex |
+| 依存 | Next.js 16.4.3にはbuild時に既知の脆弱性の警告が出る | 別PRで更新を検討する |
+| 素材 | 差し替えた範囲は、承認済みの映像とは別の描画環境（ソフトウェア描画）で描いた。色は周りの壁に合わせてある。映像は再圧縮している（crf 18） | T1で、オーナーが実機で見て確かめる |
+| 表示 | 日本語は端末のフォントで表示する（Noto Sans JP、ヒラギノ、游ゴシック）。日本語フォントのない環境では代わりのフォントになる | 本番と同じ仕様。変えない |
+| 動画 | H.264だけを用意している。再生できない環境では演出を省いて入力画面を出す | 仕様どおり |
+| 検証環境 | この作業環境では、本番比較の基準画像とフォントが違い、JPの文字幅に差が出る。mainでも同じ差なので、変更による差ではない | 基準は更新しない |
+| E2E | `founder-mobile-hero` が並列実行時に1回だけ失敗した。単独と反復では成功する | 既存テストの安定性として別途調べる |
+| 範囲外 | 英語のContact、問い合わせDB、自動返信、COMPASSの旧Contact・GAS・Communityの変更 | Issue #7の対象外 |

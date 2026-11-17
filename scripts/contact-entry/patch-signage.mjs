@@ -5,14 +5,14 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import sharp from "sharp";
 
-// node scripts/contact-entry/patch-signage.mjs APPROVED_DIR PLATES_DIR FFMPEG
+// node scripts/contact-entry/patch-signage.mjs APPROVED_DIR PLATES_DIR FFMPEG [desktop|mobile]
 //
 // APPROVED_DIR holds the approved COMPASS-era entry assets (genellect/compass
 // public/media/contact-entry at 6bb78ff). PLATES_DIR holds render-plate.py output.
 // Only the pixels of the removed right-room lettering are replaced; everything else,
 // including the study's own sign, stays exactly as approved.
 
-const [approvedDir, platesDir, ffmpeg] = process.argv.slice(2);
+const [approvedDir, platesDir, ffmpeg, only] = process.argv.slice(2);
 if (!approvedDir || !platesDir || !ffmpeg) throw new Error("Usage: patch-signage.mjs APPROVED_DIR PLATES_DIR FFMPEG");
 
 const approved = {
@@ -151,6 +151,7 @@ function patch(image, plateImage, region) {
 
 const manifestAssets = [];
 for (const layout of ["desktop", "mobile"]) {
+  if (only && only !== layout) continue;
   const key = `representative-${layout}`;
   const plates = JSON.parse(readFileSync(path.join(platesDir, `${key}-plates.json`), "utf8"));
   const frames = path.join(work, layout);
