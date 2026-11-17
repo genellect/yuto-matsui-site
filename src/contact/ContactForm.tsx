@@ -380,7 +380,7 @@ export function ContactForm() {
               <div className={styles.statusError} role="alert">
                 <p>{noticeText}</p>
                 {showEmailFallback || (failures >= 2 && (notice === "failure" || notice === "rateLimited")) ? (
-                  <p>{copy.fallbackBefore}<a href="/#contact-cta">{copy.fallbackLink}</a>{copy.fallbackAfter}</p>
+                  <p>{copy.fallbackBefore}<a href="/#contact-cta" target="_blank" rel="noopener">{copy.fallbackLink}</a>{copy.fallbackAfter}</p>
                 ) : null}
               </div>
             ) : null}

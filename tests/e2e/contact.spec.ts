@@ -173,7 +173,9 @@ for (const layout of layouts) {
       await fill(page);
 
       const alert = page.getByRole('alert').filter({ hasText: '送信に必要な確認が完了していません' });
-      await expect(alert.getByRole('link', { name: 'トップページ' })).toHaveAttribute('href', '/#contact-cta');
+      const emailLink = alert.getByRole('link', { name: 'トップページ' });
+      await expect(emailLink).toHaveAttribute('href', '/#contact-cta');
+      await expect(emailLink).toHaveAttribute('target', '_blank');
       await expect(submit(page)).toBeDisabled();
       await expect(page.locator('#email')).toHaveValue('hanako@example.com');
       await expect(page.locator('#details')).toHaveValue(/共同研究について/);
