@@ -23,14 +23,42 @@ jobs:
       - run: npm run typecheck && npm run build && npm run verify
       - run: node --test tests/deployment-readiness.test.mjs tests/contact-function.test.ts
 
-  # Browser tests, split across three runners that start at the same time.
+  # Decides how much of the browser suite a change needs. A pull request that touches only
+  # Contact runs only the Contact tests; anything else, and every push to main, runs all of them.
+  scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      shards: ${{ steps.scope.outputs.shards }}
+      only: ${{ steps.scope.outputs.only }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: scope
+        run: |
+          full=1
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            files="$(git diff --name-only "origin/$GITHUB_BASE_REF...HEAD")"
+            echo "$files"
+            contact_only='^(src/contact/|src/app/\(contact\)/|functions/|tests/e2e/contact\.spec\.ts$|tests/contact-function\.test\.ts$|docs/contact/)'
+            if [ -n "$files" ] && ! printf '%s\n' "$files" | grep -vqE "$contact_only"; then full=0; fi
+          fi
+          if [ "$full" = 1 ]; then
+            echo 'shards=[1,2,3]' >> "$GITHUB_OUTPUT"; echo 'only=' >> "$GITHUB_OUTPUT"
+          else
+            echo 'shards=[1]' >> "$GITHUB_OUTPUT"; echo 'only=tests/e2e/contact.spec.ts' >> "$GITHUB_OUTPUT"
+          fi
+
+  # Browser tests, split across runners that start at the same time.
   e2e:
+    needs: scope
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: ${{ fromJSON(needs.scope.outputs.shards) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -44,7 +72,7 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - run: npx playwright install --with-deps chromium
       - run: npm run build
-      - run: npx playwright test --shard=${{ matrix.shard }}/3
+      - run: npx playwright test ${{ needs.scope.outputs.only }} --shard=${{ matrix.shard }}/${{ strategy.job-total }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -57,7 +85,7 @@ jobs:
   # Keeps the single required check name; passes only when every job above passed.
   verify:
     if: always()
-    needs: [build, e2e]
+    needs: [build, scope, e2e]
     runs-on: ubuntu-latest
     steps:
-      - run: test "${{ needs.build.result }}" = success && test "${{ needs.e2e.result }}" = success
+      - run: test "${{ needs.build.result }}" = success && test "${{ needs.scope.result }}" = success && test "${{ needs.e2e.result }}" = success

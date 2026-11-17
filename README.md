@@ -34,6 +34,6 @@ Playwrightはbundled Chromiumを使います。OS依存が不足するLinuxで�
 
 権利条件は [LICENSE](LICENSE)、素材の出典は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) と [画像の出典](docs/founder-image-credits.md) にあります。
 元ソースと移動先・SHA-256は [source-map.json](docs/source-map.json) に記録しています。
-開発PRではCloudflare PreviewとCIを確認し、CI `verify` 成功後にmainへmergeします。mainは自動build・公開され、`Production verification` が本番ドメインのcommitとHTTPを確認します。
+開発PRではCloudflare PreviewとCIを確認し、CI `verify` 成功後にmainへmergeします。CIは、ブラウザー不要の検査（`build`）とE2E（`e2e`）を同時に走らせ、両方が通ると `verify` が成功します。Contactの範囲（`src/contact/`、`src/app/(contact)/`、`functions/`、Contactのテスト、`docs/contact/`）だけを変えるPRではContactのE2Eだけを、それ以外のPRとmainへのpushでは全E2Eを3分割で実行します。mainは自動build・公開され、`Production verification` が本番ドメインのcommitとHTTPを確認します。
 
 [本番切替の実績・インフラ設定・復元手順](docs/deployments/2026-11-15-cutover.md) と [比較方法](docs/migration.md) を参照してください。
