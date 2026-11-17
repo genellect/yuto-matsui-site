@@ -1,89 +1,92 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import brand from "./parent-brand.module.css";
+import { pageCopy } from "../content/ja";
+import { MobileExternalMenu } from "../ja/MobileExternalMenu";
+// The portfolio's own header and footer styles, used read-only so Contact matches the top page.
+import founder from "../ja/founder.module.css";
 import styles from "./contact-chrome.module.css";
-import { CONTACT_RETURN_TO_ENTRANCE } from "./contact-entry-events";
 
-const links = [
-  { label: "Yuto Matsui — JP", href: "/" },
-  { label: "Yuto Matsui — EN", href: "/en/" },
-] as const;
+// Contact is one page of the portfolio: it carries the top page's header and footer, with
+// section links pointing back to the top page and Contact as the current page.
 
-function ContactLinks({ onNavigate }: { onNavigate?: () => void }) {
-  return links.map(({ label, href }) => (
-    <a href={href} key={href} onClick={onNavigate}>
-      <span>{label}</span><span aria-hidden="true">↗</span>
-    </a>
-  ));
+function ArrowIcon() {
+  return <span aria-hidden="true">{pageCopy.externalArrow}</span>;
+}
+
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" role="presentation">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4.25" />
+      <circle className={founder.iconFill} cx="17.4" cy="6.7" r="1.1" />
+    </svg>
+  );
+}
+
+function GitHubIcon() {
+  return (
+    <svg viewBox="0 0 24 24" role="presentation">
+      <path className={founder.iconFill} d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.87c-2.78.61-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.58 9.58 0 0 1 12 6.82c.85 0 1.71.11 2.51.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+    </svg>
+  );
 }
 
 export function ContactHeader() {
-  const [open, setOpen] = useState(false);
-  const menu = useRef<HTMLDivElement>(null);
-  const trigger = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const dismissOutside = (event: PointerEvent) => {
-      if (event.target instanceof Node && !menu.current?.contains(event.target)) setOpen(false);
-    };
-    const dismissOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      setOpen(false);
-      trigger.current?.focus();
-    };
-    const desktop = matchMedia("(min-width: 901px)");
-    const dismissOnDesktop = () => { if (desktop.matches) setOpen(false); };
-    document.addEventListener("pointerdown", dismissOutside);
-    document.addEventListener("keydown", dismissOnEscape);
-    desktop.addEventListener("change", dismissOnDesktop);
-    return () => {
-      document.removeEventListener("pointerdown", dismissOutside);
-      document.removeEventListener("keydown", dismissOnEscape);
-      desktop.removeEventListener("change", dismissOnDesktop);
-    };
-  }, [open]);
-
   return (
-    <header className={styles.header} data-contact-header>
-      <a className={styles.skip} href="#main">本文へスキップ</a>
-      <div className={styles.headerInner}>
-        <a className={`site-logo ${brand.parentBrand} ${styles.brand}`} href="/contact/" aria-label="CONTACT — お問い合わせの先頭へ" onClick={(event) => {
-          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-          setOpen(false);
-          if (!window.dispatchEvent(new Event(CONTACT_RETURN_TO_ENTRANCE, { cancelable: true }))) event.preventDefault();
-        }}>
-          <span className="logo-mark" aria-hidden="true"><span /></span>
-          <span className={styles.wordmark}>CONTACT</span>
+    <>
+      <a className={`${founder.skipLink} ${styles.portfolio}`} href="#main">{pageCopy.skipLink}</a>
+      <header className={`${founder.header} ${styles.portfolio}`} data-contact-header>
+        <a className={founder.wordmark} href="/" aria-label={pageCopy.wordmarkLabel}>
+          <strong>{pageCopy.wordmarkName}</strong>
+          <span>{pageCopy.wordmarkRole}</span>
         </a>
-        <nav className={styles.desktopNav} aria-label="Contact navigation"><ContactLinks /></nav>
-        <div className={styles.mobileMenu} ref={menu} onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
-        }}>
-          <button type="button" ref={trigger} className={styles.menuButton} aria-expanded={open} aria-controls="contact-navigation" onClick={() => setOpen((value) => !value)}>
-            Menu<span className={styles.menuGlyph} aria-hidden="true"><i /><i /></span>
-          </button>
-          <nav id="contact-navigation" className={styles.bubble} aria-label="Contact navigation" hidden={!open}>
-            <ContactLinks onNavigate={() => setOpen(false)} />
-          </nav>
-        </div>
-      </div>
-    </header>
+        <nav className={founder.navigation} aria-label={pageCopy.navigationLabel}>
+          <a href="/#expertise">{pageCopy.navExpertise}</a>
+          <a href="/#story">{pageCopy.navStory}</a>
+          <a href="/#products">{pageCopy.navProducts}</a>
+          <a href="/#experience">{pageCopy.navCredentials}</a>
+          <a href="/#off-hours">{pageCopy.navOffHours}</a>
+          <a href="/contact/" aria-current="page">{pageCopy.navContact}</a>
+          <span className={founder.desktopLanguageSwitch} aria-label={pageCopy.languageLabel}>
+            <a href="/contact/" aria-current="page">{pageCopy.japaneseLanguage}</a><span>{pageCopy.languageSeparator}</span><a href="/en/">{pageCopy.englishLanguage}</a>
+          </span>
+        </nav>
+        <nav className={founder.mobileNavigation} aria-label={pageCopy.mobileNavigationLabel}>
+          <a href="/#message">{pageCopy.mobileMessage}</a>
+          <a href="/#products">{pageCopy.mobileProducts}</a>
+          <a href="/contact/" aria-current="page">{pageCopy.mobileContact}</a>
+          <MobileExternalMenu className={founder.mobileExternalLinks}>
+            <div className={founder.mobileExternalPopover} aria-label={pageCopy.mobileExternalPopover}>
+              <div className={founder.mobileExternalIcons}>
+                <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons}><InstagramIcon /></a>
+                <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons2}><GitHubIcon /></a>
+              </div>
+              <div className={founder.mobileLanguagePanel}>
+                <span>{pageCopy.mobileLanguagePanel}</span>
+                <div><a href="/contact/" aria-current="page">{pageCopy.mobileLanguagePanel2}</a><span>{pageCopy.mobileLanguagePanel3}</span><a href="/en/">{pageCopy.mobileLanguagePanel4}</a></div>
+              </div>
+            </div>
+          </MobileExternalMenu>
+        </nav>
+      </header>
+    </>
   );
 }
 
 export function ContactFooter() {
   return (
-    <footer className={styles.footer} data-contact-footer>
-      <div className={styles.footerInner}>
-        <div className={styles.footerTop}>
-          <a className={styles.footerTitle} href="#contact-top">CONTACT</a>
-          <a className={styles.backTop} href="#contact-top">Back to top <span aria-hidden="true">↑</span></a>
-        </div>
-        <nav className={styles.footerNav} aria-label="Contact footer navigation"><ContactLinks /></nav>
-        <p className={styles.copyright}>© {new Date().getFullYear()} Yuto Matsui. All rights reserved.</p>
+    <footer className={`${founder.footer} ${styles.portfolio}`} data-contact-footer>
+      <div className={founder.footerPrimary}>
+        <div><strong>{pageCopy.footerName}</strong><span>{pageCopy.footerRole}</span></div>
+        <nav aria-label={pageCopy.footerLinksLabel}>
+          <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer">{pageCopy.footerInstagram}<ArrowIcon /></a>
+          <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer">{pageCopy.footerGitHub}<ArrowIcon /></a>
+          <a href="#contact-top">{pageCopy.backToTop}</a>
+        </nav>
       </div>
+      <div className={founder.footerLanguageSwitch} aria-label={pageCopy.footerLanguageSwitch}>
+        <span>{pageCopy.footerLanguageSwitch2}</span>
+        <div><a href="/contact/" aria-current="page">{pageCopy.footerLanguageSwitch3}</a><a href="/en/">{pageCopy.footerLanguageSwitch4}</a></div>
+      </div>
+      <p className={founder.copyright}>{pageCopy.copyright}</p>
     </footer>
   );
 }

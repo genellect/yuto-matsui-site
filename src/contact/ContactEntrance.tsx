@@ -6,6 +6,7 @@ import { contactCopy as copy } from "./copy";
 
 type Props = { onComplete: () => void };
 const mediaRoot = "/images/contact-entry";
+const ENTRY_SEEN_KEY = "yuto-matsui:contact-entry-seen";
 
 /**
  * Blender-authored film; presentation only. With a single destination there is
@@ -22,6 +23,11 @@ export function ContactEntrance({ onComplete }: Props) {
   const finish = () => {
     if (completed.current) return;
     completed.current = true;
+    try {
+      sessionStorage.setItem(ENTRY_SEEN_KEY, "1");
+    } catch {
+      // Without storage the film plays again next time; nothing else depends on it.
+    }
     video.current?.pause();
     onComplete();
   };
@@ -30,7 +36,14 @@ export function ContactEntrance({ onComplete }: Props) {
 
   useEffect(() => {
     const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches || saveData || document.hidden) {
+    // The film plays once per visit; returning within the same tab goes straight to the form.
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem(ENTRY_SEEN_KEY) === "1";
+    } catch {
+      // Storage may be unavailable (private mode, blocked site data); the film simply plays.
+    }
+    if (seen || matchMedia("(prefers-reduced-motion: reduce)").matches || saveData || document.hidden) {
       finishRef.current();
       return;
     }
@@ -65,10 +78,7 @@ export function ContactEntrance({ onComplete }: Props) {
   }, [entering]);
 
   return (
-    <section className={styles.entrance} aria-labelledby="entrance-title" data-contact-entrance>
-      <div className={styles.heading}>
-        <h2 id="entrance-title">{copy.entranceTitle}</h2>
-      </div>
+    <div className={styles.entrance} data-contact-entrance>
       <div className={styles.scene} data-entering={entering} data-film-layout={entering ? layout : undefined} data-finishing={finishing}>
         <picture className={styles.poster}>
           <source media="(max-width: 700px)" srcSet={`${mediaRoot}/lobby-mobile.webp`} />
@@ -81,9 +91,8 @@ export function ContactEntrance({ onComplete }: Props) {
         </> : null}
       </div>
       <div className={styles.controls}>
-        <p className={styles.status} role="status">{copy.entering}</p>
         <button type="button" className={styles.skip} onClick={finish}>{copy.skip} <span aria-hidden="true">→</span></button>
       </div>
-    </section>
+    </div>
   );
 }

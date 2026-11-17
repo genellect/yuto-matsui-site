@@ -69,3 +69,40 @@
 @media (max-height: 380px) { .bubble { max-height: calc(100dvh - 90px); overflow-y: auto; } }
 @keyframes bubbleIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .bubble:not([hidden]) { animation: none; } .menuGlyph i { transition: none; } }
+
+/* Personal Contact chrome: the portfolio owner's name instead of a separate brand mark. */
+.brandName { color: #142d3a; font-size: 17px; font-weight: 700; letter-spacing: 0.02em; text-decoration: none; }
+.brandName:hover { color: #386c73; }
+.footerLinks { display: flex; flex-wrap: wrap; gap: 12px 40px; margin-top: 38px; padding: 24px 0; border-block: 1px solid #c7e4e51c; }
+.footerLinks a { display: inline-flex; align-items: center; min-height: 44px; color: #c8d6dc; font-size: 12px; text-decoration: none; }
+.footerLinks a:hover { color: #fff; }
+.footer a:focus-visible { outline: 2px solid #9fcfcf; outline-offset: 4px; border-radius: 3px; }
+
+/* The portfolio's own header (values from src/ja/founder.module.css .header, read-only there). */
+.siteHeader { position: fixed; inset: 0 0 auto; z-index: 100; display: flex; min-height: 68px; align-items: center; justify-content: space-between; gap: 30px; padding: 10px clamp(22px, 3.4vw, 56px); border-bottom: 1px solid rgba(35, 77, 118, 0.11); background: rgba(249, 252, 255, 0.84); backdrop-filter: blur(20px) saturate(135%); color: #101c2b; font-family: Inter, "Helvetica Neue", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif; }
+.wordmark { display: grid; gap: 3px; color: #101c2b; text-decoration: none; }
+.wordmark strong { font-size: 0.8rem; font-weight: 850; letter-spacing: 0.145em; }
+.wordmark span { color: #567085; font-size: 0.57rem; font-weight: 680; letter-spacing: 0.08em; }
+.navigation { display: flex; align-items: center; gap: clamp(17px, 2.1vw, 32px); }
+.navigation > a { position: relative; padding: 8px 0; color: #2f4558; font-size: 0.69rem; font-weight: 750; letter-spacing: 0.05em; text-decoration: none; }
+.navigation > a::after { position: absolute; right: 0; bottom: 3px; left: 0; height: 1px; content: ""; background: linear-gradient(90deg, #19bad0, #486ff0); transform: scaleX(0); transform-origin: right; transition: transform 220ms ease; }
+.navigation > a:hover::after, .navigation > a[aria-current="page"]::after { transform: scaleX(1); transform-origin: left; }
+.languageSwitch { display: flex; align-items: center; gap: 1px; margin-left: 2px; padding: 3px; border: 1px solid rgba(35, 77, 118, 0.13); border-radius: 999px; background: rgba(255, 255, 255, 0.5); font-size: 0.58rem; font-weight: 760; letter-spacing: 0.07em; }
+.languageSwitch a { min-width: 31px; padding: 6px 8px; border-radius: 999px; color: rgba(47, 69, 88, 0.46); text-align: center; text-decoration: none; }
+.languageSwitch a[aria-current="page"] { color: #183246; background: rgba(35, 77, 118, 0.09); }
+.mobileNavigation { display: none; }
+.siteHeader a:focus-visible { outline: 2px solid #278b96; outline-offset: 4px; border-radius: 3px; }
+@media (max-width: 900px) {
+  .navigation { display: none; }
+  .mobileNavigation { display: flex; align-items: center; gap: clamp(8px, 2.8vw, 14px); margin-left: auto; }
+  .mobileNavigation > a { display: inline-flex; align-items: center; min-height: 44px; color: #2f4558; font-size: 0.61rem; font-weight: 760; letter-spacing: 0.025em; text-decoration: none; }
+  .mobileNavigation > a[aria-current="page"] { color: #101c2b; text-decoration: underline; text-decoration-color: #19bad0; text-underline-offset: 6px; }
+}
+@media (max-width: 360px) { .mobileNavigation { gap: 7px; } .mobileNavigation > a { font-size: 0.55rem; } }
+@media (prefers-reduced-motion: reduce) { .navigation > a::after { transition: none; } }
+
+/* Variables and type that src/ja/founder.module.css expects from its .page wrapper. */
+.portfolio { --ink: #101c2b; --ink-soft: #45566a; --paper: #f7fbff; --white: #fff; --line: rgba(22, 47, 76, 0.14); --cyan: #19bad0; --blue: #486ff0; --violet: #8b69e8; color: var(--ink); font-family: Inter, "Helvetica Neue", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif; }
+.portfolio a:focus-visible, .portfolio button:focus-visible { outline: 3px solid #316fd7; outline-offset: 4px; }
+header.portfolio { z-index: 99; } /* below the skip link (z-index 100) so the focused link stays visible */
+@media (min-width: 901px) { .portfolio { font-family: Inter, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Yu Gothic UI", Meiryo, sans-serif; } }
