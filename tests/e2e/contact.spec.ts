@@ -5,8 +5,8 @@ import { test, expect } from '../support/responsive-fixture';
 // Each test that submits installs its own page-level mock; no message ever leaves the browser.
 
 const layouts = [
-  { name: 'Desktop', viewport: { width: 1440, height: 900 }, film: 'entry-desktop.mp4' },
-  { name: 'Mobile', viewport: { width: 390, height: 844 }, film: 'entry-mobile.mp4' }
+  { name: 'Desktop', viewport: { width: 1440, height: 900 } },
+  { name: 'Mobile', viewport: { width: 390, height: 844 } }
 ] as const;
 
 const forbiddenWording = /COMPASS|代表|確認コード|自動返信|どちらへのご連絡|宛先/;
@@ -33,10 +33,8 @@ async function issueTurnstileTokens(page: Page) {
   await page.route('https://challenges.cloudflare.com/**', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: turnstileIssuingTokens }));
 }
 
-/** The film starts on its own; skip it (if it is still playing) to reach the form. */
+/** The form is the first thing on the page. */
 async function enterByBypass(page: Page) {
-  const skip = page.getByRole('button', { name: /スキップ/ });
-  if (await skip.isVisible().catch(() => false)) await skip.click().catch(() => {});
   await expect(page.locator('#contact-flow')).toBeVisible();
 }
 
@@ -56,27 +54,20 @@ for (const layout of layouts) {
   test.describe(`${layout.name} Contact`, () => {
     test.beforeEach(async ({ page }) => { await page.setViewportSize(layout.viewport); });
 
-    test('opening Contact plays the entry film at once and reaches the form', async ({ page }) => {
+    test('opening Contact shows the form at once, with no film', async ({ page }) => {
       const { errors, compass } = await watch(page);
-      const filmRequests: string[] = [];
-      page.on('request', (request) => { if (request.url().endsWith('.mp4')) filmRequests.push(new URL(request.url()).pathname); });
+      const media: string[] = [];
+      page.on('request', (request) => { if (/\.(mp4|webm)$/.test(request.url()) || request.url().includes('contact-entry')) media.push(request.url()); });
       const response = await page.goto('/contact/');
       expect(response?.status()).toBe(200);
       await expect(page).toHaveTitle('Contact | Yuto Matsui / 松井優知');
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://yuto-matsui.com/contact/');
-      const codec = await page.evaluate(() => document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'));
-      // No door to choose: the film is mounted without any interaction.
-      await expect(page.locator('video')).toHaveAttribute('src', `/images/contact-entry/${layout.film}`);
-      await expect(page.locator('[data-door]')).toHaveCount(0);
-      await expect(page.getByRole('button', { name: /演出なしで入力へ|メッセージを書く/ })).toHaveCount(0);
-      if (codec) await expect.poll(() => page.locator('video').evaluate((video: HTMLVideoElement) => video.currentTime)).toBeGreaterThan(0);
-      // Natural end, load deadline or codec failure: all paths arrive within the 2.7s ceiling.
-      await expect(page.locator('#contact-flow')).toBeVisible({ timeout: 4000 });
-      // Nothing was pressed, so focus stays put and no focus ring appears on the heading.
+      await expect(page.locator('#contact-flow')).toBeVisible();
+      await expect(page.locator('video')).toHaveCount(0);
+      await expect(page.locator('[data-contact-entrance]')).toHaveCount(0);
+      await expect(page.getByRole('heading', { name: 'お問い合わせ', level: 1 })).toBeVisible();
       expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
-      await expect(page.locator('#form-title')).toHaveCSS('outline-style', 'none');
-      expect(filmRequests).toEqual([`/images/contact-entry/${layout.film}`]);
 
       const text = await page.locator('body').innerText();
       const labels = await page.locator('[aria-label]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('aria-label')).join(' '));
@@ -96,57 +87,13 @@ for (const layout of layouts) {
       await expect(page.locator('#contact-flow h2')).toHaveCount(0);
       expect(text).not.toMatch(/その他|スカウト|気軽|後輩|拝読し、ご記入/);
       await page.waitForLoadState('networkidle');
+      expect(media).toEqual([]);
       expect(compass).toEqual([]);
       expect(errors).toEqual([]);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     });
 
-    test('the film adds no text beyond the heading, and Skip reaches the form', async ({ page }) => {
-      // Hold the film and the page clock so the entrance stays on screen for inspection.
-      await page.route('**/*.mp4', () => new Promise<void>(() => {}));
-      await page.clock.install();
-      await page.goto('/contact/');
-      await expect(page.getByRole('heading', { name: 'お問い合わせ', level: 1 })).toBeVisible();
-      await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0);
-      await expect(page.getByRole('status')).toHaveCount(0);
-      await expect(page.locator('[data-contact-entrance]')).toHaveText(/^\s*スキップ\s*→?\s*$/);
-      expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
-      await page.getByRole('button', { name: /スキップ/ }).focus();
-      await page.keyboard.press('Enter');
-      await expect(page.locator('#contact-flow')).toBeVisible();
-      await expect(page.locator('#form-title')).toBeFocused();
-      // The heading is a focus target, not a control: no ring even after keyboard use.
-      await expect(page.locator('#form-title')).toHaveCSS('outline-style', 'none');
-    });
-
-    test('reduced motion, Save-Data, failed and stalled films go straight to the form', async ({ page, context }) => {
-      await page.emulateMedia({ reducedMotion: 'reduce' });
-      await page.goto('/contact/');
-      await expect(page.locator('#contact-flow')).toBeVisible();
-      await expect(page.locator('video')).toHaveCount(0);
-
-      const saveData = await context.newPage();
-      await saveData.setViewportSize(layout.viewport);
-      await saveData.addInitScript(() => Object.defineProperty(navigator, 'connection', { value: { saveData: true } }));
-      await saveData.goto('/contact/');
-      await expect(saveData.locator('#contact-flow')).toBeVisible();
-      await expect(saveData.locator('video')).toHaveCount(0);
-      await saveData.close();
-
-      for (const handler of [
-        (route: Route) => route.fulfill({ status: 404, body: '' }),
-        () => new Promise<void>(() => {}) // never answers: the 800ms load deadline applies
-      ]) {
-        const film = await context.newPage();
-        await film.setViewportSize(layout.viewport);
-        await film.route('**/*.mp4', handler);
-        await film.goto('/contact/');
-        await expect(film.locator('#contact-flow')).toBeVisible({ timeout: 2500 });
-        await film.close();
-      }
-    });
-
-    test('header and footer lead back to the portfolio; a return visit skips the film', async ({ page }) => {
+    test('header and footer are the top page\'s own', async ({ page }) => {
       await page.goto('/contact/');
       await expect(page.locator('#contact-flow')).toBeVisible({ timeout: 4000 });
       await expect(page.locator('header').getByRole('link', { name: 'Yuto Matsui' })).toHaveAttribute('href', '/');
@@ -167,9 +114,6 @@ for (const layout of layouts) {
       await expect(footer.getByRole('link', { name: /Back to top/ })).toHaveAttribute('href', '#contact-top');
       await expect(footer.getByRole('link', { name: 'EN', exact: true })).toHaveAttribute('href', '/en/');
       await expect(footer).toContainText('© 2026 Yuto Matsui. Designed and developed by Yuto Matsui. All rights reserved.');
-      await page.reload();
-      await expect(page.locator('#contact-flow')).toBeVisible();
-      await expect(page.locator('video')).toHaveCount(0);
     });
 
     test('each choice opens its own fields; every field reports its own problem', async ({ page }) => {

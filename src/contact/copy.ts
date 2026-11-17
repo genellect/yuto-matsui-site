@@ -9,7 +9,6 @@ export const contactMetadataCopy = {
 export const contactCopy = {
   title: "お問い合わせ",
 
-  skip: "スキップ",
 
   topicLegend: "お問い合わせの種類",
   grade: "学年",

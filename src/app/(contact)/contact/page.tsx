@@ -6,11 +6,9 @@ export default function ContactPage() {
   return (
     <div className={styles.page} id="contact-top">
       <ContactHeader />
-      <div className={styles.gallery}>
-        <main id="main" className={styles.main}>
-          <ContactForm />
-        </main>
-      </div>
+      <main id="main" className={styles.main}>
+        <ContactForm />
+      </main>
       <ContactFooter />
     </div>
   );

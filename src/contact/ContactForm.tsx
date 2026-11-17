@@ -2,7 +2,6 @@
 
 import Script from "next/script";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ContactEntrance } from "./ContactEntrance";
 import { contactCopy as copy } from "./copy";
 import {
   CONTACT_ENDPOINT,
@@ -21,8 +20,7 @@ import {
   type ContactFields,
   type ContactTopic
 } from "./schema";
-import styles from "./contact.module.css";
-import sheet from "./contact-sheet.module.css";
+import ui from "./contact.module.css";
 
 type SubmissionState = "idle" | "submitting" | "success";
 type Notice = "" | "failure" | "rateLimited" | "turnstile" | "turnstilePending" | "validation";
@@ -61,7 +59,6 @@ async function readResult(response: Response) {
 }
 
 export function ContactForm() {
-  const [entryComplete, setEntryComplete] = useState(false);
   // The form is complete from the start: the first choice is selected and its fields are shown.
   const [topic, setTopic] = useState<ContactTopic | "">("work");
   const [shared, setShared] = useState(initialForm);
@@ -86,18 +83,6 @@ export function ContactForm() {
   const honeypotRef = useRef<HTMLInputElement>(null);
   const successHeadingRef = useRef<HTMLHeadingElement>(null);
 
-  const finishEntry = useCallback(() => {
-    // Move focus only when the visitor acted inside the entrance (Skip). When the film
-    // ends on its own, focus stays where it was, as it did when the page opened.
-    const active = document.activeElement;
-    const focusForm = active instanceof HTMLElement && Boolean(active.closest("[data-contact-entrance]"));
-    setEntryComplete(true);
-    requestAnimationFrame(() => {
-      if (!focusForm) return;
-      document.getElementById("form-title")?.focus({ preventScroll: true });
-      window.scrollTo({ top: 0, behavior: "instant" });
-    });
-  }, []);
 
   // Leaving with an unsent draft asks first; the browser supplies the wording.
   useEffect(() => {
@@ -123,10 +108,10 @@ export function ContactForm() {
   }, []);
 
   useEffect(() => {
-    if (!entryComplete || turnstileToken || turnstileUnavailable || status !== "idle") return;
+    if (turnstileToken || turnstileUnavailable || status !== "idle") return;
     const deadline = window.setTimeout(() => setTurnstileUnavailable(true), TURNSTILE_WAIT_MS);
     return () => window.clearTimeout(deadline);
-  }, [entryComplete, turnstileToken, turnstileUnavailable, status]);
+  }, [turnstileToken, turnstileUnavailable, status]);
 
   useEffect(() => {
     if (!turnstileReady || !turnstileContainerRef.current) return;
@@ -255,10 +240,10 @@ export function ContactForm() {
 
   if (status === "success" && receipt) {
     return (
-      <section className={`${styles.contactSurface} ${styles.successCard}`} aria-labelledby="success-title">
-        <h1 id="success-title" ref={successHeadingRef} tabIndex={-1}>{copy.successTitle}</h1>
-        <p>{copy.successBefore}<span>{receipt.email}</span>{copy.successAfter}</p>
-        <section className={sheet.receipt} aria-labelledby="receipt-title">
+      <section className={ui.result} aria-labelledby="success-title">
+        <h1 id="success-title" className={ui.title} ref={successHeadingRef} tabIndex={-1}>{copy.successTitle}</h1>
+        <p className={ui.lead}>{copy.successBefore}<span>{receipt.email}</span>{copy.successAfter}</p>
+        <section className={ui.receipt} aria-labelledby="receipt-title">
           <h2 id="receipt-title">{copy.receiptTitle}</h2>
           <dl>
             <div><dt>{copy.receiptTopic}</dt><dd>{contactTopics[receipt.topic]}</dd></div>
@@ -266,10 +251,10 @@ export function ContactForm() {
             {receipt.topic === "student" ? <div><dt>{copy.receiptGrade}</dt><dd>{receipt.grade}</dd></div> : null}
             <div><dt>{copy.receiptName}</dt><dd>{receipt.name}</dd></div>
             <div><dt>{copy.receiptEmail}</dt><dd>{receipt.email}</dd></div>
-            <div><dt>{detailsLabels[receipt.topic]}</dt><dd className={sheet.receiptMessage}>{receipt.details}</dd></div>
+            <div><dt>{detailsLabels[receipt.topic]}</dt><dd className={ui.receiptMessage}>{receipt.details}</dd></div>
           </dl>
         </section>
-        <a className={sheet.homeLink} href="/">{copy.home}</a>
+        <a className={ui.button} href="/">{copy.home}</a>
       </section>
     );
   }
@@ -281,10 +266,10 @@ export function ContactForm() {
   const textField = (field: "name" | "email" | "affiliation", label: string, props: React.InputHTMLAttributes<HTMLInputElement>) => {
     const error = fieldError(field);
     return (
-      <div className={sheet.field}>
+      <div className={ui.field}>
         <label htmlFor={field}>{label}</label>
         <input id={field} name={field} value={form[field]} maxLength={contactLimits[field].max} required aria-invalid={Boolean(error)} aria-describedby={describedBy(field)} onBlur={() => markTouched(field)} onChange={(event) => updateField(field, event.target.value)} {...props} />
-        {error ? <p className={sheet.error} id={`${field}-error`}>{error}</p> : null}
+        {error ? <p className={ui.error} id={`${field}-error`}>{error}</p> : null}
       </div>
     );
   };
@@ -296,66 +281,61 @@ export function ContactForm() {
   const emailField = textField("email", copy.email, { type: "email", autoComplete: "email", inputMode: "email" });
 
   return (
-    <section className={styles.contactSurface} aria-labelledby="form-title" data-entry-complete={entryComplete}>
+    <section aria-labelledby="form-title">
       <form id="contact-form" noValidate aria-busy={status !== "idle"} onSubmit={handleSubmit}>
-        <div className={styles.introStage}>
-          <div className={styles.formHeading}>
-            <h1 id="form-title" tabIndex={-1}>{copy.title}</h1>
-          </div>
-          {!entryComplete ? <ContactEntrance onComplete={finishEntry} /> : null}
-        </div>
+        <h1 id="form-title" className={ui.title} tabIndex={-1}>{copy.title}</h1>
 
-        <div className={sheet.flow} id="contact-flow" hidden={!entryComplete}>
+        <div className={ui.flow} id="contact-flow">
           {/* The two choices are the page's statement of what it is for; the fields follow the choice. */}
-          <fieldset className={sheet.choices} aria-describedby={topicError ? "topic-error" : undefined}>
-            <legend className={styles.srOnly}>{copy.topicLegend}</legend>
+          <fieldset className={ui.choices} aria-describedby={topicError ? "topic-error" : undefined}>
+            <legend className={ui.srOnly}>{copy.topicLegend}</legend>
             {topicEntries.map(([value, label]) => (
-              <label key={value} className={sheet.choice} data-checked={topic === value}>
+              <label key={value} className={ui.choice} data-checked={topic === value}>
                 <input id={`topic-${value}`} type="radio" name="topic" value={value} checked={topic === value} aria-invalid={Boolean(topicError)} onChange={() => { if (status === "idle") { setTopic(value); clearProblem("affiliation"); setServerErrors((current) => ({ ...current, topic: undefined, grade: undefined })); } }} />
                 <span>{label}</span>
               </label>
             ))}
-            {topicError ? <p className={sheet.error} id="topic-error">{topicError}</p> : null}
+            {topicError ? <p className={ui.error} id="topic-error">{topicError}</p> : null}
           </fieldset>
 
-          <div className={sheet.sheet}>
+          <div className={ui.sheet}>
             {topic === "student" ? (
-              <div className={sheet.grid}>
+              <div className={ui.grid}>
                 {affiliationField}
-                <div className={sheet.field}>
+                <div className={ui.field}>
                   <label htmlFor="grade">{copy.grade}</label>
                   <select id="grade" name="grade" value={grade} required aria-invalid={Boolean(gradeError)} aria-describedby={describedBy("grade")} onBlur={() => markTouched("grade")} onChange={(event) => { if (status === "idle") { setGrade(event.target.value); clearProblem("grade"); } }}>
                     <option value="" disabled>{copy.gradePlaceholder}</option>
                     {contactGrades.map((value) => <option key={value} value={value}>{value}</option>)}
                   </select>
-                  {gradeError ? <p className={sheet.error} id="grade-error">{gradeError}</p> : null}
+                  {gradeError ? <p className={ui.error} id="grade-error">{gradeError}</p> : null}
                 </div>
                 {nameField}
                 {emailField}
               </div>
             ) : (
-              <div className={sheet.grid}>
+              <div className={ui.grid}>
                 {affiliationField}
                 {nameField}
-                <div className={sheet.wide}>{emailField}</div>
+                <div className={ui.wide}>{emailField}</div>
               </div>
             )}
 
-            <div className={sheet.field}>
+            <div className={ui.field}>
               <label htmlFor="details">{detailsLabels[topic || "work"]}</label>
               <textarea id="details" name="details" rows={6} maxLength={contactLimits.details.max} required value={form.details} aria-invalid={Boolean(detailsError)} aria-describedby={describedBy("details")} onBlur={() => markTouched("details")} onChange={(event) => updateField("details", event.target.value)} />
               {detailsError || form.details.length >= COUNTER_FROM ? (
-                <div className={sheet.messageMeta}>
-                  {detailsError ? <p className={sheet.error} id="details-error">{detailsError}</p> : <span />}
-                  {form.details.length >= COUNTER_FROM ? <span className={sheet.counter}>残り{remaining}文字</span> : null}
+                <div className={ui.meta}>
+                  {detailsError ? <p className={ui.error} id="details-error">{detailsError}</p> : <span />}
+                  {form.details.length >= COUNTER_FROM ? <span className={ui.counter}>残り{remaining}文字</span> : null}
                 </div>
               ) : null}
             </div>
 
-            <div className={sheet.verify} ref={turnstileContainerRef} />
+            <div className={ui.verify} ref={turnstileContainerRef} />
 
             {noticeText ? (
-              <div className={sheet.notice} role="alert">
+              <div className={ui.notice} role="alert">
                 <p>{noticeText}</p>
                 {showEmailFallback || (failures >= 2 && (notice === "failure" || notice === "rateLimited")) ? (
                   <p>{copy.fallbackBefore}<a href="/#contact-cta" target="_blank" rel="noopener">{copy.fallbackLink}</a>{copy.fallbackAfter}</p>
@@ -363,27 +343,25 @@ export function ContactForm() {
               </div>
             ) : null}
 
-            <div className={sheet.footer}>
-              <button className={sheet.submit} type="submit" disabled={status === "submitting"}>
+            <div className={ui.actions}>
+              <button className={ui.button} type="submit" disabled={status === "submitting"}>
                 {status === "submitting" ? copy.submitting : copy.submit}
               </button>
             </div>
           </div>
 
-          <div className={styles.honeypot} aria-hidden="true">
+          <div className={ui.honeypot} aria-hidden="true">
             <label htmlFor="website">ウェブサイト</label>
             <input ref={honeypotRef} id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
           </div>
 
-          {entryComplete ? (
-            <Script
-              id="cloudflare-turnstile-contact"
-              src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-              strategy="afterInteractive"
-              onReady={() => setTurnstileReady(true)}
-              onError={showTurnstileFallback}
-            />
-          ) : null}
+          <Script
+            id="cloudflare-turnstile-contact"
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+            strategy="afterInteractive"
+            onReady={() => setTurnstileReady(true)}
+            onError={showTurnstileFallback}
+          />
         </div>
       </form>
     </section>

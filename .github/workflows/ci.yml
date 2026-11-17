@@ -9,26 +9,83 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  verify:
+  # Fast checks that need no browser: types, the static build, the build contract and the API.
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
           cache: npm
-      - run: bash scripts/dev-bootstrap.sh
-      - run: npx playwright install-deps chromium
+      - run: npm ci --no-audit --no-fund
       - run: npm run typecheck && npm run build && npm run verify
-      - run: node --test tests/deployment-readiness.test.mjs
-      - run: node --test tests/contact-function.test.ts
-      - run: npm run test:e2e
+      - run: node --test tests/deployment-readiness.test.mjs tests/contact-function.test.ts
+
+  # Decides how much of the browser suite a change needs. A pull request that touches only
+  # Contact runs only the Contact tests; anything else, and every push to main, runs all of them.
+  scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      shards: ${{ steps.scope.outputs.shards }}
+      only: ${{ steps.scope.outputs.only }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: scope
+        run: |
+          full=1
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            files="$(git diff --name-only "origin/$GITHUB_BASE_REF...HEAD")"
+            echo "$files"
+            contact_only='^(src/contact/|src/app/\(contact\)/|functions/|tests/e2e/contact\.spec\.ts$|tests/contact-function\.test\.ts$|docs/contact/)'
+            if [ -n "$files" ] && ! printf '%s\n' "$files" | grep -vqE "$contact_only"; then full=0; fi
+          fi
+          if [ "$full" = 1 ]; then
+            echo 'shards=[1,2,3]' >> "$GITHUB_OUTPUT"; echo 'only=' >> "$GITHUB_OUTPUT"
+          else
+            echo 'shards=[1]' >> "$GITHUB_OUTPUT"; echo 'only=tests/e2e/contact.spec.ts' >> "$GITHUB_OUTPUT"
+          fi
+
+  # Browser tests, split across runners that start at the same time.
+  e2e:
+    needs: scope
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.scope.outputs.shards) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npx playwright test ${{ needs.scope.outputs.only }} --shard=${{ matrix.shard }}/${{ strategy.job-total }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: browser-evidence
+          name: browser-evidence-${{ matrix.shard }}
           path: |
             test-results/
             playwright-report/
           retention-days: 14
+
+  # Keeps the single required check name; passes only when every job above passed.
+  verify:
+    if: always()
+    needs: [build, scope, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.build.result }}" = success && test "${{ needs.scope.result }}" = success && test "${{ needs.e2e.result }}" = success

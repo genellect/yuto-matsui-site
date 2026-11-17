@@ -4,16 +4,6 @@ import Script from "next/script";
 import type { ReactNode } from "react";
 import { COMPASS_PARENT_GA_MEASUREMENT_ID, site } from "../../../site";
 import { contactMetadataCopy } from "../../../contact/copy";
-// The ported Contact surface was designed on top of these inherited styles; keep their order.
-import "../../../inherited/styles/legacy.css";
-import "../../../inherited/styles/hero.css";
-import "../../../inherited/styles/desktop-system.css";
-import "../../../inherited/styles/official-immersive.css";
-import "../../../inherited/styles/official-four-directions.css";
-import "../../../inherited/styles/official-core-redesign.css";
-import "../../../inherited/styles/official-brand-system.css";
-import "../../../inherited/styles/living-intelligence-hero.css";
-import "../../../inherited/styles/github-profile-link.css";
 
 const canonical = `${site.origin}/contact/`;
 
@@ -52,7 +42,7 @@ export default function ContactLayout({ children }: Readonly<{ children: ReactNo
         <LinkerUrlCleanup />
         <script dangerouslySetInnerHTML={{ __html: 'document.documentElement.classList.add("js")' }} />
       </head>
-      <body>
+      <body style={{ margin: 0 }}>
         {children}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${COMPASS_PARENT_GA_MEASUREMENT_ID}`}
