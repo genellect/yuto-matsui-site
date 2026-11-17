@@ -18,9 +18,23 @@ for(const route of ['index.html','en/index.html']){
  assert(!html.includes('/habitat/night-v1/top.webp'),'COMPASS image dependency removed');
  for(const m of html.matchAll(/(?:src|href)="(\/_next\/[^"?#]+)[^"]*"/g))assert((await stat('out'+m[1])).isFile(),m[1]);
 }
-for(const path of ['functions','out/_worker.js','out/_routes.json']){let exists=false;try{await stat(path);exists=true;}catch{}assert(!exists,`${path}: standalone static export must not include Functions`);}
+// Exactly one Pages Function (the Contact endpoint); every other path stays static.
+assert.deepEqual((await files('functions')).sort(),['functions/api/contact.ts'],'only the Contact Function exists');
+assert.deepEqual(JSON.parse(await readFile('out/_routes.json','utf8')),{version:1,include:['/api/contact'],exclude:[]},'Functions run only for /api/contact');
+{let exists=false;try{await stat('out/_worker.js');exists=true;}catch{}assert(!exists,'out/_worker.js: no advanced-mode worker');}
+{
+ const html=await readFile('out/contact/index.html','utf8');
+ assert.equal((html.match(/<h1\b/g)||[]).length,1,'contact: one h1');
+ assert(html.includes('<link rel="canonical" href="https://yuto-matsui.com/contact/"/>'),'contact canonical');
+ assert(/<meta name="robots" content="noindex, follow"\/>/.test(html),'contact is not indexed');
+ assert(!/compass-official\.pages\.dev|COMPASS|代表/.test(html),'contact carries no COMPASS routing or representative wording');
+ for(const m of html.matchAll(/(?:src|href)="(\/_next\/[^"?#]+)[^"]*"/g))assert((await stat('out'+m[1])).isFile(),m[1]);
+ assert(!(await readFile('out/sitemap.xml','utf8')).includes('/contact/'),'contact stays out of the sitemap');
+}
+// A production build must carry its own Turnstile site key, never the public test key.
+if(process.env.CF_PAGES_BRANCH==='main'){const key=process.env.NEXT_PUBLIC_CONTACT_TURNSTILE_SITE_KEY?.trim()??'';assert(key&&!key.startsWith('1x000000')&&!key.startsWith('2x000000')&&!key.startsWith('3x000000'),'production Turnstile site key');}
 for(const path of ['robots.txt','sitemap.xml','1692e67b895d46c0b6124bd047f73fcd.txt','_headers'])await stat('out/'+path);
-console.log(`Verified two routes, ${references} literal image references, exported assets, and static-only boundary. Runtime-composed paths are checked by network E2E.`);
+console.log(`Verified two portfolio routes, the Contact route, ${references} literal image references, exported assets, and the single-Function boundary. Runtime-composed paths are checked by network E2E.`);
 
 const deliveryHeaders=await readFile('out/_headers','utf8');
 assert(/X-Portfolio-Commit: [a-f0-9]{40}/.test(deliveryHeaders),'deployment identity header');
