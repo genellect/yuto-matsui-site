@@ -70,7 +70,7 @@ export function EnglishFragments() {
   useEffect(() => {
     const media = matchMedia("(max-width: 700px)");
     const update = () => setMobile(media.matches);
-    update(); media.addEventListener("change", update);
+    update(); if (media.matches) setView("original"); media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
   }, []);
 
