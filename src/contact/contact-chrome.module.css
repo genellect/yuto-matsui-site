@@ -104,5 +104,5 @@
 /* Variables and type that src/ja/founder.module.css expects from its .page wrapper. */
 .portfolio { --ink: #101c2b; --ink-soft: #45566a; --paper: #f7fbff; --white: #fff; --line: rgba(22, 47, 76, 0.14); --cyan: #19bad0; --blue: #486ff0; --violet: #8b69e8; color: var(--ink); font-family: Inter, "Helvetica Neue", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif; }
 .portfolio a:focus-visible, .portfolio button:focus-visible { outline: 3px solid #316fd7; outline-offset: 4px; }
-header.portfolio { z-index: 100; }
+header.portfolio { z-index: 99; } /* below the skip link (z-index 100) so the focused link stays visible */
 @media (min-width: 901px) { .portfolio { font-family: Inter, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Yu Gothic UI", Meiryo, sans-serif; } }
