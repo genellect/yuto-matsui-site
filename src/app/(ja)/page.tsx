@@ -288,7 +288,7 @@ export default function FounderPage() {
             </div>
             <div className={styles.contactCopy}>
               <p>{pageCopy.contactCopy}</p>
-              <a href="/contact/">{pageCopy.contactFormLink}<ArrowIcon /></a>
+              <a href="/contact/">{pageCopy.contactFormLink}<span aria-hidden="true">{pageCopy.contactFormArrow}</span></a>
               <details className={styles.contactEmail}>
                 <summary>{pageCopy.contactEmail}</summary>
                 <div className={styles.contactEmailPanel}>

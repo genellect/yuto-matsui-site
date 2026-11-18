@@ -2461,11 +2461,11 @@
   gap: 24px;
   margin-top: 28px;
   padding: 13px 15px;
-  border: 1px solid rgba(43, 108, 136, 0.24);
+  border: 1px solid #142b3c;
   border-radius: 3px 13px 3px 3px;
-  color: #183a4f;
-  background: rgba(255, 255, 255, 0.76);
-  box-shadow: 0 12px 34px rgba(45, 91, 108, 0.08);
+  color: #fff;
+  background: #142b3c;
+  box-shadow: 0 12px 34px rgba(20, 43, 60, 0.18);
   font-size: 0.72rem;
   font-weight: 760;
   text-decoration: none;
@@ -2473,8 +2473,8 @@
 }
 
 .contactCopy > a:hover {
-  border-color: rgba(38, 139, 150, 0.55);
-  background: rgba(255, 255, 255, 0.96);
+  border-color: #183a4f;
+  background: #183a4f;
   transform: translateY(-2px);
 }
 
@@ -2485,7 +2485,9 @@
 }
 
 .contactEmail > summary {
+  position: relative;
   display: inline-flex;
+  padding-right: 18px;
   align-items: center;
   gap: 7px;
   color: #42616f;
@@ -2501,14 +2503,19 @@
 
 .contactEmail > summary::-webkit-details-marker { display: none; }
 
-.contactEmail > summary::before {
+.contactEmail > summary::after {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-top: -0.5em;
   color: #278b96;
-  content: "▶";
-  font-size: 0.52rem;
+  content: "›";
+  font-size: 0.9rem;
+  line-height: 1;
   transition: transform 180ms ease;
 }
 
-.contactEmail[open] > summary::before { transform: rotate(90deg); }
+.contactEmail[open] > summary::after { transform: rotate(90deg); }
 
 .contactEmailPanel {
   display: grid;
@@ -2550,6 +2557,22 @@
   color: #294e60;
   overflow-wrap: anywhere;
   user-select: text;
+}
+
+/* Desktop: share the page's content width and three-column rhythm (see .offHoursGrid).
+   The heading takes the first column; the copy starts on the second and its first line
+   lines up with the top of CONTACT rather than with the small kicker. */
+@media (min-width: 901px) {
+  .contactShell {
+    width: min(1240px, calc(100% - clamp(44px, 8vw, 128px)));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(22px, 2.4vw, 34px);
+  }
+
+  .contactCopy {
+    grid-column: 2 / -1;
+    padding-top: 30px;
+  }
 }
 
 .footer {
@@ -2750,6 +2773,7 @@
   .offHoursVisual { aspect-ratio: 16 / 11; }
   .offHoursCopy { padding-top: 20px; }
   .contactShell { grid-template-columns: 1fr; gap: 30px; }
+  .contactCopy > a { display: flex; width: 100%; min-height: 56px; }
   .footer { padding-inline: 20px; }
   .footerPrimary { display: grid; }
 }
