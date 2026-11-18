@@ -2559,27 +2559,20 @@
   user-select: text;
 }
 
-/* Desktop: the closing call to action sits centred, the one centred block on the page,
-   with equal space above and below sized to its short content. */
+/* Desktop: share the page's content width and three-column rhythm (see .offHoursGrid).
+   The heading takes the first column; the copy starts on the second and its first line
+   lines up with the top of CONTACT rather than with the small kicker. */
 @media (min-width: 901px) {
-  .contact { padding: clamp(56px, 5.5vw, 80px) 0; }
-
   .contactShell {
-    width: min(720px, calc(100% - clamp(44px, 8vw, 128px)));
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-    gap: 20px;
-    text-align: center;
+    width: min(1240px, calc(100% - clamp(44px, 8vw, 128px)));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(22px, 2.4vw, 34px);
   }
 
   .contactCopy {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    grid-column: 2 / -1;
+    padding-top: 30px;
   }
-
-  .contactCopy > a { min-width: 280px; margin-top: 28px; }
-  .contactEmail { margin-top: 18px; text-align: left; }
 }
 
 .footer {
