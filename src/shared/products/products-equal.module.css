@@ -60,9 +60,8 @@
 .world[data-language="en"] .destination:focus-visible { outline-color: #8b78f0; }
 .world[data-language="en"] .stage:has(.destination:focus-visible) { outline-color: #8b78f0; }
 .world[data-language="en"] .secondary a:focus-visible, .world[data-language="en"] .motion:focus-visible { outline-color: #8b78f0; }
-/* EN focuses on the analysis screens in the right half of the original image. */
-.world[data-language="en"] .product[data-product="topos"] .still { inset: 8% auto; left: 50%; width: auto; height: 84%; aspect-ratio: 1; transform: translateX(-50%); overflow: hidden; }
-.world[data-language="en"] .product[data-product="topos"] .still img { left: -100%; width: 200%; max-width: none; object-fit: fill; }
+/* EN shows the whole Topos poster, as JP does. */
+.world[data-language="en"] .product[data-product="topos"] .media { background: #000; }
 .world[data-language="en"] .product[data-product="topos"] .title { word-break: normal; overflow-wrap: normal; }
 @media (max-width: 1000px) {
   .grid { grid-template-columns: 1fr; gap: 28px; }

@@ -1,7 +1,6 @@
 "use client";
 
 import { controls as enControls, heroCopy, heroSlides } from "../content/en";
-import Image from "next/image";
 import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
@@ -10,6 +9,7 @@ import {
   useRef,
   useState
 } from "react";
+import { frame } from "./hero-framing";
 import type { PrismController } from "./hero-prism-engine";
 import styles from "./english-founder.module.css";
 
@@ -20,6 +20,7 @@ const segmentCount = 12;
 type SegmentStyle = CSSProperties & {
   "--segment-delay": string;
   "--segment-image": string;
+  "--segment-mobile-image": string;
   "--segment-left": string;
   "--segment-mobile-position": string;
   "--segment-position": string;
@@ -39,6 +40,8 @@ export function EnglishHeroGallery() {
   const prismRef = useRef<PrismController | null>(null);
   const activeRef = useRef(0);
   const [prism, setPrism] = useState<"loading" | "ready" | "failed">("loading");
+  const [mobile, setMobile] = useState(false);
+  const [crops, setCrops] = useState<{ position: string; zoom: number; origin: string }[] | null>(null);
 
   const showSlide = useCallback((nextIndex: number) => {
     if (nextIndex === activeIndex || enteringIndex !== null) return;
@@ -69,6 +72,29 @@ export function EnglishHeroGallery() {
   }, [activeIndex, showSlide]);
 
   useEffect(() => { nextSlideRef.current = showNext; }, [showNext]);
+
+  // Each portrait is cropped around the face for the frame it fills, the same
+  // way the prism wall crops it, so the two never disagree.
+  useEffect(() => {
+    const host = visualRef.current;
+    if (!host) return;
+    const media = window.matchMedia("(max-width: 700px)");
+    const update = () => {
+      const box = host.getBoundingClientRect();
+      const small = media.matches;
+      setMobile(small);
+      setCrops(heroSlides.map(slide => {
+        const variant = small ? slide.mobile : slide;
+        const crop = frame(variant.focus, variant.size, [box.width, box.height], small);
+        return { position: crop.objectPosition, zoom: crop.zoom, origin: crop.origin };
+      }));
+    };
+    const observer = new ResizeObserver(update);
+    observer.observe(host);
+    media.addEventListener("change", update);
+    update();
+    return () => { observer.disconnect(); media.removeEventListener("change", update); };
+  }, []);
 
   // The prism wall carries the same photographs in WebGL. Until it is ready,
   // or when WebGL is unavailable, the HTML images remain the portrait.
@@ -199,22 +225,27 @@ export function EnglishHeroGallery() {
       >
         {heroSlides.map((slide, index) => (
           <figure
-            key={slide.src}
+            key={slide.src + index}
             className={styles.heroSlide}
             data-active={activeIndex === index}
             aria-hidden={activeIndex !== index}
           >
-            <Image
-              src={slide.src}
-              alt={activeIndex === index ? slide.alt : ""}
-              fill
-              priority={index === 0}
-              sizes="(min-width: 901px) 58vw, 100vw"
-              style={{
-                "--hero-position": slide.position,
-                "--hero-mobile-position": slide.mobilePosition
-              } as CSSProperties}
-            />
+            <picture>
+              <source media="(max-width: 700px)" srcSet={slide.mobile.src} />
+              <img
+                src={slide.src}
+                alt={activeIndex === index ? (mobile ? slide.mobile.alt : slide.alt) : ""}
+                decoding="async"
+                fetchPriority={index === 0 ? "high" : "auto"}
+                loading={index === 0 ? "eager" : "lazy"}
+                style={{
+                  "--hero-position": crops?.[index]?.position ?? slide.position,
+                  "--hero-mobile-position": crops?.[index]?.position ?? slide.mobilePosition,
+                  "--hero-zoom": crops?.[index]?.zoom ?? 1,
+                  "--hero-origin": crops?.[index]?.origin ?? "50% 50%"
+                } as CSSProperties}
+              />
+            </picture>
           </figure>
         ))}
 
@@ -226,9 +257,10 @@ export function EnglishHeroGallery() {
               const style: SegmentStyle = {
                 "--segment-delay": `${index * 21}ms`,
                 "--segment-image": `url(${enteringSlide.src})`,
+                "--segment-mobile-image": `url(${enteringSlide.mobile.src})`,
                 "--segment-left": `${start}%`,
-                "--segment-mobile-position": enteringSlide.mobilePosition,
-                "--segment-position": enteringSlide.position,
+                "--segment-mobile-position": crops?.[enteringIndex!]?.position ?? enteringSlide.mobilePosition,
+                "--segment-position": crops?.[enteringIndex!]?.position ?? enteringSlide.position,
                 "--segment-right": `${100 - end}%`
               };
               return <span key={`${enteringSlide.src}-${index}`} style={style} />;

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { frame as framePortrait, type Focus } from "./hero-framing";
 
 // The EN hero portrait is carried by a wall of glass prisms. At rest the
 // front faces line up into one flat photograph, drawn without any shading or
@@ -7,7 +8,8 @@ import * as THREE from "three";
 // while they turn. Nothing reacts to the pointer, so the photograph is never
 // cut while someone is looking at it.
 
-export type PrismSlide = { src: string; position: string; mobilePosition: string };
+type Variant = { src: string; size?: readonly [number, number]; focus?: Focus };
+export type PrismSlide = Variant & { position: string; mobilePosition: string; mobile?: Variant };
 export type PrismController = {
   show: (index: number, animate: boolean) => void;
   dispose: () => void;
@@ -160,9 +162,11 @@ export function mountPrismWall(host: HTMLElement, slides: readonly PrismSlide[],
   const camera = new THREE.PerspectiveCamera(24, 1, 1, 20000);
   const mobile = window.matchMedia("(max-width: 700px)");
   const loader = new THREE.TextureLoader();
-  const textures: (THREE.Texture | null)[] = slides.map(() => null);
-  const sizes: [number, number][] = slides.map(() => [1, 1]);
-  const pending = new Map<number, Promise<THREE.Texture>>();
+  // Textures are cached by file, so desktop and mobile portraits load once each.
+  const textures = new Map<string, THREE.Texture>();
+  const sizes = new Map<string, [number, number]>();
+  const pending = new Map<string, Promise<THREE.Texture>>();
+  const variant = (index: number): Variant => (mobile.matches && slides[index].mobile ? slides[index].mobile! : slides[index]);
   const geometry = prismGeometry();
   const blank = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
   blank.needsUpdate = true;
@@ -204,7 +208,13 @@ export function mountPrismWall(host: HTMLElement, slides: readonly PrismSlide[],
   let face = 1;
 
   function cover(index: number) {
-    const [iw, ih] = sizes[index];
+    const v = variant(index);
+    const [iw, ih] = sizes.get(v.src) ?? v.size ?? [1, 1];
+    if (v.focus) {
+      // The same face-centred crop the HTML image uses (hero-framing.ts).
+      const crop = framePortrait(v.focus, [iw, ih], [width, height], mobile.matches);
+      return new THREE.Vector4(crop.width, crop.height, crop.left, 1 - crop.top - crop.height);
+    }
     const [px, py] = parsePosition(mobile.matches ? slides[index].mobilePosition : slides[index].position);
     const canvasAspect = width / height, imageAspect = iw / ih;
     const fx = Math.min(1, canvasAspect / imageAspect), fy = Math.min(1, imageAspect / canvasAspect);
@@ -212,28 +222,31 @@ export function mountPrismWall(host: HTMLElement, slides: readonly PrismSlide[],
   }
 
   function load(index: number) {
-    if (textures[index]) return Promise.resolve(textures[index]!);
-    if (pending.has(index)) return pending.get(index)!;
+    const src = variant(index).src;
+    const cached = textures.get(src);
+    if (cached) return Promise.resolve(cached);
+    if (pending.has(src)) return pending.get(src)!;
     const promise = new Promise<THREE.Texture>((resolve, reject) => {
-      loader.load(slides[index].src, texture => {
+      loader.load(src, texture => {
         texture.colorSpace = THREE.NoColorSpace;
         texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
         texture.minFilter = THREE.LinearMipmapLinearFilter;
         const image = texture.image as HTMLImageElement;
-        sizes[index] = [image.naturalWidth || image.width, image.naturalHeight || image.height];
-        textures[index] = texture;
+        sizes.set(src, [image.naturalWidth || image.width, image.naturalHeight || image.height]);
+        textures.set(src, texture);
         resolve(texture);
       }, undefined, reject);
     });
-    pending.set(index, promise);
+    pending.set(src, promise);
     return promise;
   }
 
   function assign(slot: "A" | "B", index: number | null) {
+    const texture = index === null ? blank : textures.get(variant(index).src) ?? blank;
     for (const slat of slats) {
       const u = slat.material.uniforms;
-      if (slot === "A") { u.uTexA.value = index === null ? blank : textures[index] ?? blank; if (index !== null) u.uCoverA.value.copy(cover(index)); }
-      else { u.uTexB.value = index === null ? blank : textures[index] ?? blank; if (index !== null) u.uCoverB.value.copy(cover(index)); }
+      if (slot === "A") { u.uTexA.value = texture; if (index !== null) u.uCoverA.value.copy(cover(index)); }
+      else { u.uTexB.value = texture; if (index !== null) u.uCoverB.value.copy(cover(index)); }
     }
   }
 
@@ -315,7 +328,10 @@ export function mountPrismWall(host: HTMLElement, slides: readonly PrismSlide[],
   const resize = new ResizeObserver(layout);
   const sight = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) invalidate(); });
   const onLost = () => options.onFail();
-  const onMedia = () => layout();
+  // Crossing the mobile breakpoint swaps to the other set of portraits.
+  const onMedia = () => {
+    Promise.all([load(current), target === null ? null : load(target)]).then(() => { if (!disposed) layout(); }, () => {});
+  };
   canvas.addEventListener("webglcontextlost", onLost);
   mobile.addEventListener("change", onMedia);
 
@@ -360,7 +376,7 @@ export function mountPrismWall(host: HTMLElement, slides: readonly PrismSlide[],
       geometry.dispose();
       lightMaterial.dispose();
       backlight.geometry.dispose();
-      textures.forEach(texture => texture?.dispose());
+      textures.forEach(texture => texture.dispose());
       blank.dispose();
       renderer.dispose();
       canvas.remove();
