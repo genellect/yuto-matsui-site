@@ -4,13 +4,6 @@ export const compassOrigin = site.compassOrigin;
 
 export const heroSlides = [
   {
-    src: "/images/founder-portfolio/yuto-matsui-nagano-lake-hero-20260831.webp",
-    alt: "Yuto Matsui standing by a lake with the mountains of Nagano beyond",
-    label: "Nagano / Lake",
-    position: "50% 50%",
-    mobilePosition: "50% 50%"
-  },
-  {
     src: "/images/founder-portfolio/yuto-matsui-illuminated-steps-hero-20260901.jpg",
     alt: "Yuto Matsui seated on illuminated steps at night",
     label: "Tokyo / Light",
@@ -18,11 +11,18 @@ export const heroSlides = [
     mobilePosition: "50% 50%"
   },
   {
-    src: "/images/founder-portfolio/yuto-matsui-nagano-mountain-hero-20260901.webp",
-    alt: "Yuto Matsui standing in the Nagano highlands with mountains beyond",
-    label: "Nagano / Highlands",
-    position: "50% 48%",
-    mobilePosition: "50% 47%"
+    src: "/images/founder-portfolio/yuto-matsui-city-night-hero-20261118.webp",
+    alt: "Yuto Matsui smiling on a city street at night",
+    label: "City / Night",
+    position: "50% 45%",
+    mobilePosition: "42% 50%"
+  },
+  {
+    src: "/images/founder-portfolio/yuto-matsui-harbor-dusk-hero-20261118.webp",
+    alt: "Yuto Matsui by the harbor at dusk with city lights beyond",
+    label: "Harbor / Dusk",
+    position: "30% 50%",
+    mobilePosition: "30% 50%"
   }
 ] as const;
 
