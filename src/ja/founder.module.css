@@ -2448,7 +2448,7 @@
 
 .contactCopy > p {
   margin: 0;
-  color: #405868;
+  color: #183246;
   font-size: 0.91rem;
   line-height: 1.95;
 }
@@ -2490,7 +2490,7 @@
   padding-right: 18px;
   align-items: center;
   gap: 7px;
-  color: #42616f;
+  color: #183a4f;
   cursor: pointer;
   font-size: 0.66rem;
   font-weight: 650;
@@ -2539,7 +2539,7 @@
 }
 
 .contactEmailIdentity strong { font-weight: 650; }
-.contactEmailIdentity span { color: #627984; font-size: 0.63rem; }
+.contactEmailIdentity span { color: #45566a; font-size: 0.63rem; }
 
 .contactEmailAddresses {
   display: grid;
@@ -2547,23 +2547,22 @@
 }
 
 .contactEmailAddresses p {
-  display: flex;
-  min-height: 36px;
-  align-items: center;
   margin: 0;
-  color: #607580;
+  color: #45566a;
   font-size: 0.72rem;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .contactEmailValue {
-  color: #183a4f;
+  color: #142b3c;
   font-weight: 600;
   overflow-wrap: anywhere;
   text-decoration: underline;
   text-decoration-color: rgba(39, 139, 150, 0.35);
   text-underline-offset: 3px;
   user-select: text;
+  /* A taller tap area without adding space between the lines. */
+  padding-block: 6px;
 }
 
 .contactEmailValue:hover { color: #142b3c; text-decoration-color: currentColor; }
@@ -2588,28 +2587,28 @@
    Type uses three sizes (16 / 12 / 11px) and two weights; text uses three levels of white. */
 .footer {
   padding: 54px clamp(22px, 4.4vw, 72px) 28px;
-  color: rgba(255, 255, 255, 0.56);
+  color: rgba(255, 255, 255, 0.68);
   background: #16191d;
 }
 
 .footerPrimary { display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; padding-bottom: 34px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 .footerPrimary > div { display: grid; gap: 8px; }
 .footerPrimary strong { color: #fff; font-size: 1rem; font-weight: 600; }
-.footerPrimary > div span { color: rgba(255, 255, 255, 0.56); font-size: 0.75rem; }
+.footerPrimary > div span { color: rgba(255, 255, 255, 0.68); font-size: 0.75rem; }
 .footerPrimary nav { display: flex; flex-wrap: wrap; gap: 14px 24px; }
-.footerPrimary nav a, .credits a { color: rgba(255, 255, 255, 0.78); font-size: 0.75rem; font-weight: 600; text-decoration: none; }
+.footerPrimary nav a, .credits a { color: rgba(255, 255, 255, 0.88); font-size: 0.75rem; font-weight: 600; text-decoration: none; }
 .footerPrimary nav a:hover, .credits a:hover { color: #fff; }
-.footerLanguageSwitch { display: inline-flex; align-items: center; gap: 12px; margin-top: 18px; padding: 5px 6px 5px 11px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; color: rgba(255, 255, 255, 0.56); font-size: 0.6875rem; font-weight: 600; }
+.footerLanguageSwitch { display: inline-flex; align-items: center; gap: 12px; margin-top: 18px; padding: 5px 6px 5px 11px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; color: rgba(255, 255, 255, 0.68); font-size: 0.6875rem; font-weight: 600; }
 .footerLanguageSwitch > div { display: flex; gap: 1px; padding: 2px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); }
-.footerLanguageSwitch a { min-width: 32px; padding: 5px 8px; border-radius: 999px; color: rgba(255, 255, 255, 0.56); text-align: center; text-decoration: none; }
+.footerLanguageSwitch a { min-width: 32px; padding: 5px 8px; border-radius: 999px; color: rgba(255, 255, 255, 0.68); text-align: center; text-decoration: none; }
 .footerLanguageSwitch a[aria-current="page"] { color: #16191d; background: rgba(255, 255, 255, 0.92); }
-.credits { margin-top: 25px; color: rgba(255, 255, 255, 0.56); font-size: 0.75rem; line-height: 1.7; }
+.credits { margin-top: 25px; color: rgba(255, 255, 255, 0.68); font-size: 0.75rem; line-height: 1.7; }
 .credits summary { position: relative; width: fit-content; padding-right: 14px; cursor: pointer; font-weight: 600; list-style: none; }
 .credits summary::-webkit-details-marker { display: none; }
 .credits summary::after { position: absolute; top: 50%; right: 0; margin-top: -0.55em; content: "›"; font-size: 0.875rem; line-height: 1; transition: transform 180ms ease; }
 .credits[open] summary::after { transform: rotate(90deg); }
 .credits p { max-width: 940px; margin: 11px 0 0; }
-.copyright { margin: 22px 0 0; color: rgba(255, 255, 255, 0.56); font-size: 0.6875rem; font-weight: 400; }
+.copyright { margin: 22px 0 0; color: rgba(255, 255, 255, 0.68); font-size: 0.6875rem; font-weight: 400; }
 
 @keyframes ambientOrbit { to { transform: rotate(360deg); } }
 @keyframes photoScan { 0%, 12% { transform: translateY(0); opacity: 0; } 28% { opacity: 1; } 72% { opacity: 0.8; } 88%, 100% { transform: translateY(680%); opacity: 0; } }
@@ -2788,7 +2787,6 @@
   .offHoursCopy { padding-top: 20px; }
   .contactShell { grid-template-columns: 1fr; gap: 30px; }
   .contactCopy > a { display: flex; width: 100%; min-height: 56px; }
-  .contactEmailAddresses p { min-height: 44px; }
   .footer { padding-inline: 20px; }
   .footerPrimary { display: grid; }
 }
