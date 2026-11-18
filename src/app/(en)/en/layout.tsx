@@ -1,22 +1,22 @@
 import { LinkerUrlCleanup, linkerReadyAfterAnalytics } from "../../../shared/analytics/LinkerUrlCleanup";
 import type { Metadata, Viewport } from "next";
-import { Manrope, Newsreader } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import type { ReactNode } from "react";
 import { COMPASS_PARENT_GA_MEASUREMENT_ID, site } from "../../../site";
 import "../../../inherited/styles/experience.css";
 import "../../../en/english-founder-global.css";
 
-const manrope = Manrope({
+const geist = Geist({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-en-sans"
 });
 
-const newsreader = Newsreader({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-en-editorial"
+  variable: "--font-en-mono"
 });
 
 export const metadata: Metadata = {
@@ -30,12 +30,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#071310"
+  themeColor: "#000000"
 };
 
 export default function EnglishFounderLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${newsreader.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head><LinkerUrlCleanup /></head>
       <body>
         {children}

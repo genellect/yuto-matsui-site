@@ -19,18 +19,13 @@ const known: Record<string, string[]> = {
     'scrollable-region-focusable .founder_fragmentReelViewport:nth-child(2)',
   ],
   '/en/ Desktop': [
-    'color-contrast .english-founder_contactEmail > p:nth-child(1) > span',
-    'color-contrast .english-founder_footerPrimary > div > span',
-    'color-contrast .english-founder_footerLanguageSwitch > span',
-    'color-contrast summary',
     'label-content-name-mismatch .english-founder_wordmark',
   ],
   '/en/ Mobile': [
-    'color-contrast .english-founder_contactEmail > p:nth-child(1) > span',
-    'color-contrast .english-founder_footerPrimary > div > span',
-    'color-contrast .english-founder_footerLanguageSwitch > span',
-    'color-contrast summary',
     'label-content-name-mismatch .english-founder_wordmark',
+    // The JP photo reel, reused on the EN page as is: the same known entries as '/ Mobile'.
+    'scrollable-region-focusable .founder_fragmentReelViewport:nth-child(1)',
+    'scrollable-region-focusable .founder_fragmentReelViewport:nth-child(2)',
   ],
   '/contact/ Desktop': [
     'label-content-name-mismatch .founder_wordmark',

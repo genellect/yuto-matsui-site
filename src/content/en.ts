@@ -2,27 +2,54 @@ import { site } from "../site";
 export const founderOrigin = site.origin;
 export const compassOrigin = site.compassOrigin;
 
+// Desktop and mobile show different portraits in the same slot. `focus` marks
+// the face (eyes and top of the head) so the crop can follow any screen shape;
+// `position` is the static crop used before JavaScript runs.
 export const heroSlides = [
   {
-    src: "/images/founder-portfolio/yuto-matsui-nagano-lake-hero-20260831.webp",
-    alt: "Yuto Matsui standing by a lake with the mountains of Nagano beyond",
-    label: "Nagano / Lake",
-    position: "50% 50%",
-    mobilePosition: "50% 50%"
-  },
-  {
     src: "/images/founder-portfolio/yuto-matsui-illuminated-steps-hero-20260901.jpg",
+    size: [1566, 1044],
+    focus: { x: 0.45, y: 0.42, head: 0.35 },
     alt: "Yuto Matsui seated on illuminated steps at night",
     label: "Tokyo / Light",
-    position: "50% 50%",
-    mobilePosition: "50% 50%"
+    position: "33% 50%",
+    mobilePosition: "50% 50%",
+    mobile: {
+      src: "/images/founder-portfolio/yuto-matsui-illuminated-steps-hero-20260901.jpg",
+      size: [1566, 1044],
+      focus: { x: 0.45, y: 0.42, head: 0.35 },
+      alt: "Yuto Matsui seated on illuminated steps at night"
+    }
   },
   {
-    src: "/images/founder-portfolio/yuto-matsui-nagano-mountain-hero-20260901.webp",
-    alt: "Yuto Matsui standing in the Nagano highlands with mountains beyond",
-    label: "Nagano / Highlands",
-    position: "50% 48%",
-    mobilePosition: "50% 47%"
+    src: "/images/founder-portfolio/yuto-matsui-city-night-hero-20261118.webp",
+    size: [1333, 2000],
+    focus: { x: 0.375, y: 0.505, head: 0.4 },
+    alt: "Yuto Matsui smiling on a city street at night",
+    label: "City / Night",
+    position: "50% 45%",
+    mobilePosition: "50% 50%",
+    mobile: {
+      src: "/images/founder-portfolio/yuto-matsui-harbor-dusk-hero-20261118.webp",
+      size: [2000, 1333],
+      focus: { x: 0.36, y: 0.51, head: 0.33 },
+      alt: "Yuto Matsui by the harbor at dusk with city lights beyond"
+    }
+  },
+  {
+    src: "/images/founder-portfolio/yuto-matsui-harbor-dusk-hero-20261118.webp",
+    size: [2000, 1333],
+    focus: { x: 0.36, y: 0.51, head: 0.33 },
+    alt: "Yuto Matsui by the harbor at dusk with city lights beyond",
+    label: "Harbor / Dusk",
+    position: "8% 50%",
+    mobilePosition: "17% 50%",
+    mobile: {
+      src: "/images/founder-portfolio/yuto-matsui-light-pillar-hero-20261118.webp",
+      size: [1333, 2000],
+      focus: { x: 0.5, y: 0.425, head: 0.335 },
+      alt: "Yuto Matsui smiling at night beside a lit pillar"
+    }
   }
 ] as const;
 
@@ -55,6 +82,7 @@ export const products = [
     links: [{ label: "Explore cytellect", href: "https://cytellect.vercel.app/" }],
     recognition: [
       { event: "Kitasato University ChatGPT Hackathon 2026", result: "Runner-up" },
+      { event: "Tokyo AI Hackathon 2026", result: "Finalist" },
       { event: "Geekten 2026", result: "Finalist" }
     ]
   },
