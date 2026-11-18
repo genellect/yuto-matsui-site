@@ -27,6 +27,7 @@ layoutの境界（`900/901px`、`640/641px`、高さ `720px`・`600px`）を変�
 
 - **比較**（`npm run compare -- check <origin>`）：「比較」の5 viewport × JP/ENで、DOM、計算済みstyle、画面、通信を本番の基準と比べます。方法と許容した例外は [migration.md](migration.md)。
 - **E2E**（`tests/e2e/`）：Contactの入力・送信・失敗時の経路、写真フィルムとMobileフィルムの操作とWebGL失敗時の代替、製品カードの配置・リンク・JavaScript前の表示、ENのHero、言語切替とlinkerのURL、カードの初期描画。`tests/support/responsive-fixture.ts` が解析、外部フォーム、`/api/contact` への送信を遮断します。
+- **アクセシビリティ**（`tests/e2e/accessibility.spec.ts`）：axe-coreのWCAG 2.1 A/AAの規則で、`/`・`/en/`・`/contact/` をDesktop（1440×900）とMobile（390×844）で検査します。規則は無効にしません。追加した時点（2026-11-18）の違反は、同じfileの `known` に一覧として残しています。新しい違反が出ても、一覧の違反が直っても失敗するので、一覧は直すたびに減らします。一覧の違反を直すと見た目か読み上げが変わるため、修正はT2として別のPRで行います。
 
 ## コマンド
 
