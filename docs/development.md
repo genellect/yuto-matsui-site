@@ -74,10 +74,15 @@ mainは自動build・公開され、`Production verification` が本番ドメイ
 
 Contact（`src/contact/`、`src/app/(contact)/`、`functions/`、`docs/contact/`）に関わる作業や不具合調査では、コードを読む前に本番の状態をCloudflare APIで確かめる。tokenは読み取り専用で、repo・文書・PR・logには値を書かない。
 
-1. `GET /client/v4/accounts` でaccount IDを得る。
+1. account IDは [本番切替の記録](deployments/2026-11-15-cutover.md) にある。今のtokenでは `GET /accounts` と `GET /zones` が空を返すので、そこから取らない。
 2. `GET /accounts/{id}/pages/projects/yuto-matsui-site` で、Productionの環境変数の**名前**と、`CONTACT_MODE` が `send` であることを確かめる。値（特に `CONTACT_TO`）は報告に書かない。
 3. Email Routingの確認済み受信先（`GET /accounts/{id}/email/routing/addresses`）に、`CONTACT_TO` の受信先が `verified` で含まれていることを確かめる。
 4. 直近の本番deploymentが最新のmainであることを確かめる。
+5. 送信が届かないときは、GraphQL `pagesFunctionsInvocationsAdaptiveGroups` で、production関数の分単位の呼び出し数とsubrequest数を見る。subrequestは、Turnstileとメール送信APIの呼び出しで、送信1件につき2回になる。
+   - 呼び出しがない：送信が画面で止まっている。
+   - subrequestが0回：送信前に終わった（honeypot、または早い段階での拒否）。
+   - subrequestが2回：送信APIまで進んでいる。
+   - account側の `emailSendingAdaptive` は、届いた送信も0件と返すので、判断に使わない。
 
 外からも次のことは判別できる（メールは送られない）。
 
