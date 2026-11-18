@@ -24,11 +24,13 @@ jobs:
       - run: node --test tests/deployment-readiness.test.mjs tests/contact-function.test.ts
 
   # Decides how much of the browser suite a change needs. A pull request that touches only
-  # Contact runs only the Contact tests; anything else, and every push to main, runs all of them.
+  # Markdown documents or agent settings runs no browser tests; one that touches only Contact
+  # runs only the Contact tests; anything else, and every push, runs all of them.
   scope:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
+      e2e: ${{ steps.scope.outputs.e2e }}
       shards: ${{ steps.scope.outputs.shards }}
       only: ${{ steps.scope.outputs.only }}
     steps:
@@ -38,9 +40,13 @@ jobs:
       - id: scope
         run: |
           full=1
+          e2e=true
           if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
             files="$(git diff --name-only "origin/$GITHUB_BASE_REF...HEAD")"
             echo "$files"
+            # Root-level and docs/ Markdown, agent settings and the PR template never reach the site.
+            docs_only='^([^/]+\.md|docs/.+\.md|\.claude/.+|\.github/pull_request_template\.md)$'
+            if [ -n "$files" ] && ! printf '%s\n' "$files" | grep -vqE "$docs_only"; then e2e=false; fi
             contact_only='^(src/contact/|src/app/\(contact\)/|functions/|tests/e2e/contact\.spec\.ts$|tests/contact-function\.test\.ts$|docs/contact/)'
             if [ -n "$files" ] && ! printf '%s\n' "$files" | grep -vqE "$contact_only"; then full=0; fi
           fi
@@ -49,10 +55,12 @@ jobs:
           else
             echo 'shards=[1]' >> "$GITHUB_OUTPUT"; echo 'only=tests/e2e/contact.spec.ts' >> "$GITHUB_OUTPUT"
           fi
+          echo "e2e=$e2e" >> "$GITHUB_OUTPUT"
 
   # Browser tests, split across runners that start at the same time.
   e2e:
     needs: scope
+    if: needs.scope.outputs.e2e == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -83,9 +91,19 @@ jobs:
           retention-days: 14
 
   # Keeps the single required check name; passes only when every job above passed.
+  # The browser tests may be skipped only when the scope job decided they were not needed.
   verify:
     if: always()
     needs: [build, scope, e2e]
     runs-on: ubuntu-latest
     steps:
-      - run: test "${{ needs.build.result }}" = success && test "${{ needs.scope.result }}" = success && test "${{ needs.e2e.result }}" = success
+      - env:
+          BUILD: ${{ needs.build.result }}
+          SCOPE: ${{ needs.scope.result }}
+          E2E: ${{ needs.e2e.result }}
+          E2E_NEEDED: ${{ needs.scope.outputs.e2e }}
+        run: |
+          # Each assertion stands alone: bash -e does not stop on a failed command inside an && list.
+          test "$BUILD" = success || { echo "build: $BUILD"; exit 1; }
+          test "$SCOPE" = success || { echo "scope: $SCOPE"; exit 1; }
+          if [ "$E2E_NEEDED" = false ]; then test "$E2E" = skipped; else test "$E2E" = success; fi
