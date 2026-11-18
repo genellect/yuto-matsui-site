@@ -1,14 +1,19 @@
 {
   "observedAt": "2026-11-15T02:30:01.584Z",
   "sourceCommit": "6bb78ff59837c61fbf3322b7c4a3d43d1b5ab884",
+  "slide2": {
+    "note": "Owner-approved update of the *-2 entries only, for the Yokohama camera portrait (PR #21). Other entries remain the production measurement above.",
+    "observedAt": "2026-11-18",
+    "sourceCommit": "4200b33"
+  },
   "dimensions": {
     "320-1": {
       "width": 177.828125,
       "height": 266.75
     },
     "320-2": {
-      "width": 360,
-      "height": 540
+      "width": 378.8125,
+      "height": 568.375
     },
     "320-3": {
       "width": 320,
@@ -19,8 +24,8 @@
       "height": 336.296875
     },
     "375-2": {
-      "width": 453.84375,
-      "height": 680.765625
+      "width": 443.9375,
+      "height": 666.0625
     },
     "375-3": {
       "width": 375,
@@ -31,8 +36,8 @@
       "height": 479.6875
     },
     "390-2": {
-      "width": 673.84375,
-      "height": 1010.765625
+      "width": 461.6875,
+      "height": 692.703125
     },
     "390-3": {
       "width": 390,
@@ -43,8 +48,8 @@
       "height": 528.890625
     },
     "430-2": {
-      "width": 795.375,
-      "height": 1193.0625
+      "width": 509.046875,
+      "height": 763.75
     },
     "430-3": {
       "width": 430,
@@ -55,8 +60,8 @@
       "height": 540
     },
     "640-2": {
-      "width": 746.140625,
-      "height": 1119.21875
+      "width": 757.640625,
+      "height": 1136.765625
     },
     "640-3": {
       "width": 640,

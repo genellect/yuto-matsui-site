@@ -428,9 +428,9 @@ export const heroSlides = [
     focus: "natural"
   },
   {
-    src: "/images/founder-portfolio/yuto-matsui-nagano-lake-hero-centered-20260917.webp",
-    alt: "長野の湖と山々を背景に立つYuto Matsui / 松井優知",
-    location: "NAGANO / NATURE",
+    src: "/images/founder-portfolio/yuto-matsui-yokohama-camera-smile-hero-20261118.webp",
+    alt: "横浜の夕暮れのイルミネーションを背景に、カメラを手に笑うYuto Matsui / 松井優知",
+    location: "YOKOHAMA / DUSK",
     motion: "from-right",
     focus: "face-centered"
   },
