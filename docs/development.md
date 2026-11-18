@@ -38,8 +38,36 @@ Playwrightはbundled Chromiumを使います。OS依存が不足するLinuxで�
 権利条件は [LICENSE](../LICENSE)、素材の出典は [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) と [画像の出典](founder-image-credits.md) にあります。
 元ソースと移動先・SHA-256は [source-map.json](source-map.json) に記録しています。
 
-## PR・CI・本番
+## Gitワークフロー
 
-開発PRではCloudflare PreviewとCIを確認し、CI `verify` 成功後にmainへmergeします。CIは、ブラウザー不要の検査（`build`）とE2E（`e2e`）を同時に走らせ、両方が通ると `verify` が成功します。Contactの範囲（`src/contact/`、`src/app/(contact)/`、`functions/`、Contactのテスト、`docs/contact/`）だけを変えるPRではContactのE2Eだけを、それ以外のPRとmainへのpushでは全E2Eを3分割で実行します。mainは自動build・公開され、`Production verification` が本番ドメインのcommitとHTTPを確認します。
+GitHub Flowで、小さいPRを速く回します。規則の要約は [AGENTS.md](../AGENTS.md) にあります。
+
+1. mainの最新から、1つの目的につき1本の短命branchを切る（`<type>/<topic>`、agentは環境が指定するprefix）。
+2. commitとPR titleは `type(scope): 日本語の要約`。PRはsquash mergeするので、PR titleがそのままmainの履歴になる。
+3. Draft PRを作り、[PR template](../.github/pull_request_template.md) に段階（T0〜T3）と確認範囲を書く。
+4. CI `verify` が通ったらReadyにする。T2はPreviewでオーナーが目視で承認する。
+5. mergeするとmainが自動でbuild・公開され、`Production verification` が本番を確認する。
+6. T2が本番に出たら、比較基準を本番から撮り直す別PR（T1）を作る（[比較方法](migration.md)）。
+
+### 段階ごとの確認
+
+| 段階 | 例 | ローカル | CI | Preview |
+|---|---|---|---|---|
+| T0 | 文書、`AGENTS.md`、`CLAUDE.md`、`.claude/`、PR template | リンク先の存在 | buildだけ（E2Eは省く） | 不要 |
+| T1 | refactor、テスト、`scripts/`、CI、依存 | typecheck・build・verify・関係するE2E・`compare` の差分なし | 全件 | 必要に応じて |
+| T2 | 見た目・文言・挙動・画像 | T1＋Desktop/Mobileの実描画と、意図した比較差分の確認 | 全件 | 必須（URLとscreenshotをPRに載せる） |
+| T3 | `functions/`、`_headers`、`_routes.json`、ドメイン・DNS・redirect、secret、解析 | T1・T2＋復元手順 | 全件 | 必須 |
+
+見た目に触る作業は [デザイン言語](design-language.md) を先に読みます。Claude Codeでは `.claude/skills/` の `ship-change` と `portfolio-design` が、この手順を作業ごとに案内します（[CLAUDE.md](../CLAUDE.md)）。
+
+## CI・本番
+
+CIは、ブラウザー不要の検査（`build`）とE2E（`e2e`）を同時に走らせ、両方が通ると `verify` が成功します。E2Eの範囲はPRの変更fileで決まります。
+
+- Markdown（rootと `docs/`）、`.claude/`、PR templateだけ：E2Eを省く。
+- Contactの範囲（`src/contact/`、`src/app/(contact)/`、`functions/`、Contactのテスト、`docs/contact/`）だけ：ContactのE2Eだけ。
+- それ以外のPRと、mainへのpush：全E2Eを3分割で実行。
+
+mainは自動build・公開され、`Production verification` が本番ドメインのcommitとHTTPを確認します。
 
 [本番切替の実績・インフラ設定・復元手順](deployments/2026-11-15-cutover.md) と [比較方法](migration.md) を参照してください。
