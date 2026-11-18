@@ -446,7 +446,7 @@ export const heroSlides = [
 
 // Rendered text from src/app/(ja)/page.tsx; JSX structure stays in the component.
 export const pageCopy = {
-  "externalArrow": "↗",
+  "externalArrow": "↗\uFE0E",
   "skipLink": "本文へスキップ",
   "wordmarkLabel": "Yuto Matsui ポートフォリオの先頭へ",
   "wordmarkName": "YUTO MATSUI",
@@ -614,7 +614,7 @@ export const productCopy = {
   "fallbackEnglishEmphasis": "AGE OF AI.",
   "fallbackJapaneseLead": "AI時代を",
   "fallbackJapaneseEmphasis": "どう生きるか。",
-  "externalArrow": "↗"
+  "externalArrow": "↗\uFE0E"
 } as const;
 
 // Dynamic control labels; state and element structure remain in the components.
