@@ -23,7 +23,7 @@ import {
 import ui from "./contact.module.css";
 
 type SubmissionState = "idle" | "submitting" | "success";
-type Notice = "" | "failure" | "rateLimited" | "turnstile" | "turnstilePending" | "validation";
+type Notice = "" | "failure" | "rateLimited" | "turnstile" | "validation";
 type Receipt = ContactFields & { topic: ContactTopic; grade: string };
 type ErrorKey = ContactFieldName | "grade";
 
@@ -133,7 +133,6 @@ export function ContactForm() {
         callback: (token: string) => {
           setTurnstileToken(token);
           setTurnstileUnavailable(false);
-          setNotice((current) => (current === "turnstilePending" ? "" : current));
         },
         "error-callback": showTurnstileFallback,
         "timeout-callback": showTurnstileFallback,
@@ -182,7 +181,7 @@ export function ContactForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (status !== "idle") return;
+    if (status !== "idle" || !turnstileToken) return;
     setAttempted(true);
     const parsed = validateContactFields(form, topic || undefined);
     const topicProblem = describeContactTopic(topic);
@@ -195,11 +194,6 @@ export function ContactForm() {
       if (first) document.getElementById(first)?.focus();
       return;
     }
-    if (!turnstileToken) {
-      if (!turnstileUnavailable) setNotice("turnstilePending");
-      return;
-    }
-
     setStatus("submitting");
     setNotice("");
     setServerErrors({});
@@ -259,6 +253,7 @@ export function ContactForm() {
     );
   }
 
+  const checkingTurnstile = !turnstileToken && !turnstileUnavailable;
   const showEmailFallback = turnstileUnavailable && !turnstileToken;
   const noticeText = showEmailFallback ? copy.turnstileUnavailable : notice ? copy[notice] : "";
   const remaining = contactLimits.details.max - form.details.length;
@@ -333,6 +328,7 @@ export function ContactForm() {
             </div>
 
             <div className={ui.verify} ref={turnstileContainerRef} />
+            <p className={ui.verificationStatus} role="status">{checkingTurnstile ? copy.turnstilePending : ""}</p>
 
             {noticeText ? (
               <div className={ui.notice} role="alert">
@@ -344,7 +340,7 @@ export function ContactForm() {
             ) : null}
 
             <div className={ui.actions}>
-              <button className={ui.button} type="submit" disabled={status === "submitting"}>
+              <button className={ui.button} type="submit" disabled={status !== "idle" || !turnstileToken}>
                 {status === "submitting" ? copy.submitting : copy.submit}
               </button>
             </div>

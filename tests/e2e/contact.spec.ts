@@ -185,7 +185,7 @@ for (const layout of layouts) {
       const emailLink = alert.getByRole('link', { name: 'トップページ' });
       await expect(emailLink).toHaveAttribute('href', '/#contact-cta');
       await expect(emailLink).toHaveAttribute('target', '_blank');
-      await submit(page).click();
+      await expect(submit(page)).toBeDisabled();
       await expect(alert).toBeVisible();
       await expect(page.locator('#email')).toHaveValue('hanako@example.com');
       await expect(page.locator('#details')).toHaveValue(/共同研究について/);
@@ -194,6 +194,11 @@ for (const layout of layouts) {
     test('a stalled Turnstile offers email and recovers when a token arrives', async ({ page }) => {
       await page.clock.install();
       await page.emulateMedia({ reducedMotion: 'reduce' });
+      let requests = 0;
+      await page.route('**/api/contact', (route) => {
+        requests++;
+        return route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+      });
       await page.route('https://challenges.cloudflare.com/**', (route) => route.fulfill({
         contentType: 'application/javascript',
         body: `window.turnstile = {
@@ -209,12 +214,22 @@ for (const layout of layouts) {
       await expect(page.locator('[data-test-turnstile="waiting"]')).toBeAttached();
       await fill(page);
 
+      await expect(page.getByRole('status')).toContainText('送信前の確認中です');
+      await expect(submit(page)).toBeDisabled();
+      await page.locator('#email').press('Enter');
+      expect(requests).toBe(0);
       const alert = page.getByRole('alert').filter({ hasText: '送信に必要な確認が完了していません' });
       await page.clock.fastForward(16000);
       await expect(alert.getByRole('link', { name: 'トップページ' })).toBeVisible();
+      await expect(submit(page)).toBeDisabled();
       await page.clock.fastForward(5000);
       await expect(alert).toHaveCount(0);
       await expect(page.locator('#details')).toHaveValue(/共同研究について/);
+      await expect(submit(page)).toBeEnabled();
+      expect(requests).toBe(0);
+      await submit(page).click();
+      await expect(page.getByRole('heading', { name: 'メッセージを承りました' })).toBeVisible();
+      expect(requests).toBe(1);
     });
 
     test('successful message: one request with only the expected fields', async ({ page }) => {

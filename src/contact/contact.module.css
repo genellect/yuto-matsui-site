@@ -214,6 +214,15 @@
 /* Turnstile appears here only when it needs the visitor. */
 .verify:empty { display: none; }
 
+.verificationStatus {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.verificationStatus:empty { display: none; }
+
 .notice {
   padding: 16px;
   border-left: 3px solid var(--error);
