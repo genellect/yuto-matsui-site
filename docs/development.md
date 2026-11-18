@@ -27,6 +27,8 @@ Playwrightはbundled Chromiumを使います。OS依存が不足するLinuxで�
 - `src/shared/`: 製品カード、写真フィルム、portfolioの共通部品。
 - `src/inherited/`: 現行表示に必要なCSS・初期化script。移植中は内容と読み込み順を保持。
 - `public/images/`: 現行URLを保持した画像と動画。
+  - 既存の画像・動画の中身を差し替えるときは、ファイル名も変える（例：`name-20261118.png`）。画像は `max-age=14400` で配信されるため、同じURLのまま中身だけ変えると、以前ページを開いたブラウザーには最大4時間古い画像が出る。
+  - 本番の確認は、merge前の本番を一度開いてキャッシュを残したブラウザーで行い、merge後に新しい画像へ切り替わることを確かめる。
 - `src/app/(contact)/contact/`・`src/contact/`: 個人Contact（`/contact/`）の画面、文言、入力検証。
 - `functions/api/contact.ts`: このサイトで唯一のPages Function（`POST /api/contact`）。`public/_routes.json` でこのpathだけを対象にする。
 - Contactの設計・設定・経緯は [Contact実装案](contact/implementation-plan.md)。
