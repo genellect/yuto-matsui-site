@@ -16,6 +16,7 @@ import {
 import { EnglishFragments } from "../../../en/EnglishFragments";
 import { EnglishHeroGallery } from "../../../en/EnglishHeroGallery";
 import { EnglishHeroLight } from "../../../en/EnglishHeroLight";
+import { EnglishPageLight } from "../../../en/EnglishPageLight";
 import { EnglishSpotlight } from "../../../en/EnglishSpotlight";
 import { EnglishMobileMenu } from "../../../en/EnglishMobileMenu";
 import { GitHubIcon, InstagramIcon } from "../../../en/EnglishSocialIcons";
@@ -100,6 +101,7 @@ export default function EnglishFounderPage() {
   return (
     <div className={styles.page} data-english-founder-page>
       <a className={styles.skipLink} href="#main">{pageCopy.skipLink}</a>
+      <EnglishPageLight />
 
       <header className={styles.siteHeader}>
         <a className={styles.wordmark} href="#top" aria-label={pageCopy.wordmarkLabel}>
@@ -199,7 +201,7 @@ export default function EnglishFounderPage() {
             <aside className={styles.statementIdentity}>
               <p className={styles.sectionIndex}>{pageCopy.statementIndex}</p>
               <h2 id="statement-title"><Phrases text={pageCopy.statementTitle} phrases={["Between", "Life Science", "and Engineering"]} /></h2>
-              <div className={styles.statementPortrait}>
+              <div className={styles.statementPortrait} data-tilt-frame>
                 <Image
                   src="/images/founder-portfolio/yuto-matsui-front.webp"
                   alt={pageCopy.statementPortrait}

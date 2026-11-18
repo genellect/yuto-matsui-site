@@ -14,12 +14,13 @@
 .contours .trace { stroke: #677aa8; stroke-width: 1.7; stroke-linecap: round; stroke-dasharray: 110 1900; stroke-dashoffset: var(--film-flow, 0); }
 .contours .trace:last-child { stroke: #398f87; stroke-dashoffset: calc(var(--film-flow, 0) - 740); }
 /* EN: the film floats on the black stage, lit from below by one pool of light. */
+/* EN: no backdrop of its own. The page's stage light shows through; the film
+   adds a pool of light on the floor beneath it and a light under the mouse. */
 .atmosphere[data-film-variant="en"] {
   background:
-    radial-gradient(ellipse at 34% 62%, rgba(139, 120, 240, 0.32), transparent 48%),
-    radial-gradient(ellipse at 70% 58%, rgba(77, 124, 255, 0.28), transparent 46%),
-    radial-gradient(ellipse at 56% 100%, rgba(66, 217, 255, 0.2), transparent 40%),
-    #000;
+    radial-gradient(60% 18% at 50% 96%, rgba(139, 120, 240, 0.42), rgba(77, 124, 255, 0.12) 55%, transparent 75%),
+    radial-gradient(34% 10% at 50% 92%, rgba(232, 240, 255, 0.16), transparent 70%),
+    linear-gradient(90deg, transparent 6%, rgba(127, 230, 255, 0.35) 30%, rgba(232, 240, 255, 0.55) 50%, rgba(139, 120, 240, 0.35) 70%, transparent 94%) 0 88% / 100% 1px no-repeat;
 }
 .atmosphere[data-film-variant="en"]::before,
 .atmosphere[data-film-variant="en"]::after {
@@ -33,7 +34,13 @@
   transform: translate3d(var(--film-drift-x, 0px), var(--film-drift-y, 0px), 0) rotate(var(--film-shadow-angle, -8deg)) scale(1.05);
   mask-image: radial-gradient(ellipse at 55% 60%, #000 10%, transparent 62%);
 }
-.atmosphere[data-film-variant="en"]::after { background: none; }
+.atmosphere[data-film-variant="en"]::after {
+  inset: 0;
+  background: radial-gradient(520px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(110, 140, 255, 0.28), rgba(66, 217, 255, 0.08) 45%, transparent 70%);
+  opacity: var(--spot-on, 0);
+  transition: opacity 500ms ease;
+  will-change: auto;
+}
 .atmosphere[data-film-variant="en"] .lightField {
   inset: -18%;
   background:
@@ -44,7 +51,9 @@
   background: linear-gradient(118deg, transparent 28%, rgba(217, 212, 255, 0.06) 44%, rgba(139, 120, 240, 0.05) 53%, transparent 64%);
 }
 .atmosphere[data-film-variant="en"] .lightField::after { background: none; }
-.atmosphere[data-film-variant="en"] .groundShadow { background: radial-gradient(ellipse, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.2) 47%, transparent 71%); }
+.atmosphere[data-film-variant="en"] .groundShadow { background: none; }
+/* The film's reflection on the polished floor. */
+.film[data-language="en"] .viewport { -webkit-box-reflect: below -18% linear-gradient(transparent 62%, rgba(255, 255, 255, 0.2)); }
 .atmosphere[data-film-variant="en"] .contours { stroke: #8f9be8; opacity: .2; }
 .atmosphere[data-film-variant="en"] .contours .trace { stroke: #7fe6ff; opacity: .8; }
 .atmosphere[data-film-variant="en"] .contours .trace:last-child { stroke: #8b78f0; }

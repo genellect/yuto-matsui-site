@@ -142,7 +142,7 @@ export function EnglishFragments() {
   };
 
   return (
-    <section id="fragments" className={styles.fragments} aria-labelledby="fragments-title" data-fragment-view={view} data-mobile-view={mobileView}>
+    <section id="fragments" className={styles.fragments} aria-labelledby="fragments-title" data-fragment-view={view} data-mobile-view={mobileView} data-spotlight>
       <FragmentFilmAtmosphere variant="en" />
       <div className={styles.sectionShell}>
         <header className={styles.fragmentsHeading}>
