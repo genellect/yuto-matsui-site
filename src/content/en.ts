@@ -15,10 +15,10 @@ export const heroSlides = [
     position: "33% 50%",
     mobilePosition: "50% 50%",
     mobile: {
-      src: "/images/founder-portfolio/yuto-matsui-light-pillar-hero-20261118.webp",
-      size: [1333, 2000],
-      focus: { x: 0.5, y: 0.425, head: 0.335 },
-      alt: "Yuto Matsui smiling at night beside a lit pillar"
+      src: "/images/founder-portfolio/yuto-matsui-harbor-dusk-hero-20261118.webp",
+      size: [2000, 1333],
+      focus: { x: 0.36, y: 0.51, head: 0.33 },
+      alt: "Yuto Matsui by the harbor at dusk with city lights beyond"
     }
   },
   {
@@ -45,10 +45,10 @@ export const heroSlides = [
     position: "8% 50%",
     mobilePosition: "17% 50%",
     mobile: {
-      src: "/images/founder-portfolio/yuto-matsui-harbor-dusk-hero-20261118.webp",
-      size: [2000, 1333],
-      focus: { x: 0.36, y: 0.51, head: 0.33 },
-      alt: "Yuto Matsui by the harbor at dusk with city lights beyond"
+      src: "/images/founder-portfolio/yuto-matsui-light-pillar-hero-20261118.webp",
+      size: [1333, 2000],
+      focus: { x: 0.5, y: 0.425, head: 0.335 },
+      alt: "Yuto Matsui smiling at night beside a lit pillar"
     }
   }
 ] as const;
