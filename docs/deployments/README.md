@@ -21,3 +21,5 @@ These three compatibility outputs can be removed in a later change after the old
 The pre-cutover deployment and routing inventory is in `2026-11-15-before.json`. The old COMPASS deployment and source remain available during migration. A custom-domain rollback restores the old Pages association/DNS and the previous URL Rewrite Rules; it is not the same as reverting a commit in the new repository. A new-site code rollback uses a previous successful production deployment, followed by the same HTTP and browser verification.
 
 Actual production migration: [2026-11-15 cutover record](2026-11-15-cutover.md).
+
+Contact inquiry history (D1) rollout: [2026-11-18 record](2026-11-18-contact-history.md).
