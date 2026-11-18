@@ -551,7 +551,6 @@
 .fragmentsRail::-webkit-scrollbar { display: none; }
 .fragmentsRail[data-dragging="true"] { cursor: grabbing; user-select: none; }
 .fragmentRailGroup { display: flex; flex: none; height: 100%; align-items: center; gap: 14px; padding-right: 14px; }
-.fragmentRailRow { display: contents; }
 .fragmentRailPhoto { flex: none; height: 100%; margin: 0; overflow: hidden; border-radius: 3px; background: var(--graphite); }
 .fragmentRailPhoto[data-rhythm="1"] { height: 76%; }
 .fragmentRailPhoto[data-rhythm="2"] { height: 90%; }
@@ -913,7 +912,7 @@
   .heroSocialLinks { margin-top: 18px; pointer-events: auto; }
   .heroSocialLinks a { width: 40px; height: 40px; background: rgba(0, 0, 0, 0.3); }
   .heroGallery { position: absolute; inset: 62px 0 0; z-index: 1; width: auto; height: calc(100% - 62px); padding: 0; align-self: stretch; }
-  .heroVisual { height: 58svh; }
+  .heroVisual { height: 61svh; }
   .heroSlide img { object-position: var(--hero-mobile-position); }
   .heroTransitionLayer span { background-image: var(--segment-mobile-image); background-position: var(--segment-mobile-position); }
   .heroVisualGradient { background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 12%), linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.7) 14%, rgba(8, 6, 30, 0.22) 32%, transparent 46%); }
@@ -1037,25 +1036,6 @@
   .fragments .fragmentViewSwitch button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
   .fragments[data-mobile-view="3d"] .mobileFilmView { display: block; }
   .fragments[data-mobile-view="3d"] .fragmentsRail { display: none; }
-  /* Original view: two rows of photographs moving together, as on the JP page. */
-  .fragments[data-mobile-view="original"] .fragmentsRail { height: auto; min-height: 0; margin-top: 18px; align-items: stretch; }
-  .fragments[data-mobile-view="original"] .fragmentRailGroup { flex-direction: column; align-items: flex-start; gap: 10px; height: auto; padding-right: 10px; }
-  .fragments[data-mobile-view="original"] .fragmentRailRow { display: flex; gap: 10px; }
-  .fragments[data-mobile-view="original"] .fragmentRailRow[data-row="1"] .fragmentRailPhoto { height: clamp(190px, 28vw, 248px); }
-  .fragments[data-mobile-view="original"] .fragmentRailRow[data-row="2"] { padding-left: 46px; }
-  .fragments[data-mobile-view="original"] .fragmentRailRow[data-row="2"] .fragmentRailPhoto { height: clamp(164px, 25vw, 220px); }
-  .fragments[data-mobile-view="original"] .fragmentRailPhoto { position: relative; border-radius: 4px; }
-  .fragments[data-mobile-view="original"] .fragmentRailPhoto::after {
-    position: absolute;
-    inset: 0;
-    content: "";
-    border: 1px solid rgba(244, 244, 246, 0.12);
-    border-radius: inherit;
-    background:
-      linear-gradient(90deg, rgba(127, 230, 255, 0.8), transparent 38%) 0 0 / 42px 1px no-repeat,
-      linear-gradient(180deg, rgba(127, 230, 255, 0.8), transparent 42%) 0 0 / 1px 42px no-repeat,
-      linear-gradient(270deg, rgba(139, 120, 240, 0.8), transparent 38%) 100% 100% / 42px 1px no-repeat,
-      linear-gradient(0deg, rgba(139, 120, 240, 0.8), transparent 42%) 100% 100% / 1px 42px no-repeat;
-    pointer-events: none;
-  }
+  /* Original view: the JP photo reel replaces the rail. */
+  .fragments[data-mobile-view="original"] .fragmentsRail { display: none; }
 }

@@ -15,10 +15,10 @@ export const heroSlides = [
     position: "33% 50%",
     mobilePosition: "50% 50%",
     mobile: {
-      src: "/images/founder-portfolio/yuto-matsui-harbor-dusk-hero-20261118.webp",
-      size: [2000, 1333],
-      focus: { x: 0.36, y: 0.51, head: 0.33 },
-      alt: "Yuto Matsui by the harbor at dusk with city lights beyond"
+      src: "/images/founder-portfolio/yuto-matsui-illuminated-steps-hero-20260901.jpg",
+      size: [1566, 1044],
+      focus: { x: 0.45, y: 0.42, head: 0.35 },
+      alt: "Yuto Matsui seated on illuminated steps at night"
     }
   },
   {
@@ -30,10 +30,10 @@ export const heroSlides = [
     position: "50% 45%",
     mobilePosition: "50% 50%",
     mobile: {
-      src: "/images/founder-portfolio/yuto-matsui-illuminated-steps-hero-20260901.jpg",
-      size: [1566, 1044],
-      focus: { x: 0.45, y: 0.42, head: 0.35 },
-      alt: "Yuto Matsui seated on illuminated steps at night"
+      src: "/images/founder-portfolio/yuto-matsui-harbor-dusk-hero-20261118.webp",
+      size: [2000, 1333],
+      focus: { x: 0.36, y: 0.51, head: 0.33 },
+      alt: "Yuto Matsui by the harbor at dusk with city lights beyond"
     }
   },
   {

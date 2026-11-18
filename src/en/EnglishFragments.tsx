@@ -5,28 +5,31 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { FragmentFilm, FragmentFilmAtmosphere } from "../shared/fragment-film/FragmentFilm";
 import { MobileFragmentFilm } from "../shared/fragment-film/MobileFragmentFilm";
+import { FragmentMobileReel } from "../ja/FounderFragments";
+import { mobileFragmentRows } from "../content/ja";
 import { useFragmentView } from "../shared/fragment-film/useFragmentView";
 import styles from "./english-founder.module.css";
 
 const resumeDelayMs = 4_000;
 
+// Mobile Original view: the JP photo reel, with the EN captions.
+const englishAlt = new Map(fragmentPhotos.map(photo => [photo.key, photo.alt]));
+const englishReelRows = mobileFragmentRows.map(row => row.map(photo => ({ ...photo, alt: englishAlt.get(photo.key) ?? photo.alt })));
+
 function Photo({
   photo,
   duplicate,
-  rhythm,
-  order
+  rhythm
 }: {
   photo: FragmentPhoto;
   duplicate: boolean;
   rhythm: number;
-  order: number;
 }) {
   return (
     <figure
       className={styles.fragmentRailPhoto}
       data-tone={photo.tone}
       data-rhythm={rhythm}
-      style={{ order }}
       data-fragment-photo={duplicate ? undefined : photo.key}
       aria-hidden={duplicate || undefined}
     >
@@ -54,10 +57,10 @@ export function EnglishFragments() {
   const currentPhoto = useRef(fragmentPhotos[0].key);
   const changeView = (next: "3d" | "original") => {
     if (mobile && view === "original" && next === "3d") {
-      const rail = railRef.current;
-      const left = rail?.getBoundingClientRect().left ?? 0;
-      const nearest = Array.from(rail?.querySelectorAll<HTMLElement>("[data-fragment-photo]") ?? []).sort((a,b)=>Math.abs(a.getBoundingClientRect().left-left)-Math.abs(b.getBoundingClientRect().left-left))[0];
-      if (nearest) currentPhoto.current=nearest.dataset.fragmentPhoto!;
+      const pictures = document.querySelectorAll<HTMLElement>("#fragments [data-reel-slot]");
+      const center = window.innerWidth / 2;
+      const nearest = Array.from(pictures).filter(p => { const r=p.getBoundingClientRect(); return r.right>0 && r.left<window.innerWidth; }).sort((a,b)=>Math.abs(a.getBoundingClientRect().left+a.offsetWidth/2-center)-Math.abs(b.getBoundingClientRect().left+b.offsetWidth/2-center))[0];
+      if (nearest) currentPhoto.current = nearest.dataset.reelSlot!;
     }
     choose(next);
   };
@@ -71,16 +74,9 @@ export function EnglishFragments() {
   }, []);
 
   useEffect(() => {
-    if (!mobile || view !== "original") return;
-    const rail=railRef.current;
-    const photo=rail?.querySelector<HTMLElement>(`[data-fragment-photo="${currentPhoto.current}"]`);
-    if (rail && photo) rail.scrollLeft=photo.offsetLeft;
-  },[mobile,view]);
-
-  useEffect(() => {
     const rail = railRef.current;
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!rail || motionQuery.matches || ((wide || mobile) && view === "3d")) return;
+    if (!rail || motionQuery.matches || mobile || (wide && view === "3d")) return;
 
     let frame = 0;
     let lastTime = performance.now();
@@ -166,6 +162,7 @@ export function EnglishFragments() {
         <div className={styles.mobileFilmView} id="english-fragment-mobile-film">
           {mobile && view === "3d" && <MobileFragmentFilm photos={fragmentPhotos} active language="en" currentPhoto={currentPhoto.current} onCurrentPhoto={key => { currentPhoto.current=key; }} onFailure={() => choose("original")} />}
         </div>
+        {mobile && view === "original" && <FragmentMobileReel currentPhoto={currentPhoto.current} rows={englishReelRows} />}
         <div
           ref={railRef}
           className={styles.fragmentsRail}
@@ -188,21 +185,13 @@ export function EnglishFragments() {
               className={styles.fragmentRailGroup}
               aria-hidden={duplicate || undefined}
             >
-              {/* Two rows of photographs on mobile, as on the JP page. On wider
-                  screens the rows dissolve (display: contents) and `order`
-                  keeps the original single-row sequence. */}
-              {[0, 1].map(row => (
-                <div key={row} className={styles.fragmentRailRow} data-row={row + 1}>
-                  {fragmentPhotos.map((photo, index) => index % 2 === row ? (
-                    <Photo
-                      key={`${photo.key}-${duplicate ? "duplicate" : "primary"}`}
-                      photo={photo}
-                      duplicate={duplicate}
-                      rhythm={index % 5}
-                      order={index}
-                    />
-                  ) : null)}
-                </div>
+              {fragmentPhotos.map((photo, index) => (
+                <Photo
+                  key={`${photo.key}-${duplicate ? "duplicate" : "primary"}`}
+                  photo={photo}
+                  duplicate={duplicate}
+                  rhythm={index % 5}
+                />
               ))}
             </div>
           ))}

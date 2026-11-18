@@ -70,7 +70,10 @@ function FragmentSignalField() {
   );
 }
 
-function FragmentMobileReel({ currentPhoto }: { currentPhoto: string }) {
+type ReelPhoto = (typeof mobileFragmentRows)[number][number];
+
+// Shared with the EN page, which passes its own captions.
+export function FragmentMobileReel({ currentPhoto, rows = mobileFragmentRows, label = fragmentCopy.fragmentMobileReel }: { currentPhoto: string; rows?: readonly (readonly ReelPhoto[])[]; label?: string }) {
   const reel = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!matchMedia("(max-width: 700px)").matches) return;
@@ -85,8 +88,8 @@ function FragmentMobileReel({ currentPhoto }: { currentPhoto: string }) {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) photo.parentElement?.parentElement?.parentElement?.scrollTo({left:photo.offsetLeft});
   }, [currentPhoto]);
   return (
-    <div ref={reel} className={styles.fragmentMobileReel} aria-label={fragmentCopy.fragmentMobileReel}>
-      {mobileFragmentRows.map((row, rowIndex) => (
+    <div ref={reel} className={styles.fragmentMobileReel} aria-label={label}>
+      {rows.map((row, rowIndex) => (
         <div key={rowIndex} className={styles.fragmentReelViewport}>
           <div className={styles.fragmentReelTrack} data-reel-row={rowIndex + 1}>
             {[false, true].map((duplicate) => (
