@@ -98,6 +98,8 @@ ORDER BY received_at DESC LIMIT 50;
 2. Pages `yuto-matsui-site` のProductionとPreviewに、D1のbinding `CONTACT_DB` を付ける。
    - 使われないbindingは無害なので、mergeより先に付けてよい。
    - APIで付ける場合は、変更の前後でenv_varsの名前と型の一覧を照合する。1つでも変わっていたら止める。
+   - **ProjectをAPIでPATCHすると、送らなかったenv_vars（secretを含む）が消える事例がある。** secretの値はあとから読めないので、消えると元に戻せない。
+   - secret（`CONTACT_EMAIL_API_TOKEN`、`CONTACT_TURNSTILE_SECRET_KEY`）の値を手元に用意できない場合は、APIを使わずダッシュボード（Settings → Bindings）で付ける。
 3. 実装PRのPreviewで1回送信し、Preview用のDBに `accepted` / `skipped` の行が入ることを確かめる。
 4. merge後、本番で1回送信し、次の3点を確かめる。結果を `docs/deployments/` に記録する。
    - D1に `accepted` / `sent` の行がある
