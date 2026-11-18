@@ -12,7 +12,7 @@ test("JP mobile photo art direction, ribbons and balanced external menu", async 
   const hero = page.locator("#top");
   await expect(hero.locator('svg[class*="mobileHeroSignals"]')).toBeVisible();
   // The server-rendered button can be visible before its event handler hydrates.
-  await expect(hero.locator('[data-composition="lake-portrait"]')).toHaveAttribute('style', /--portrait-width:/);
+  await expect(hero.locator('[data-composition="camera-portrait"]')).toHaveAttribute('style', /--portrait-width:/);
   const pause = hero.getByRole("button", { name: "写真の自動切替を一時停止", exact: true });
   await pause.click();
   await expect(hero.locator('[data-paused="true"]')).toBeVisible();

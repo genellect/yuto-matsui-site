@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { MobileHeroRibbons } from "./MobileHeroRibbons";
 import styles from "./founder.module.css";
-import { lakePortraitComposition } from "./hero-composition";
+import { cameraPortraitComposition } from "./hero-composition";
 
 const INTERVAL_MS = 5200;
 
@@ -16,12 +16,12 @@ export function FounderHeroGallery() {
 
   useEffect(() => {
     const frame = gallery.current?.querySelector<HTMLElement>(`.${styles.photoFrame}`);
-    const crop = gallery.current?.querySelector<HTMLElement>("[data-composition='lake-portrait']");
+    const crop = gallery.current?.querySelector<HTMLElement>("[data-composition='camera-portrait']");
     if (!frame || !crop) return;
     const sync = () => {
       const { width, height } = frame.getBoundingClientRect();
       if (!width || !height) return;
-      const composition = lakePortraitComposition(width, height);
+      const composition = cameraPortraitComposition(width, height);
       for (const [name, value] of Object.entries(composition)) crop.style.setProperty(`--portrait-${name}`, `${value}px`);
     };
     const observer = new ResizeObserver(sync);
@@ -87,11 +87,11 @@ export function FounderHeroGallery() {
             data-active={index === activeIndex}
             data-motion={slide.motion}
             data-focus={slide.focus}
-            data-composition={index === 1 ? "lake-portrait" : undefined}
+            data-composition={index === 1 ? "camera-portrait" : undefined}
             aria-hidden={index !== activeIndex}
           >
             {index === 1 ? <div className={styles.lakePortraitLayer}>
-              <Image src={slide.src} alt={index === activeIndex ? slide.alt : ""} width={1600} height={2400} priority sizes="(min-width: 901px) 88vw, 180vw" />
+              <Image src={slide.src} alt={index === activeIndex ? slide.alt : ""} width={1333} height={2000} priority sizes="(min-width: 901px) 88vw, 180vw" />
             </div> : <Image
               src={slide.src}
               alt={index === activeIndex ? slide.alt : ""}

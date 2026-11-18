@@ -3062,7 +3062,7 @@
 
 /* JP second portrait only: pixel-derived composition inside the existing slide. */
 .lakePortraitLayer { position:absolute; inset:0; overflow:hidden; }
-.photoSlide[data-composition="lake-portrait"] img {
+.photoSlide[data-composition="camera-portrait"] img {
   position:absolute !important; width:var(--portrait-width, 200%) !important; height:var(--portrait-height, 200%) !important;
   left:var(--portrait-left, -50%) !important; top:var(--portrait-top, -70%) !important;
   max-width:none !important; object-fit:fill !important; animation:none !important; transform:none !important;
