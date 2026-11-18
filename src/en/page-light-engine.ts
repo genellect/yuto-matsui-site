@@ -9,6 +9,7 @@ export type PageLight = {
   pointer: (x: number, y: number, inside: boolean) => void;
   tint: (primary: string, secondary: string, strength: number) => void;
   running: (value: boolean) => void;
+  paused: (value: boolean) => void;
   dispose: () => void;
 };
 
@@ -102,7 +103,7 @@ export function mountPageLight(host: HTMLElement, options: { reducedMotion: bool
   scene.add(quad);
 
   const target = { x: 0.5, y: 0.5, presence: 0, primary: new THREE.Color("#8b78f0"), secondary: new THREE.Color("#4d7cff"), strength: 1 };
-  let frame = 0, last = 0, disposed = false, active = true;
+  let frame = 0, last = 0, disposed = false, active = true, held = false;
 
   const resize = () => {
     renderer.setSize(window.innerWidth, window.innerHeight, false);
@@ -118,7 +119,8 @@ export function mountPageLight(host: HTMLElement, options: { reducedMotion: bool
     const dt = Math.min(0.1, last ? (now - last) / 1000 : 1 / 60);
     last = now;
     const ease = (rate: number) => (options.reducedMotion ? 1 : 1 - Math.exp(-dt * rate));
-    const animate = !options.reducedMotion && !document.hidden;
+    // A pause pressed in the section on screen also holds the light still.
+    const animate = !options.reducedMotion && !document.hidden && !held;
     if (animate) uniforms.uTime.value += dt;
     if (!options.finePointer && !options.reducedMotion) {
       // Without a mouse the light source wanders slowly across the stage.
@@ -151,6 +153,11 @@ export function mountPageLight(host: HTMLElement, options: { reducedMotion: bool
       target.primary.set(primary);
       target.secondary.set(secondary);
       target.strength = strength * (options.coarse ? 1.3 : 1);
+      invalidate();
+    },
+    paused(value) {
+      held = value;
+      last = 0;
       invalidate();
     },
     running(value) {

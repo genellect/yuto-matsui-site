@@ -36,12 +36,21 @@ export function EnglishPageLight() {
         light.pointer(event.clientX / window.innerWidth, 1 - event.clientY / window.innerHeight, true);
       };
       const onLeave = () => light.pointer(0.5, 0.5, false);
+      let current: HTMLElement | null = null;
+      // When the film or the product 3D in the section on screen is paused
+      // (its button then offers "Resume"), the light holds still with it.
+      const syncPause = () => {
+        const pressed = current ? Array.from(current.querySelectorAll<HTMLElement>('button[aria-pressed="true"]')) : [];
+        light.paused(pressed.some(button => /resume/i.test(button.getAttribute("aria-label") ?? "")));
+      };
       const sections = Object.keys(sectionLight).map(id => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
       const centre = new IntersectionObserver(entries => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           const [primary, secondary, strength] = sectionLight[entry.target.id];
           light.tint(primary, secondary, strength);
+          current = entry.target as HTMLElement;
+          syncPause();
         }
       }, { rootMargin: "-45% 0px -45% 0px" });
       sections.forEach(section => centre.observe(section));
@@ -49,10 +58,13 @@ export function EnglishPageLight() {
       const hero = document.getElementById("top");
       const heroWatch = new IntersectionObserver(([entry]) => light.running(entry.intersectionRatio < 0.97), { threshold: [0, 0.97, 1] });
       if (hero) heroWatch.observe(hero);
+      const pauses = new MutationObserver(syncPause);
+      pauses.observe(document.body, { attributes: true, subtree: true, attributeFilter: ["aria-pressed"] });
       document.addEventListener("pointermove", onPointer, { passive: true });
       document.documentElement.addEventListener("pointerleave", onLeave);
       cleanup = () => {
         centre.disconnect();
+        pauses.disconnect();
         heroWatch.disconnect();
         document.removeEventListener("pointermove", onPointer);
         document.documentElement.removeEventListener("pointerleave", onLeave);

@@ -13,17 +13,20 @@ const resumeDelayMs = 4_000;
 function Photo({
   photo,
   duplicate,
-  rhythm
+  rhythm,
+  order
 }: {
   photo: FragmentPhoto;
   duplicate: boolean;
   rhythm: number;
+  order: number;
 }) {
   return (
     <figure
       className={styles.fragmentRailPhoto}
       data-tone={photo.tone}
       data-rhythm={rhythm}
+      style={{ order }}
       data-fragment-photo={duplicate ? undefined : photo.key}
       aria-hidden={duplicate || undefined}
     >
@@ -185,13 +188,21 @@ export function EnglishFragments() {
               className={styles.fragmentRailGroup}
               aria-hidden={duplicate || undefined}
             >
-              {fragmentPhotos.map((photo, index) => (
-                <Photo
-                  key={`${photo.key}-${duplicate ? "duplicate" : "primary"}`}
-                  photo={photo}
-                  duplicate={duplicate}
-                  rhythm={index % 5}
-                />
+              {/* Two rows of photographs on mobile, as on the JP page. On wider
+                  screens the rows dissolve (display: contents) and `order`
+                  keeps the original single-row sequence. */}
+              {[0, 1].map(row => (
+                <div key={row} className={styles.fragmentRailRow} data-row={row + 1}>
+                  {fragmentPhotos.map((photo, index) => index % 2 === row ? (
+                    <Photo
+                      key={`${photo.key}-${duplicate ? "duplicate" : "primary"}`}
+                      photo={photo}
+                      duplicate={duplicate}
+                      rhythm={index % 5}
+                      order={index}
+                    />
+                  ) : null)}
+                </div>
               ))}
             </div>
           ))}

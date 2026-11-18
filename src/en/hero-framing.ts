@@ -27,7 +27,7 @@ export type Framing = {
   origin: string;
 };
 
-const MAX_ZOOM = 1.4;
+const MAX_ZOOM = 1;
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 export function frame(focus: Focus, image: readonly [number, number], box: readonly [number, number], mobile: boolean): Framing {
@@ -35,7 +35,7 @@ export function frame(focus: Focus, image: readonly [number, number], box: reado
   const boxAspect = box[0] / Math.max(1, box[1]);
   const coverWidth = Math.min(1, boxAspect / imageAspect);
   const coverHeight = Math.min(1, imageAspect / boxAspect);
-  const eyeLine = mobile ? 0.32 : 0.38;
+  const eyeLine = mobile ? 0.36 : 0.38;
   const faceLine = mobile ? 0.5 : 0.46;
   const headroom = 0.07;
   // The least zoom that lets the eyes reach the eye line without showing past

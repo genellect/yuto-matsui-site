@@ -191,8 +191,9 @@
 .mobileMenuRoot, .mobileHeaderLanguage { display: none; }
 
 /* The stage light behind every section below the hero (page-light-engine). */
-.pageLight { position: fixed; inset: 0; z-index: 0; opacity: 0; transition: opacity 1400ms ease; pointer-events: none; }
-.pageLight[data-ready="true"] { opacity: 1; }
+/* The light fades in inside the shader (its strength starts at 0), so a
+   paused section holds it completely still. */
+.pageLight { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 .pageLight canvas { display: block; width: 100%; height: 100%; }
 .page > main, .page > footer { position: relative; z-index: 1; }
 
@@ -550,6 +551,7 @@
 .fragmentsRail::-webkit-scrollbar { display: none; }
 .fragmentsRail[data-dragging="true"] { cursor: grabbing; user-select: none; }
 .fragmentRailGroup { display: flex; flex: none; height: 100%; align-items: center; gap: 14px; padding-right: 14px; }
+.fragmentRailRow { display: contents; }
 .fragmentRailPhoto { flex: none; height: 100%; margin: 0; overflow: hidden; border-radius: 3px; background: var(--graphite); }
 .fragmentRailPhoto[data-rhythm="1"] { height: 76%; }
 .fragmentRailPhoto[data-rhythm="2"] { height: 90%; }
@@ -888,9 +890,9 @@
   .wordmark strong { font-size: 0.72rem; }
   .wordmark span { font-size: 0.58rem; }
 
-  /* Mobile: the portrait fills the upper part of the screen and sinks into
-     the black; the copy gathers below it as one block that overlaps the
-     fade, so no text ever crosses the face. */
+  /* Mobile: the portrait sits in the upper part of the screen at its natural
+     scale (no zoom), so the face stays a part of the scene; it sinks into the
+     black, and the copy gathers below it. */
   .hero { display: block; min-height: 100svh; padding: 0; }
   .hero::after, .heroGallery::before { display: none; }
   .hero::before {
@@ -906,15 +908,15 @@
   .heroRole { margin-bottom: 14px; font-size: 0.66rem; }
   .heroLight { display: none; }
   .heroCopy h1 { max-width: none; margin-left: -0.05em; font-size: clamp(3rem, 14vw, 4rem); line-height: 0.9; filter: drop-shadow(0 0 22px rgba(120, 110, 255, 0.55)) drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6)); }
-  .heroThesis { max-width: none; margin-top: 18px; font-size: clamp(1.5rem, 6.6vw, 1.82rem); line-height: 1.06; white-space: nowrap; }
+  .heroThesis { max-width: none; margin-top: 16px; font-size: clamp(1.42rem, 6.3vw, 1.76rem); line-height: 1.06; white-space: nowrap; }
   .heroDomains { max-width: 34ch; margin-top: 14px; color: var(--chalk); font-size: 0.78rem; line-height: 1.55; }
   .heroSocialLinks { margin-top: 18px; pointer-events: auto; }
   .heroSocialLinks a { width: 40px; height: 40px; background: rgba(0, 0, 0, 0.3); }
   .heroGallery { position: absolute; inset: 62px 0 0; z-index: 1; width: auto; height: calc(100% - 62px); padding: 0; align-self: stretch; }
-  .heroVisual { height: 64svh; }
+  .heroVisual { height: 58svh; }
   .heroSlide img { object-position: var(--hero-mobile-position); }
   .heroTransitionLayer span { background-image: var(--segment-mobile-image); background-position: var(--segment-mobile-position); }
-  .heroVisualGradient { background: linear-gradient(to bottom, rgba(0, 0, 0, 0.42) 0%, transparent 14%), linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.82) 16%, rgba(8, 6, 30, 0.34) 36%, transparent 54%); }
+  .heroVisualGradient { background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 12%), linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.7) 14%, rgba(8, 6, 30, 0.22) 32%, transparent 46%); }
   .heroSignalBoundary { display: none; }
   .heroSystemRail { position: absolute; inset: auto 0 0; height: 48px; grid-template-columns: minmax(138px, 1fr) auto; gap: 16px; padding: 0 clamp(20px, 6.15vw, 28px); background: var(--void); }
   .heroProgress, .heroProgress button, .heroPause { height: 48px; }
@@ -999,7 +1001,7 @@
   .heroSocialLinks { margin-top: 10px; }
   .heroSocialLinks a { width: 36px; height: 36px; }
   .heroSocialLinks svg { width: 17px; height: 17px; }
-  .heroVisual { height: 64svh; }
+  .heroVisual { height: 62svh; }
   .heroSystemRail, .heroProgress, .heroProgress button, .heroPause { height: 44px; }
 }
 
@@ -1035,5 +1037,25 @@
   .fragments .fragmentViewSwitch button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
   .fragments[data-mobile-view="3d"] .mobileFilmView { display: block; }
   .fragments[data-mobile-view="3d"] .fragmentsRail { display: none; }
-  .fragments[data-mobile-view="original"] .fragmentsRail { min-height: max(314px, calc(80svh - 166px)); align-items: center; }
+  /* Original view: two rows of photographs moving together, as on the JP page. */
+  .fragments[data-mobile-view="original"] .fragmentsRail { height: auto; min-height: 0; margin-top: 18px; align-items: stretch; }
+  .fragments[data-mobile-view="original"] .fragmentRailGroup { flex-direction: column; align-items: flex-start; gap: 10px; height: auto; padding-right: 10px; }
+  .fragments[data-mobile-view="original"] .fragmentRailRow { display: flex; gap: 10px; }
+  .fragments[data-mobile-view="original"] .fragmentRailRow[data-row="1"] .fragmentRailPhoto { height: clamp(190px, 28vw, 248px); }
+  .fragments[data-mobile-view="original"] .fragmentRailRow[data-row="2"] { padding-left: 46px; }
+  .fragments[data-mobile-view="original"] .fragmentRailRow[data-row="2"] .fragmentRailPhoto { height: clamp(164px, 25vw, 220px); }
+  .fragments[data-mobile-view="original"] .fragmentRailPhoto { position: relative; border-radius: 4px; }
+  .fragments[data-mobile-view="original"] .fragmentRailPhoto::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    border: 1px solid rgba(244, 244, 246, 0.12);
+    border-radius: inherit;
+    background:
+      linear-gradient(90deg, rgba(127, 230, 255, 0.8), transparent 38%) 0 0 / 42px 1px no-repeat,
+      linear-gradient(180deg, rgba(127, 230, 255, 0.8), transparent 42%) 0 0 / 1px 42px no-repeat,
+      linear-gradient(270deg, rgba(139, 120, 240, 0.8), transparent 38%) 100% 100% / 42px 1px no-repeat,
+      linear-gradient(0deg, rgba(139, 120, 240, 0.8), transparent 42%) 100% 100% / 1px 42px no-repeat;
+    pointer-events: none;
+  }
 }
