@@ -443,6 +443,13 @@ export const heroSlides = [
   }
 ] as const;
 
+// Mobile (max-width: 640px) shows this landscape photo in place of slide 2.
+export const heroMobileSecondSlide = {
+  src: "/images/founder-portfolio/yuto-matsui-bus-stop-hero-mobile-20261118.webp",
+  alt: "街路樹の並ぶバス停のベンチに座り、遠くを見るYuto Matsui / 松井優知",
+  location: "CITY / STREET"
+} as const;
+
 
 // Rendered text from src/app/(ja)/page.tsx; JSX structure stays in the component.
 export const pageCopy = {

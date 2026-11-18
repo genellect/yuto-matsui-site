@@ -1,11 +1,11 @@
 "use client";
 
-import { controls as jaControls, heroCopy, heroSlides as SLIDES } from "../content/ja";
+import { controls as jaControls, heroCopy, heroMobileSecondSlide, heroSlides as SLIDES } from "../content/ja";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { MobileHeroRibbons } from "./MobileHeroRibbons";
 import styles from "./founder.module.css";
-import { cameraPortraitComposition } from "./hero-composition";
+import { busStopPortraitComposition, cameraPortraitComposition } from "./hero-composition";
 
 const INTERVAL_MS = 5200;
 
@@ -23,6 +23,8 @@ export function FounderHeroGallery() {
       if (!width || !height) return;
       const composition = cameraPortraitComposition(width, height);
       for (const [name, value] of Object.entries(composition)) crop.style.setProperty(`--portrait-${name}`, `${value}px`);
+      const mobile = busStopPortraitComposition(width, height);
+      for (const [name, value] of Object.entries(mobile)) crop.style.setProperty(`--mobile-portrait-${name}`, `${value}px`);
     };
     const observer = new ResizeObserver(sync);
     observer.observe(frame);
@@ -90,9 +92,14 @@ export function FounderHeroGallery() {
             data-composition={index === 1 ? "camera-portrait" : undefined}
             aria-hidden={index !== activeIndex}
           >
-            {index === 1 ? <div className={styles.lakePortraitLayer}>
-              <Image src={slide.src} alt={index === activeIndex ? slide.alt : ""} width={1333} height={2000} priority sizes="(min-width: 901px) 88vw, 180vw" />
-            </div> : <Image
+            {index === 1 ? <>
+              <div className={styles.lakePortraitLayer}>
+                <Image src={slide.src} alt={index === activeIndex ? slide.alt : ""} width={1333} height={2000} priority sizes="(min-width: 901px) 88vw, 180vw" />
+              </div>
+              <div className={styles.mobilePortraitLayer}>
+                <Image src={heroMobileSecondSlide.src} alt={index === activeIndex ? heroMobileSecondSlide.alt : ""} width={2000} height={1333} loading="lazy" sizes="300vw" />
+              </div>
+            </> : <Image
               src={slide.src}
               alt={index === activeIndex ? slide.alt : ""}
               fill
@@ -122,7 +129,10 @@ export function FounderHeroGallery() {
           ))}
         </div>
         <span className={styles.photoMeta} aria-hidden="true">
-          {String(activeIndex + 1).padStart(2, "0")}{heroCopy.photoMeta}{String(SLIDES.length).padStart(2, "0")}{heroCopy.photoMeta2}{SLIDES[activeIndex].location}
+          {String(activeIndex + 1).padStart(2, "0")}{heroCopy.photoMeta}{String(SLIDES.length).padStart(2, "0")}{heroCopy.photoMeta2}{activeIndex === 1 ? <>
+            <span className={styles.desktopLocation}>{SLIDES[activeIndex].location}</span>
+            <span className={styles.mobileLocation}>{heroMobileSecondSlide.location}</span>
+          </> : SLIDES[activeIndex].location}
         </span>
         <button
           type="button"

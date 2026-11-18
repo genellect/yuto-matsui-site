@@ -42,3 +42,24 @@ export function cameraPortraitComposition(width: number, height: number) {
     top: Math.max(height - imageHeight, Math.min(0, height * .18 - a.headY * scale))
   };
 }
+
+// Trial Mobile-only second portrait (bus stop, landscape 2000 × 1333).
+// He faces left, so his head sits right of centre and the gaze keeps room.
+export const busStopPortraitAnchors = {
+  sourceWidth: 2000, sourceHeight: 1333,
+  headX: 1250, headTopY: 580, chinY: 750, seatY: 1230
+} as const;
+
+export function busStopPortraitComposition(width: number, height: number) {
+  const a = busStopPortraitAnchors;
+  const cover = Math.max(width / a.sourceWidth, height / a.sourceHeight);
+  const framed = height * .8 / (a.seatY - a.headTopY);
+  const scale = Math.max(cover, framed);
+  const imageWidth = a.sourceWidth * scale;
+  const imageHeight = a.sourceHeight * scale;
+  return {
+    width: imageWidth, height: imageHeight,
+    left: Math.max(width - imageWidth, Math.min(0, width * .62 - a.headX * scale)),
+    top: Math.max(height - imageHeight, Math.min(0, height * .2 - a.headTopY * scale))
+  };
+}

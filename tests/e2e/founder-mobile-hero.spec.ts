@@ -18,7 +18,7 @@ test("JP mobile photo art direction, ribbons and balanced external menu", async 
   await expect(hero.locator('[data-paused="true"]')).toBeVisible();
   for (const index of [1, 2, 3]) {
     await hero.getByRole("button", { name: `写真 ${index} を表示`, exact: true }).click();
-    const image = hero.locator('figure[data-active="true"] img');
+    const image = hero.locator('figure[data-active="true"] img').locator('visible=true');
     await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
     await page.screenshot({ path: testInfo.outputPath(`portrait-${index}.png`), animations: "disabled" });
   }
@@ -32,7 +32,7 @@ test("JP mobile photo art direction, ribbons and balanced external menu", async 
     expect(ribbon!.y + ribbon!.height).toBeLessThanOrEqual(copy!.y + 1);
     for (const index of [1, 2, 3]) {
       await hero.getByRole("button", { name: `写真 ${index} を表示`, exact: true }).click();
-      const image = hero.locator('figure[data-active="true"] img');
+      const image = hero.locator('figure[data-active="true"] img').locator('visible=true');
       const expected = (heroBaseline.dimensions as Record<string, { width: number; height: number }>)[`${width}-${index}`];
       await expect.poll(async () => {
         const box = await image.boundingBox();
@@ -76,7 +76,7 @@ test("JP mobile photo art direction, ribbons and balanced external menu", async 
   await expect(hero.getByRole("button", { name: "写真 2 を表示", exact: true })).toHaveAttribute("aria-pressed", "true", { timeout: 6500 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(hero.locator("canvas")).toHaveCount(0);
-  await expect(hero.locator('figure[data-active="true"] img')).toBeVisible();
+  await expect(hero.locator('figure[data-active="true"] img').locator('visible=true')).toBeVisible();
   await page.setViewportSize({ width: 1024, height: 768 });
   await expect(hero.locator('svg[class*="mobileHeroSignals"]')).toBeHidden();
   expect(errors).toEqual([]);
