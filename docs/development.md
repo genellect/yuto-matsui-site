@@ -30,6 +30,7 @@ Playwrightはbundled Chromiumを使います。OS依存が不足するLinuxで�
 - `src/app/(contact)/contact/`・`src/contact/`: 個人Contact（`/contact/`）の画面、文言、入力検証。
 - `functions/api/contact.ts`: このサイトで唯一のPages Function（`POST /api/contact`）。`public/_routes.json` でこのpathだけを対象にする。
 - Contactの設計・設定・経緯は [Contact実装案](contact/implementation-plan.md)。
+- 受け付けた問い合わせは、D1（binding `CONTACT_DB`）に記録してから受付完了を返す。表は `migrations/`、確認方法と導入の順序は [問い合わせ履歴](contact/inquiry-history.md)。
 - `tests/compare/baseline/`: 本番から取得した比較基準。
 - `README.md`・`assets/`: GitHubプロフィールREADMEの複製（`genellect/genellect` のmain、commit `c68518a91d4a77b1257b097b162dd3e198f1e75d` から取得）。サイトには含めず、更新時は同じ取得元から README.md と参照画像だけをそのまま取り直す。
 
@@ -60,6 +61,28 @@ GitHub Flowで、小さいPRを速く回します。規則の要約は [AGENTS.m
 
 見た目に触る作業は [デザイン言語](design-language.md) を先に読みます。Claude Codeでは `.claude/skills/` の `ship-change` と `portfolio-design` が、この手順を作業ごとに案内します（[CLAUDE.md](../CLAUDE.md)）。
 
+### Cloudflareのtokenとcloud環境
+
+Contactの作業をcloudのセッションで完結させるための設定。tokenの値はrepo・文書・PRに書かない。
+
+- **環境**：このrepoのセッションは、cloud環境 `yuto-matsui-site` で始める。Default環境で始まったセッションは、途中でこの環境に移れない。
+- **token**：`api.cloudflare.com` のNetwork secretsに置く（`Authorization: Bearer`）。対象は、本番切替の記録にあるaccountと、zone `yuto-matsui.com` だけに絞る。
+
+| 範囲 | 権限 | 使い道 |
+|---|---|---|
+| Account | Account Settings: Read | account一覧 |
+| Account | Cloudflare Pages: Edit | binding、deployment、環境変数の名前 |
+| Account | D1: Edit | DBの作成、migration、履歴の確認 |
+| Account | Account Analytics: Read | Functionの呼び出し記録 |
+| Account | Email Routing Addresses: Read | 確認済み受信先 |
+| Account | Turnstile: Read | 本番用widgetのhostnameとsitekey |
+| Zone | Zone: Read、Analytics: Read、Email Routing Rules: Read、DNS: Read、Zone WAF: Read、Single Redirect: Read | zoneの設定と記録の確認 |
+
+- **D1: Edit について**：この権限で、セッションは履歴の本文と返信先を読める。報告には件数と状態だけを書く。
+- **通信先**：環境の許可リストに、次の3つを入れる。
+  - `*.yuto-matsui-site.pages.dev`：branchのPreviewを確かめるため
+  - `cdn.playwright.dev`、`playwright.download.prss.microsoft.com`：E2E用のブラウザーを入れるため
+
 ## CI・本番
 
 CIは、ブラウザー不要の検査（`build`）とE2E（`e2e`）を同時に走らせ、両方が通ると `verify` が成功します。E2Eの範囲はPRの変更fileで決まります。
@@ -88,6 +111,10 @@ Contact（`src/contact/`、`src/app/(contact)/`、`functions/`、`docs/contact/`
 
 - `POST https://yuto-matsui.com/api/contact` に、Origin `https://yuto-matsui.com` と空のJSONを送ると422 `validation` が返る。503 `configuration` が返る場合は、設定が不足している。
 - `yuto-matsui-site.pages.dev/api/contact` に、同じoriginから空のJSONを送ると、`send` では403 `origin`、`mock` では422が返る。
+
+- `GET /accounts/{id}/d1/database/{uuid}` と `POST …/query`（`SELECT` だけ）で、履歴の件数と通知の状態を確かめる。行の本文や返信先は報告に書かない。
+
+Pages・D1・環境変数の変更は、オーナーがそのセッションで直接指示した範囲だけで行う。Pagesの設定をAPIで変えるときは、変更の前後でProduction・Previewのenv_varsの名前と型の一覧を照合し、差があればそこで止めて報告する。
 
 フォームからの実送信（実メール）は、オーナーの指示があるときだけ行う。
 
