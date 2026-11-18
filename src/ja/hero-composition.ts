@@ -1,10 +1,10 @@
-// JP second portrait (Yokohama, camera). Measured on the unmodified
-// 1333 × 2000 master: the torso sits right of the photo's centre, so the
+// JP second portrait (Yokohama, camera). Measured on the 1333 × 2000 master
+// (graded only, never cropped): the torso sits right of the photo's centre, so the
 // frame zooms just enough to put the torso on the vertical centre line.
 // Keeping source pixels makes the framing independent of screen size.
 export const cameraPortraitAnchors = {
   sourceWidth: 1333, sourceHeight: 2000,
-  torsoX: 790, headY: 692, chinY: 1100
+  torsoX: 770, headY: 620, chinY: 1030
 } as const;
 
 export function cameraPortraitComposition(width: number, height: number) {

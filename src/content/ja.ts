@@ -428,7 +428,7 @@ export const heroSlides = [
     focus: "natural"
   },
   {
-    src: "/images/founder-portfolio/yuto-matsui-yokohama-camera-hero-20261118.webp",
+    src: "/images/founder-portfolio/yuto-matsui-yokohama-camera-smile-hero-20261118.webp",
     alt: "横浜の夕暮れのイルミネーションを背景に、カメラを手に笑うYuto Matsui / 松井優知",
     location: "YOKOHAMA / DUSK",
     motion: "from-right",
