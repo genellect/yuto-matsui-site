@@ -48,7 +48,7 @@ async function fill(page: Page, values: { topic?: 'お仕事のご依頼' | '学
   await page.locator('#details').fill(values.details ?? '共同研究についてご相談させてください。よろしくお願いいたします。');
 }
 
-const submit = (page: Page) => page.getByRole('button', { name: /送信する|送信しています/ });
+const submit = (page: Page) => page.getByRole('button', { name: /送信する|確認しています|送信しています/ });
 
 for (const layout of layouts) {
   test.describe(`${layout.name} Contact`, () => {
@@ -191,9 +191,14 @@ for (const layout of layouts) {
       await expect(page.locator('#details')).toHaveValue(/共同研究について/);
     });
 
-    test('a stalled Turnstile offers email and recovers when a token arrives', async ({ page }) => {
+    test('a submit during stalled Turnstile sends exactly once when verification finishes', async ({ page }) => {
       await page.clock.install();
       await page.emulateMedia({ reducedMotion: 'reduce' });
+      let requests = 0;
+      await page.route('**/api/contact', (route) => {
+        requests++;
+        return route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+      });
       await page.route('https://challenges.cloudflare.com/**', (route) => route.fulfill({
         contentType: 'application/javascript',
         body: `window.turnstile = {
@@ -212,9 +217,47 @@ for (const layout of layouts) {
       const alert = page.getByRole('alert').filter({ hasText: '送信に必要な確認が完了していません' });
       await page.clock.fastForward(16000);
       await expect(alert.getByRole('link', { name: 'トップページ' })).toBeVisible();
-      await page.clock.fastForward(5000);
-      await expect(alert).toHaveCount(0);
+      await submit(page).click();
+      await expect(page.getByRole('status')).toContainText('確認が完了すると自動で送信します');
+      await expect(submit(page)).toBeDisabled();
+      await page.locator('#email').press('Enter');
+      expect(requests).toBe(0);
       await expect(page.locator('#details')).toHaveValue(/共同研究について/);
+      await page.clock.fastForward(5000);
+      await expect(page.getByRole('heading', { name: 'メッセージを承りました' })).toBeFocused();
+      expect(requests).toBe(1);
+    });
+
+    test('Turnstile failure clears a waiting send and preserves the draft', async ({ page }) => {
+      await page.clock.install();
+      let requests = 0;
+      await page.route('**/api/contact', (route) => {
+        requests++;
+        return route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+      });
+      await page.route('https://challenges.cloudflare.com/**', (route) => route.fulfill({
+        contentType: 'application/javascript',
+        body: `window.turnstile = {
+          render(container, options) {
+            container.dataset.testTurnstile = 'waiting';
+            setTimeout(() => options['error-callback'](), 15000);
+            setTimeout(() => options.callback('test-token'), 20000);
+            return 'test-widget';
+          },
+          remove() {}
+        };`
+      }));
+      await page.goto('/contact/');
+      await expect(page.locator('[data-test-turnstile="waiting"]')).toBeAttached();
+      await fill(page);
+      await submit(page).click();
+      await expect(submit(page)).toBeDisabled();
+      await page.clock.fastForward(16000);
+      await expect(page.getByRole('alert').filter({ hasText: '送信に必要な確認が完了していません' })).toBeVisible();
+      await page.clock.fastForward(5000);
+      await expect(submit(page)).toBeEnabled();
+      await expect(page.locator('#details')).toHaveValue(/共同研究について/);
+      expect(requests).toBe(0);
     });
 
     test('successful message: one request with only the expected fields', async ({ page }) => {

@@ -22,8 +22,8 @@ import {
 } from "./schema";
 import ui from "./contact.module.css";
 
-type SubmissionState = "idle" | "submitting" | "success";
-type Notice = "" | "failure" | "rateLimited" | "turnstile" | "turnstilePending" | "validation";
+type SubmissionState = "idle" | "verifying" | "submitting" | "success";
+type Notice = "" | "failure" | "rateLimited" | "turnstile" | "validation";
 type Receipt = ContactFields & { topic: ContactTopic; grade: string };
 type ErrorKey = ContactFieldName | "grade";
 
@@ -77,7 +77,8 @@ export function ContactForm() {
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [turnstileReady, setTurnstileReady] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
-  const [turnstileUnavailable, setTurnstileUnavailable] = useState(false);
+  const [turnstileProblem, setTurnstileProblem] = useState<"" | "delayed" | "failed">("");
+  const pendingSubmission = useRef<Receipt | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const turnstileWidgetRef = useRef<string | null>(null);
   const honeypotRef = useRef<HTMLInputElement>(null);
@@ -101,17 +102,24 @@ export function ContactForm() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [status]);
 
-  const showTurnstileFallback = useCallback(() => {
-    setTurnstileToken("");
-    setTurnstileUnavailable(true);
-    return true;
+  const cancelPendingSubmission = useCallback(() => {
+    if (!pendingSubmission.current) return;
+    pendingSubmission.current = null;
+    setStatus("idle");
   }, []);
 
+  const showTurnstileFallback = useCallback(() => {
+    cancelPendingSubmission();
+    setTurnstileToken("");
+    setTurnstileProblem("failed");
+    return true;
+  }, [cancelPendingSubmission]);
+
   useEffect(() => {
-    if (turnstileToken || turnstileUnavailable || status !== "idle") return;
-    const deadline = window.setTimeout(() => setTurnstileUnavailable(true), TURNSTILE_WAIT_MS);
+    if (turnstileToken || turnstileProblem) return;
+    const deadline = window.setTimeout(() => setTurnstileProblem("delayed"), TURNSTILE_WAIT_MS);
     return () => window.clearTimeout(deadline);
-  }, [turnstileToken, turnstileUnavailable, status]);
+  }, [turnstileToken, turnstileProblem]);
 
   useEffect(() => {
     if (!turnstileReady || !turnstileContainerRef.current) return;
@@ -132,8 +140,7 @@ export function ContactForm() {
         theme: "light",
         callback: (token: string) => {
           setTurnstileToken(token);
-          setTurnstileUnavailable(false);
-          setNotice((current) => (current === "turnstilePending" ? "" : current));
+          setTurnstileProblem("");
         },
         "error-callback": showTurnstileFallback,
         "timeout-callback": showTurnstileFallback,
@@ -150,10 +157,10 @@ export function ContactForm() {
     };
   }, [turnstileReady, showTurnstileFallback]);
 
-  const resetTurnstile = () => {
+  const resetTurnstile = useCallback(() => {
     setTurnstileToken("");
     if (window.turnstile && turnstileWidgetRef.current) window.turnstile.reset(turnstileWidgetRef.current);
-  };
+  }, []);
 
   const clearProblem = (key: ErrorKey) => {
     setServerErrors((current) => ({ ...current, [key]: undefined }));
@@ -161,7 +168,8 @@ export function ContactForm() {
   };
 
   const updateField = (field: ContactFieldName, value: string) => {
-    if (status !== "idle") return;
+    if (status === "submitting") return;
+    cancelPendingSubmission();
     if (field === "affiliation") {
       if (topic) setAffiliations((current) => ({ ...current, [topic]: value }));
     } else {
@@ -180,26 +188,7 @@ export function ContactForm() {
   const topicError = attempted ? describeContactTopic(topic) ?? serverErrors.topic : undefined;
   const describedBy = (key: ErrorKey) => (fieldError(key) ? `${key}-error` : undefined);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (status !== "idle") return;
-    setAttempted(true);
-    const parsed = validateContactFields(form, topic || undefined);
-    const topicProblem = describeContactTopic(topic);
-    const gradeProblem = describeContactGrade(topic, gradeValue);
-    if (!parsed.ok || topicProblem || gradeProblem || !topic) {
-      // Take the visitor straight to the first thing to fix, in the order it appears.
-      const first = topicProblem ? "topic-work" : (["affiliation", "grade", "name", "email", "details"] as const).find((key) => (
-        key === "grade" ? Boolean(gradeProblem) : !parsed.ok && Boolean(parsed.fieldErrors[key])
-      ));
-      if (first) document.getElementById(first)?.focus();
-      return;
-    }
-    if (!turnstileToken) {
-      if (!turnstileUnavailable) setNotice("turnstilePending");
-      return;
-    }
-
+  const sendSubmission = useCallback(async (submission: Receipt, token: string) => {
     setStatus("submitting");
     setNotice("");
     setServerErrors({});
@@ -209,17 +198,15 @@ export function ContactForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          topic,
-          grade: gradeValue,
-          ...parsed.data,
+          ...submission,
           requestId: crypto.randomUUID(),
-          turnstileToken,
+          turnstileToken: token,
           website: honeypotRef.current?.value ?? ""
         })
       });
       const result = await readResult(response);
       if (response.ok && result.ok === true) {
-        setReceipt({ topic, grade: gradeValue, ...parsed.data });
+        setReceipt(submission);
         setStatus("success");
         return;
       }
@@ -236,6 +223,38 @@ export function ContactForm() {
     setNotice(outcome);
     if (outcome === "failure" || outcome === "rateLimited") setFailures((count) => count + 1);
     resetTurnstile();
+  }, [resetTurnstile]);
+
+  useEffect(() => {
+    const submission = pendingSubmission.current;
+    if (!submission || !turnstileToken) return;
+    pendingSubmission.current = null;
+    void sendSubmission(submission, turnstileToken);
+  }, [sendSubmission, turnstileToken]);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (status !== "idle" || pendingSubmission.current) return;
+    setAttempted(true);
+    const parsed = validateContactFields(form, topic || undefined);
+    const topicProblem = describeContactTopic(topic);
+    const gradeProblem = describeContactGrade(topic, gradeValue);
+    if (!parsed.ok || topicProblem || gradeProblem || !topic) {
+      // Take the visitor straight to the first thing to fix, in the order it appears.
+      const first = topicProblem ? "topic-work" : (["affiliation", "grade", "name", "email", "details"] as const).find((key) => (
+        key === "grade" ? Boolean(gradeProblem) : !parsed.ok && Boolean(parsed.fieldErrors[key])
+      ));
+      if (first) document.getElementById(first)?.focus();
+      return;
+    }
+
+    const submission = { topic, grade: gradeValue, ...parsed.data };
+    if (turnstileToken) {
+      void sendSubmission(submission, turnstileToken);
+    } else if (turnstileProblem !== "failed") {
+      pendingSubmission.current = submission;
+      setStatus("verifying");
+    }
   };
 
   if (status === "success" && receipt) {
@@ -259,8 +278,9 @@ export function ContactForm() {
     );
   }
 
-  const showEmailFallback = turnstileUnavailable && !turnstileToken;
-  const noticeText = showEmailFallback ? copy.turnstileUnavailable : notice ? copy[notice] : "";
+  const isVerifying = status === "verifying";
+  const showEmailFallback = Boolean(turnstileProblem) && !turnstileToken;
+  const noticeText = isVerifying ? copy.turnstilePending : showEmailFallback ? copy.turnstileUnavailable : notice ? copy[notice] : "";
   const remaining = contactLimits.details.max - form.details.length;
 
   const textField = (field: "name" | "email" | "affiliation", label: string, props: React.InputHTMLAttributes<HTMLInputElement>) => {
@@ -282,7 +302,7 @@ export function ContactForm() {
 
   return (
     <section aria-labelledby="form-title">
-      <form id="contact-form" noValidate aria-busy={status !== "idle"} onSubmit={handleSubmit}>
+      <form id="contact-form" noValidate aria-busy={status === "submitting"} onSubmit={handleSubmit}>
         <h1 id="form-title" className={ui.title} tabIndex={-1}>{copy.title}</h1>
 
         <div className={ui.flow} id="contact-flow">
@@ -291,7 +311,7 @@ export function ContactForm() {
             <legend className={ui.srOnly}>{copy.topicLegend}</legend>
             {topicEntries.map(([value, label]) => (
               <label key={value} className={ui.choice} data-checked={topic === value}>
-                <input id={`topic-${value}`} type="radio" name="topic" value={value} checked={topic === value} aria-invalid={Boolean(topicError)} onChange={() => { if (status === "idle") { setTopic(value); clearProblem("affiliation"); setServerErrors((current) => ({ ...current, topic: undefined, grade: undefined })); } }} />
+                <input id={`topic-${value}`} type="radio" name="topic" value={value} checked={topic === value} aria-invalid={Boolean(topicError)} onChange={() => { if (status !== "submitting") { cancelPendingSubmission(); setTopic(value); clearProblem("affiliation"); setServerErrors((current) => ({ ...current, topic: undefined, grade: undefined })); } }} />
                 <span>{label}</span>
               </label>
             ))}
@@ -304,7 +324,7 @@ export function ContactForm() {
                 {affiliationField}
                 <div className={ui.field}>
                   <label htmlFor="grade">{copy.grade}</label>
-                  <select id="grade" name="grade" value={grade} required aria-invalid={Boolean(gradeError)} aria-describedby={describedBy("grade")} onBlur={() => markTouched("grade")} onChange={(event) => { if (status === "idle") { setGrade(event.target.value); clearProblem("grade"); } }}>
+                  <select id="grade" name="grade" value={grade} required aria-invalid={Boolean(gradeError)} aria-describedby={describedBy("grade")} onBlur={() => markTouched("grade")} onChange={(event) => { if (status !== "submitting") { cancelPendingSubmission(); setGrade(event.target.value); clearProblem("grade"); } }}>
                     <option value="" disabled>{copy.gradePlaceholder}</option>
                     {contactGrades.map((value) => <option key={value} value={value}>{value}</option>)}
                   </select>
@@ -335,17 +355,17 @@ export function ContactForm() {
             <div className={ui.verify} ref={turnstileContainerRef} />
 
             {noticeText ? (
-              <div className={ui.notice} role="alert">
+              <div className={ui.notice} role={isVerifying ? "status" : "alert"}>
                 <p>{noticeText}</p>
                 {showEmailFallback || (failures >= 2 && (notice === "failure" || notice === "rateLimited")) ? (
-                  <p>{copy.fallbackBefore}<a href="/#contact-cta" target="_blank" rel="noopener">{copy.fallbackLink}</a>{copy.fallbackAfter}</p>
+                  <p>{copy.fallbackBefore}<a href="/#contact-cta" target="_blank" rel="noopener" onClick={cancelPendingSubmission}>{copy.fallbackLink}</a>{copy.fallbackAfter}</p>
                 ) : null}
               </div>
             ) : null}
 
             <div className={ui.actions}>
-              <button className={ui.button} type="submit" disabled={status === "submitting"}>
-                {status === "submitting" ? copy.submitting : copy.submit}
+              <button className={ui.button} type="submit" disabled={status !== "idle"}>
+                {isVerifying ? copy.verifying : status === "submitting" ? copy.submitting : copy.submit}
               </button>
             </div>
           </div>

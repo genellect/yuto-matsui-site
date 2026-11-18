@@ -17,6 +17,7 @@ export const contactCopy = {
   email: "メールアドレス",
 
   submit: "送信する",
+  verifying: "確認しています…",
   submitting: "送信しています…",
 
   successTitle: "メッセージを承りました",
@@ -32,7 +33,7 @@ export const contactCopy = {
   failure: "申し訳ありません。ただいまメッセージをお送りできませんでした。ご入力いただいた内容はそのまま残っていますので、少し時間をおいて、もう一度お試しください。",
   rateLimited: "申し訳ありません。続けてお送りいただいたため、少し時間をおいてから、もう一度お試しください。ご入力いただいた内容はそのまま残っています。",
   turnstile: "確認が完了しませんでした。お手数ですが、もう一度お試しください。",
-  turnstilePending: "送信前の確認を行っています。数秒後にもう一度送信してください。",
+  turnstilePending: "送信前の確認を行っています。確認が完了すると自動で送信します。",
   turnstileUnavailable: "送信に必要な確認が完了していません。ご入力いただいた内容はそのまま残っています。",
   validation: "入力内容を確認してください。",
   fallbackBefore: "お急ぎの場合は、",
