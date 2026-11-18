@@ -47,7 +47,7 @@ export function FounderProducts({ products, language = "ja" }: { products: reado
                       <img
                         src={!english && product.key === "cytellect" ? "/images/founder-products/cytellect/research-jp.png" : STILLS[product.key].src}
                         alt={!english && product.key === "cytellect" ? jaControls.cytellectImageAlt : english ? STILLS[product.key].en : STILLS[product.key].ja}
-                        width={!english && product.key === "cytellect" ? 2560 : STILLS[product.key].width} height={!english && product.key === "cytellect" ? 1280 : STILLS[product.key].height} loading="lazy" decoding="async"
+                        width={!english && product.key === "cytellect" ? 2000 : STILLS[product.key].width} height={!english && product.key === "cytellect" ? 1000 : STILLS[product.key].height} loading="lazy" decoding="async"
                       />
                     </div>
                   ) : <ProductSculpture kind={product.key} paused={paused} />}

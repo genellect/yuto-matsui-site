@@ -66,7 +66,7 @@ for (const language of ["ja", "en"] as const) {
       for (const [index, naturalWidth] of [[0, 1920], [1, 1280], [3, 1920]] as const) {
         const image = cards.nth(index).locator("img");
         await image.scrollIntoViewIfNeeded();
-        await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBe(language === "ja" && index === 0 ? 2560 : naturalWidth);
+        await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBe(language === "ja" && index === 0 ? 2000 : naturalWidth);
         await expect(cards.nth(index).locator("canvas, video")).toHaveCount(0);
       }
       // Visible card titles must not overflow, including the restored EN Topos headline.
@@ -113,7 +113,7 @@ test("Product stills and links work before JavaScript", async ({ browser }, test
       for (const [key, naturalWidth] of [["cytellect", 1920], ["topos", 1280], ["platform", 1920]] as const) {
         const card = products.locator(`[data-product="${key}"]`);
         await card.scrollIntoViewIfNeeded();
-        await expect.poll(() => card.locator("img").evaluate((el: HTMLImageElement) => el.naturalWidth)).toBe(route === "" && key === "cytellect" ? 2560 : naturalWidth);
+        await expect.poll(() => card.locator("img").evaluate((el: HTMLImageElement) => el.naturalWidth)).toBe(route === "" && key === "cytellect" ? 2000 : naturalWidth);
         await expect(card.getByRole("link").first()).toBeVisible();
       }
       await expect(products.locator("article")).toHaveCount(4);
