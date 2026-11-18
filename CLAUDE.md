@@ -19,6 +19,13 @@
 
 `frontend-design` は新しい美観を提案する性格のskillです。このrepoでは docs/design-language.md の既存の見た目が優先で、その範囲の中で使います。
 
+## Contactの作業環境
+
+Contactに関わる作業（範囲は docs/development.md の「Contactの本番確認」）は、cloud環境 `yuto-matsui-site` で行います。この環境のNetwork secretsにある `api.cloudflare.com` の読み取り専用tokenを使い、作業の最初に同じ節の手順で本番の状態を確かめます。
+
+- 別の環境で始まった場合や、tokenが無効・期限切れの場合は、確認できなかったことを最初に報告し、ユーザーにtokenの再設定を依頼します。推測で補わないでください。
+- Cloudflareの設定（環境変数、Email Routing、WAF、redirect）は読むだけにします。変更はT3として、オーナーの明示指示がある範囲だけで行います。
+
 ## GitHub上の操作
 
 - PRへのcommentやmergeは、ユーザーがchatで指示したときだけ行います。

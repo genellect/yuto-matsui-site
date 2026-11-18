@@ -70,4 +70,20 @@ CIは、ブラウザー不要の検査（`build`）とE2E（`e2e`）を同時に
 
 mainは自動build・公開され、`Production verification` が本番ドメインのcommitとHTTPを確認します。
 
+### Contactの本番確認（Cloudflare、読み取りのみ）
+
+Contact（`src/contact/`、`src/app/(contact)/`、`functions/`、`docs/contact/`）に関わる作業や不具合調査では、コードを読む前に本番の状態をCloudflare APIで確かめる。tokenは読み取り専用で、repo・文書・PR・logには値を書かない。
+
+1. `GET /client/v4/accounts` でaccount IDを得る。
+2. `GET /accounts/{id}/pages/projects/yuto-matsui-site` で、Productionの環境変数の**名前**と、`CONTACT_MODE` が `send` であることを確かめる。値（特に `CONTACT_TO`）は報告に書かない。
+3. Email Routingの確認済み受信先（`GET /accounts/{id}/email/routing/addresses`）に、`CONTACT_TO` の受信先が `verified` で含まれていることを確かめる。
+4. 直近の本番deploymentが最新のmainであることを確かめる。
+
+外からも次のことは判別できる（メールは送られない）。
+
+- `POST https://yuto-matsui.com/api/contact` に、Origin `https://yuto-matsui.com` と空のJSONを送ると422 `validation` が返る。503 `configuration` が返る場合は、設定が不足している。
+- `yuto-matsui-site.pages.dev/api/contact` に、同じoriginから空のJSONを送ると、`send` では403 `origin`、`mock` では422が返る。
+
+フォームからの実送信（実メール）は、オーナーの指示があるときだけ行う。
+
 [本番切替の実績・インフラ設定・復元手順](deployments/2026-11-15-cutover.md) と [比較方法](migration.md) を参照してください。
