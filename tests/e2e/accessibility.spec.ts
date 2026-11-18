@@ -23,6 +23,9 @@ const known: Record<string, string[]> = {
   ],
   '/en/ Mobile': [
     'label-content-name-mismatch .english-founder_wordmark',
+    // The JP photo reel, reused on the EN page as is: the same known entries as '/ Mobile'.
+    'scrollable-region-focusable .founder_fragmentReelViewport:nth-child(1)',
+    'scrollable-region-focusable .founder_fragmentReelViewport:nth-child(2)',
   ],
   '/contact/ Desktop': [
     'label-content-name-mismatch .founder_wordmark',
