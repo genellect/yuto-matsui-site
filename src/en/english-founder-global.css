@@ -1,6 +1,6 @@
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: #071310; }
-body { margin: 0; background: #071310; }
+html { scroll-behavior: smooth; background: #000; }
+body { margin: 0; background: #000; }
 button, a, summary { font: inherit; }
 
 @media (prefers-reduced-motion: reduce) {

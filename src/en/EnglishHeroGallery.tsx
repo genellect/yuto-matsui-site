@@ -10,6 +10,7 @@ import {
   useRef,
   useState
 } from "react";
+import type { PrismController } from "./hero-prism-engine";
 import styles from "./english-founder.module.css";
 
 const intervalMs = 8_000;
@@ -34,6 +35,10 @@ export function EnglishHeroGallery() {
   const pointerOrigin = useRef<{ x: number; y: number } | null>(null);
   const transitionTimer = useRef<number | null>(null);
   const nextSlideRef = useRef<() => void>(() => {});
+  const visualRef = useRef<HTMLDivElement>(null);
+  const prismRef = useRef<PrismController | null>(null);
+  const activeRef = useRef(0);
+  const [prism, setPrism] = useState<"loading" | "ready" | "failed">("loading");
 
   const showSlide = useCallback((nextIndex: number) => {
     if (nextIndex === activeIndex || enteringIndex !== null) return;
@@ -64,6 +69,32 @@ export function EnglishHeroGallery() {
   }, [activeIndex, showSlide]);
 
   useEffect(() => { nextSlideRef.current = showNext; }, [showNext]);
+
+  // The prism wall carries the same photographs in WebGL. Until it is ready,
+  // or when WebGL is unavailable, the HTML images remain the portrait.
+  useEffect(() => {
+    const host = visualRef.current;
+    if (!host) return;
+    let disposed = false;
+    import("./hero-prism-engine").then(({ mountPrismWall }) => {
+      if (disposed) return;
+      prismRef.current = mountPrismWall(host, heroSlides, activeRef.current, {
+        reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        onReady: () => { if (!disposed) setPrism("ready"); },
+        onFail: () => { if (!disposed) setPrism("failed"); }
+      });
+    }, () => setPrism("failed"));
+    return () => { disposed = true; prismRef.current?.dispose(); prismRef.current = null; };
+  }, []);
+
+  useEffect(() => {
+    activeRef.current = activeIndex;
+    prismRef.current?.show(activeIndex, false);
+  }, [activeIndex]);
+
+  useEffect(() => {
+    if (enteringIndex !== null) prismRef.current?.show(enteringIndex, true);
+  }, [enteringIndex]);
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -158,7 +189,9 @@ export function EnglishHeroGallery() {
       }}
     >
       <div
+        ref={visualRef}
         className={styles.heroVisual}
+        data-prism={prism}
         aria-live="off"
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}

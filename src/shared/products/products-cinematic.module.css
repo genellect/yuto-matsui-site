@@ -1,7 +1,7 @@
 .world { position: relative; }
 .world[data-language="en"] .secondary a, .world[data-language="en"] .motion { color: #dce7e2; }
 .world[data-language="en"] .motion { border-color: #dce7e24d; }
-.world[data-language="en"] .secondary a:hover { color: #b6ef7a; }
+.world[data-language="en"] .secondary a:hover { color: #d9d4ff; }
 .world[data-language="en"] .product[data-product="manifesto"] .title { font-family: Arial, Helvetica, sans-serif; line-height: 1.05; letter-spacing: -.04em; }
 .grid { display: grid; grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 .product { min-width: 0; }

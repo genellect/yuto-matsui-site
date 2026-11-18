@@ -15,9 +15,12 @@ import {
 } from "../../../content/en";
 import { EnglishFragments } from "../../../en/EnglishFragments";
 import { EnglishHeroGallery } from "../../../en/EnglishHeroGallery";
+import { EnglishHeroLight } from "../../../en/EnglishHeroLight";
+import { EnglishSpotlight } from "../../../en/EnglishSpotlight";
 import { EnglishMobileMenu } from "../../../en/EnglishMobileMenu";
 import { GitHubIcon, InstagramIcon } from "../../../en/EnglishSocialIcons";
 import { EnglishStatement } from "../../../en/EnglishStatement";
+import { Phrases } from "../../../en/Phrases";
 import { DepthCard, DepthVisual } from "../../../shared/portfolio/DepthCard";
 import { OffHoursGallery } from "../../../shared/portfolio/OffHoursGallery";
 import styles from "../../../en/english-founder.module.css";
@@ -93,48 +96,6 @@ function Arrow() {
   return <span aria-hidden="true">{pageCopy.externalArrow}</span>;
 }
 
-function ConvergenceField() {
-  return (
-    <svg className={styles.convergenceField} viewBox="0 0 1440 900" aria-hidden="true" focusable="false">
-      <defs>
-        <linearGradient id="en-field-biotic" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#b6ef7a" stopOpacity="0" />
-          <stop offset="1" stopColor="#b6ef7a" stopOpacity="0.76" />
-        </linearGradient>
-        <linearGradient id="en-field-signal" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#8b78f0" stopOpacity="0" />
-          <stop offset="1" stopColor="#8b78f0" stopOpacity="0.82" />
-        </linearGradient>
-      </defs>
-      <path className={styles.fieldGuide} d="M-80 160C214 150 392 268 612 450" />
-      <path className={styles.fieldGuide} d="M-80 450C188 450 410 450 612 450" />
-      <path className={styles.fieldGuide} d="M-80 770C220 764 404 632 612 450" />
-      <path className={styles.fieldBoundary} d="M612 -40C560 178 658 322 612 450C566 578 654 728 606 940" />
-      <path className={styles.fieldOrbit} d="M316 450A296 296 0 0 1 612 154" />
-      <path className={styles.fieldOrbit} d="M316 450A296 296 0 0 0 612 746" />
-      <path className={styles.fieldBiotic} d="M-80 160C214 150 392 268 612 450" />
-      <path className={styles.fieldSignal} d="M-80 450C188 450 410 450 612 450" />
-      <path className={styles.fieldBiotic} d="M-80 770C220 764 404 632 612 450" />
-      <g className={styles.fieldNodes}>
-        <circle cx="152" cy="178" r="3" />
-        <circle cx="212" cy="450" r="4" />
-        <circle cx="168" cy="742" r="3" />
-        <circle cx="382" cy="316" r="2.5" />
-        <circle cx="420" cy="612" r="2.5" />
-        <circle cx="612" cy="450" r="7" />
-      </g>
-      <circle className={styles.fieldPulseOne} cx="152" cy="178" r="3" />
-      <circle className={styles.fieldPulseTwo} cx="212" cy="450" r="3" />
-      <circle className={styles.fieldPulseThree} cx="168" cy="742" r="3" />
-      <g className={styles.fieldDispersion}>
-        <circle cx="612" cy="450" r="2" />
-        <circle cx="612" cy="450" r="2" />
-        <circle cx="612" cy="450" r="2" />
-      </g>
-    </svg>
-  );
-}
-
 export default function EnglishFounderPage() {
   return (
     <div className={styles.page} data-english-founder-page>
@@ -161,7 +122,7 @@ export default function EnglishFounderPage() {
 
       <main id="main">
         <section id="top" className={styles.hero} aria-labelledby="english-founder-title" data-hero-interface data-hero-cycle="0">
-          <ConvergenceField />
+          <EnglishHeroLight />
           <div className={styles.heroCopy}>
             <p className={styles.heroRole}><span>{pageCopy.heroRole}</span>{pageCopy.heroRole2}<span>{pageCopy.heroRole3}</span></p>
             <h1 id="english-founder-title">{pageCopy.englishFounderTitle}</h1>
@@ -187,7 +148,7 @@ export default function EnglishFounderPage() {
             </header>
             <div className={styles.expertiseGrid}>
               {expertise.map((item, index) => (
-                <DepthCard key={item.number} depth="expertise" editorial className={styles.expertisePlate} data-accent={item.accent} data-order={index + 1}>
+                <DepthCard key={item.number} depth="expertise" editorial className={styles.expertisePlate} data-accent={item.accent} data-order={index + 1} data-spotlight>
                   <DepthVisual className={styles.expertiseImage} data-depth-layer="image">
                     <Image decoding="sync" loading="eager" src={item.image} alt={item.alt} fill sizes="(min-width: 1100px) 438px, (min-width: 901px) 43vw, (min-width: 641px) 552px, 86vw" />
                     <div className={styles.expertiseNumber} data-depth-layer="detail">{item.number}</div>
@@ -220,7 +181,7 @@ export default function EnglishFounderPage() {
                 </DepthCard>
               ))}
             </div>
-            <div className={styles.credentialsGrid} aria-label={pageCopy.credentialsGrid}>
+            <div className={styles.credentialsGrid} aria-label={pageCopy.credentialsGrid} data-spotlight>
               {credentials.map((credential) => (
                 <article key={credential.name} className={styles.credentialItem}>
                   <span>{credential.mark}</span>
@@ -237,7 +198,7 @@ export default function EnglishFounderPage() {
           <div className={styles.statementShell}>
             <aside className={styles.statementIdentity}>
               <p className={styles.sectionIndex}>{pageCopy.statementIndex}</p>
-              <h2 id="statement-title">{pageCopy.statementTitle}</h2>
+              <h2 id="statement-title"><Phrases text={pageCopy.statementTitle} phrases={["Between", "Life Science", "and Engineering"]} /></h2>
               <div className={styles.statementPortrait}>
                 <Image
                   src="/images/founder-portfolio/yuto-matsui-front.webp"
@@ -286,7 +247,7 @@ export default function EnglishFounderPage() {
                 <p>{pageCopy.contactIntroduction2}</p>
                 <p>{pageCopy.contactIntroduction3}</p>
               </div>
-              <div className={styles.contactEmail} aria-label={pageCopy.emailDetailsLabel}>
+              <div className={styles.contactEmail} aria-label={pageCopy.emailDetailsLabel} data-spotlight>
                 <p><strong>{pageCopy.contactName}</strong><span>{pageCopy.contactRole}</span></p>
                 <p><span>{pageCopy.personalEmailLabel}</span><span>{pageCopy.personalEmail}</span></p>
                 <p><span>{pageCopy.universityEmailLabel}</span><span>{pageCopy.universityEmail}</span></p>
@@ -316,6 +277,7 @@ export default function EnglishFounderPage() {
         <p className={styles.copyright}>{pageCopy.copyright}</p>
       </footer>
 
+      <EnglishSpotlight />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
     </div>
   );
