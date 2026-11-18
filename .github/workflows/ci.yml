@@ -103,5 +103,7 @@ jobs:
           E2E: ${{ needs.e2e.result }}
           E2E_NEEDED: ${{ needs.scope.outputs.e2e }}
         run: |
-          test "$BUILD" = success && test "$SCOPE" = success
+          # Each assertion stands alone: bash -e does not stop on a failed command inside an && list.
+          test "$BUILD" = success || { echo "build: $BUILD"; exit 1; }
+          test "$SCOPE" = success || { echo "scope: $SCOPE"; exit 1; }
           if [ "$E2E_NEEDED" = false ]; then test "$E2E" = skipped; else test "$E2E" = success; fi
