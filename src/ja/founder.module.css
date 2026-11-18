@@ -3061,7 +3061,7 @@
 @keyframes mobileMenuEnter { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 
 /* JP second portrait only: pixel-derived composition inside the existing slide. */
-.lakePortraitLayer { position:absolute; inset:0; overflow:hidden; }
+.portraitLayer { position:absolute; inset:0; overflow:hidden; }
 .photoSlide[data-composition="camera-portrait"] img {
   position:absolute !important; width:var(--portrait-width, 200%) !important; height:var(--portrait-height, 200%) !important;
   left:var(--portrait-left, -50%) !important; top:var(--portrait-top, -70%) !important;
@@ -3092,16 +3092,4 @@
 }
 @media (max-width: 640px) and (prefers-reduced-motion: reduce) {
   .photoSlide, .photoSlide[data-motion] { transition: none !important; }
-}
-
-/* Trial: Mobile swaps the second portrait for a landscape photo. */
-.mobilePortraitLayer, .mobileLocation { display:none; }
-@media (max-width: 640px) {
-  .photoSlide[data-composition="camera-portrait"] .lakePortraitLayer, .desktopLocation { display:none; }
-  .mobileLocation { display:inline; }
-  .photoSlide[data-composition="camera-portrait"] .mobilePortraitLayer { display:block; position:absolute; inset:0; overflow:hidden; }
-  .photoSlide[data-composition="camera-portrait"] .mobilePortraitLayer img {
-    width:var(--mobile-portrait-width, 100%) !important; height:var(--mobile-portrait-height, 100%) !important;
-    left:var(--mobile-portrait-left, 0px) !important; top:var(--mobile-portrait-top, 0px) !important;
-  }
 }
