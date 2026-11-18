@@ -446,7 +446,7 @@ export const heroSlides = [
 
 // Rendered text from src/app/(ja)/page.tsx; JSX structure stays in the component.
 export const pageCopy = {
-  "externalArrow": "↗",
+  "externalArrow": "↗\uFE0E",
   "skipLink": "本文へスキップ",
   "wordmarkLabel": "Yuto Matsui ポートフォリオの先頭へ",
   "wordmarkName": "YUTO MATSUI",
@@ -524,8 +524,9 @@ export const pageCopy = {
   "offHoursTitle": "OFF HOURS",
   "contactKicker": "お問い合わせ",
   "contactTitle": "CONTACT",
-  "contactCopy": "ご興味を持っていただけましたら、下記のフォームからお気軽にご連絡ください。学生・教職員・団体・企業の方を問わず、さまざまな方とのご縁を歓迎しています。",
-  "contactFormLink": "Contact form ",
+  "contactCopy": "お仕事のご依頼、ならびに学生の方からのご相談を承ります。",
+  "contactFormLink": "お問い合わせフォームへ",
+  "contactFormArrow": "→",
   "contactEmail": "メールでのご連絡",
   "contactEmailIdentity": "Yuto Matsui",
   "contactEmailIdentity2": "Researcher & Engineer",
@@ -613,7 +614,7 @@ export const productCopy = {
   "fallbackEnglishEmphasis": "AGE OF AI.",
   "fallbackJapaneseLead": "AI時代を",
   "fallbackJapaneseEmphasis": "どう生きるか。",
-  "externalArrow": "↗"
+  "externalArrow": "↗\uFE0E"
 } as const;
 
 // Dynamic control labels; state and element structure remain in the components.

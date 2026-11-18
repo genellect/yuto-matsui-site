@@ -288,7 +288,7 @@ export default function FounderPage() {
             </div>
             <div className={styles.contactCopy}>
               <p>{pageCopy.contactCopy}</p>
-              <a href="/contact/">{pageCopy.contactFormLink}<ArrowIcon /></a>
+              <a href="/contact/">{pageCopy.contactFormLink}<span aria-hidden="true">{pageCopy.contactFormArrow}</span></a>
               <details className={styles.contactEmail}>
                 <summary>{pageCopy.contactEmail}</summary>
                 <div className={styles.contactEmailPanel}>
@@ -297,8 +297,8 @@ export default function FounderPage() {
                     <span>{pageCopy.contactEmailIdentity2}</span>
                   </p>
                   <div className={styles.contactEmailAddresses}>
-                    <p><span>{pageCopy.personalEmailLabel}</span><span className={styles.contactEmailValue}>{pageCopy.personalEmail}</span></p>
-                    <p><span>{pageCopy.universityEmailLabel}</span><span className={styles.contactEmailValue}>{pageCopy.universityEmail}</span></p>
+                    <p><span>{pageCopy.personalEmailLabel}</span><a className={styles.contactEmailValue} href={`mailto:${pageCopy.personalEmail}`}>{pageCopy.personalEmail}</a></p>
+                    <p><span>{pageCopy.universityEmailLabel}</span><a className={styles.contactEmailValue} href={`mailto:${pageCopy.universityEmail}`}>{pageCopy.universityEmail}</a></p>
                   </div>
                 </div>
               </details>
