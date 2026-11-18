@@ -1,15 +1,47 @@
 import { afterEach, beforeEach, describe, test } from "node:test";
 import assert from "node:assert/strict";
-import { onRequest, readConfig, notificationText, formatReceivedAt, type ContactEnv } from "../functions/api/contact.ts";
+import { onRequest, readConfig, notificationText, formatReceivedAt, type ContactDatabase, type ContactEnv } from "../functions/api/contact.ts";
 import { parseContactRequest, normaliseContactField, describeContactField, describeContactGrade, CONTACT_MAX_BODY_BYTES, CONTACT_TURNSTILE_ACTION } from "../src/contact/schema.ts";
 
-// Every outbound request is mocked. No test reaches Turnstile, Cloudflare or a mailbox.
+// Every outbound request and the D1 history are mocked. No test reaches Turnstile, Cloudflare, D1 or a mailbox.
 const HOST = "yuto-matsui.com";
 const RECIPIENT = "inbox@example.test";
 const SENDER = "contact@example.test";
 const TOKEN = "test-token-not-a-real-credential";
 const ACCOUNT = "0123456789abcdef0123456789abcdef";
 
+/** In-memory stand-in for the D1 binding, following the two statements the Function issues. */
+class FakeD1 implements ContactDatabase {
+  rows = new Map<string, Record<string, unknown>>();
+  failInsert = false;
+  failUpdate = false;
+  prepare(query: string) {
+    return {
+      bind: (...values: unknown[]) => ({
+        run: async () => {
+          if (query.startsWith("INSERT INTO inquiries")) {
+            if (this.failInsert) throw new Error("D1_ERROR: storage unavailable");
+            const [id, received_at, topic, grade, affiliation, name, email, details, disposition, notify_status] = values;
+            if (this.rows.has(String(id))) return { meta: { changes: 0 } };
+            this.rows.set(String(id), { id, received_at, topic, grade, affiliation, name, email, details, disposition, notify_status, notify_detail: null, notified_at: null });
+            return { meta: { changes: 1 } };
+          }
+          if (query.startsWith("UPDATE inquiries")) {
+            if (this.failUpdate) throw new Error("D1_ERROR: storage unavailable");
+            const [notify_status, notify_detail, notified_at, id] = values;
+            const row = this.rows.get(String(id));
+            if (!row) return { meta: { changes: 0 } };
+            Object.assign(row, { notify_status, notify_detail, notified_at });
+            return { meta: { changes: 1 } };
+          }
+          throw new Error(`Unexpected statement: ${query}`);
+        }
+      })
+    };
+  }
+}
+
+let db = new FakeD1();
 const sendEnv: ContactEnv = {
   CONTACT_MODE: "send",
   CONTACT_ALLOWED_HOST: HOST,
@@ -45,6 +77,8 @@ const accepted = (result: Record<string, unknown> = { delivered: [RECIPIENT], qu
   json({ success: true, errors: [], messages: [], result });
 
 beforeEach(() => {
+  db = new FakeD1();
+  sendEnv.CONTACT_DB = db;
   calls = [];
   logs = [];
   turnstileReply = () => json({ success: true, hostname: HOST, action: CONTACT_TURNSTILE_ACTION });
@@ -87,13 +121,17 @@ function streamedRequest(body: ReadableStream<Uint8Array>) {
   return new Request(`https://${HOST}/api/contact`, init);
 }
 
-async function call(req: Request, env: ContactEnv = sendEnv) {
-  const response = await onRequest({ request: req, env });
+async function call(req: Request, env: ContactEnv = sendEnv, waitUntil?: (promise: Promise<unknown>) => void) {
+  const response = await onRequest({ request: req, env, waitUntil });
   const text = await response.text();
   return { response, body: text ? JSON.parse(text) : null };
 }
 
 const emailCalls = () => calls.filter((item) => item.url.startsWith("https://api.cloudflare.com/"));
+const onlyRow = () => {
+  assert.equal(db.rows.size, 1);
+  return [...db.rows.values()][0];
+};
 
 describe("request boundary", () => {
   test("rejects non-POST methods", async () => {
@@ -109,12 +147,13 @@ describe("request boundary", () => {
   });
 
   test("fails closed when configuration is incomplete", async () => {
-    for (const env of [{}, { ...sendEnv, CONTACT_MODE: undefined }, { ...sendEnv, CONTACT_EMAIL_API_TOKEN: "" }, { ...sendEnv, CONTACT_ALLOWED_HOST: "" }, { ...sendEnv, CONTACT_TO: "not-an-address" }, { ...sendEnv, CONTACT_TURNSTILE_SECRET_KEY: "" }]) {
+    for (const env of [{}, { ...sendEnv, CONTACT_MODE: undefined }, { ...sendEnv, CONTACT_EMAIL_API_TOKEN: "" }, { ...sendEnv, CONTACT_ALLOWED_HOST: "" }, { ...sendEnv, CONTACT_TO: "not-an-address" }, { ...sendEnv, CONTACT_TURNSTILE_SECRET_KEY: "" }, { ...sendEnv, CONTACT_DB: undefined }, { CONTACT_MODE: "mock", CONTACT_TURNSTILE_SECRET_KEY: "s" }]) {
       const { response, body } = await call(request(validPayload()), env as ContactEnv);
       assert.equal(response.status, 503);
       assert.equal(body.code, "configuration");
     }
     assert.equal(calls.length, 0);
+    assert.equal(db.rows.size, 0);
   });
 
   test("rejects a foreign or missing Origin", async () => {
@@ -198,11 +237,22 @@ describe("request boundary", () => {
 });
 
 describe("verification", () => {
-  test("honeypot looks successful and sends nothing", async () => {
+  test("a filled honeypot is recorded as spam and never notified", async () => {
     const { response, body } = await call(request({ ...validPayload(), website: "https://spam.example" }));
     assert.equal(response.status, 200);
     assert.equal(body.ok, true);
-    assert.equal(calls.length, 0);
+    assert.equal(emailCalls().length, 0);
+    const row = onlyRow();
+    assert.equal(row.disposition, "spam");
+    assert.equal(row.notify_status, "skipped");
+    assert.equal(row.name, "山田 花子");
+  });
+
+  test("a filled honeypot still needs Turnstile and is not recorded without it", async () => {
+    turnstileReply = () => json({ success: false });
+    const { response } = await call(request({ ...validPayload(), website: "https://spam.example" }));
+    assert.equal(response.status, 422);
+    assert.equal(db.rows.size, 0);
   });
 
   test("Turnstile rejection, outage and context mismatch never send mail", async () => {
@@ -220,6 +270,7 @@ describe("verification", () => {
       assert.equal(body.code, "turnstile");
     }
     assert.equal(emailCalls().length, 0);
+    assert.equal(db.rows.size, 0);
   });
 
   test("Turnstile receives the secret, token and idempotency key", async () => {
@@ -229,6 +280,68 @@ describe("verification", () => {
     assert.equal(form.get("response"), "token");
     assert.equal(form.get("idempotency_key"), validPayload().requestId);
     assert.equal(form.get("remoteip"), "192.0.2.1");
+  });
+});
+
+describe("history", () => {
+  test("records the normalised inquiry before reporting success", async () => {
+    const { response } = await call(request(validPayload()));
+    assert.equal(response.status, 200);
+    const row = onlyRow();
+    assert.equal(row.id, validPayload().requestId);
+    assert.match(String(row.received_at), /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    assert.equal(row.topic, "work");
+    assert.equal(row.grade, "");
+    assert.equal(row.affiliation, "株式会社サンプル 開発部");
+    assert.equal(row.name, "山田 花子");
+    assert.equal(row.email, "hanako@example.com");
+    assert.equal(row.details, "共同研究についてご相談させてください。");
+    assert.equal(row.disposition, "accepted");
+    assert.equal(row.notify_status, "sent");
+    assert.equal(row.notify_detail, null);
+    assert.ok(row.notified_at);
+  });
+
+  test("a storage failure is not reported as received and sends nothing", async () => {
+    db.failInsert = true;
+    const { response, body } = await call(request(validPayload()));
+    assert.equal(response.status, 503);
+    assert.deepEqual(body, { ok: false, code: "storage" });
+    assert.equal(emailCalls().length, 0);
+    assert.ok(logs.some((line) => line.includes('"outcome":"storage"')));
+  });
+
+  test("the same submission is recorded and notified once", async () => {
+    assert.equal((await call(request(validPayload()))).response.status, 200);
+    const again = await call(request(validPayload()));
+    assert.equal(again.response.status, 200);
+    assert.equal(db.rows.size, 1);
+    assert.equal(emailCalls().length, 1);
+    assert.ok(logs.some((line) => line.includes('"outcome":"duplicate"')));
+  });
+
+  test("the notification runs after the response through waitUntil", async () => {
+    const tasks: Promise<unknown>[] = [];
+    const { response } = await call(request(validPayload()), sendEnv, (task) => { tasks.push(task); });
+    assert.equal(response.status, 200);
+    assert.equal(tasks.length, 1);
+    await Promise.all(tasks);
+    assert.equal(onlyRow().notify_status, "sent");
+  });
+
+  test("a failed write of the notification outcome keeps the inquiry and the success", async () => {
+    db.failUpdate = true;
+    const { response } = await call(request(validPayload()));
+    assert.equal(response.status, 200);
+    assert.equal(onlyRow().notify_status, "pending");
+    assert.ok(logs.some((line) => line.includes('"outcome":"notify_record_failed"')));
+  });
+
+  test("the history row for a student keeps the grade", async () => {
+    await call(request({ ...validPayload(), topic: "student", affiliation: "北里大学", grade: "3年" }));
+    const row = onlyRow();
+    assert.equal(row.topic, "student");
+    assert.equal(row.grade, "3年");
   });
 });
 
@@ -259,7 +372,7 @@ describe("delivery", () => {
     assert.equal((await call(request(validPayload()))).response.status, 200);
   });
 
-  test("bounced, suppressed, missing and failed deliveries are errors", async () => {
+  test("bounced, suppressed, missing and failed deliveries keep the inquiry and are recorded as failed", async () => {
     const replies = [
       () => accepted({ delivered: [], queued: [], permanent_bounces: [RECIPIENT] }),
       () => accepted({ delivered: [RECIPIENT], queued: [], permanent_bounces: [], suppressed_recipients: [RECIPIENT] }),
@@ -270,12 +383,28 @@ describe("delivery", () => {
       () => { throw new Error("network"); },
       () => { const error = new Error("timeout"); error.name = "TimeoutError"; throw error; }
     ];
-    for (const reply of replies) {
+    const details = [
+      "recipient_rejected",
+      "recipient_rejected",
+      "recipient_not_accepted",
+      "http_403_errors_10102",
+      "http_200",
+      "http_502_invalid_json",
+      "unreachable",
+      "timeout"
+    ];
+    for (const [index, reply] of replies.entries()) {
+      db = new FakeD1();
       emailReply = reply;
-      const { response, body } = await call(request(validPayload()));
-      assert.equal(response.status, 502);
-      assert.equal(body.code, "delivery");
+      const { response, body } = await call(request(validPayload()), { ...sendEnv, CONTACT_DB: db });
+      assert.equal(response.status, 200);
+      assert.deepEqual(body, { ok: true });
+      const row = onlyRow();
+      assert.equal(row.disposition, "accepted");
+      assert.equal(row.notify_status, "failed");
+      assert.equal(row.notify_detail, details[index]);
     }
+    assert.ok(logs.some((line) => line.includes('"outcome":"notify_failed"')));
   });
 
   test("no automatic retry after a failure", async () => {
@@ -290,16 +419,20 @@ describe("delivery", () => {
     const message = JSON.parse(String(emailCalls()[0].init?.body));
     assert.equal(message.subject, "[yuto-matsui.com] お仕事のご依頼");
     const joined = logs.join("\n");
-    for (const secret of ["山田", "hanako", "injected", TOKEN, RECIPIENT, "192.0.2"]) assert.ok(!joined.includes(secret), secret);
+    for (const secret of ["山田", "Name Bcc", "hanako", "injected", "本文", "株式会社", TOKEN, RECIPIENT, "192.0.2"]) assert.ok(!joined.includes(secret), secret);
+    assert.ok(joined.includes(validPayload().requestId), "logs carry the history id");
   });
 
   test("mock mode accepts same-origin Preview requests without contacting the mail API", async () => {
     const preview = "https://claude-branch.yuto-matsui-site.pages.dev";
     turnstileReply = () => json({ success: true, hostname: "example.com", action: "" });
-    const env: ContactEnv = { CONTACT_MODE: "mock", CONTACT_TURNSTILE_SECRET_KEY: "1x0000000000000000000000000000000AA" };
+    const env: ContactEnv = { CONTACT_MODE: "mock", CONTACT_TURNSTILE_SECRET_KEY: "1x0000000000000000000000000000000AA", CONTACT_DB: db };
     const { response } = await call(request(validPayload(), { url: `${preview}/api/contact`, origin: preview }), env);
     assert.equal(response.status, 200);
     assert.equal(emailCalls().length, 0);
+    const row = onlyRow();
+    assert.equal(row.disposition, "accepted");
+    assert.equal(row.notify_status, "skipped");
     const foreign = await call(request(validPayload(), { url: `${preview}/api/contact`, origin: `https://${HOST}` }), env);
     assert.equal(foreign.response.status, 403);
   });
@@ -361,8 +494,10 @@ describe("schema", () => {
 
   test("configuration reader", () => {
     assert.equal(readConfig(sendEnv)?.mode, "send");
-    assert.equal(readConfig({ CONTACT_MODE: "mock", CONTACT_TURNSTILE_SECRET_KEY: "s" })?.mode, "mock");
-    assert.equal(readConfig({ CONTACT_MODE: "Send", CONTACT_TURNSTILE_SECRET_KEY: "s" }), undefined);
+    assert.equal(readConfig({ CONTACT_MODE: "mock", CONTACT_TURNSTILE_SECRET_KEY: "s", CONTACT_DB: db })?.mode, "mock");
+    assert.equal(readConfig({ CONTACT_MODE: "mock", CONTACT_TURNSTILE_SECRET_KEY: "s" }), undefined);
+    assert.equal(readConfig({ ...sendEnv, CONTACT_DB: undefined }), undefined);
+    assert.equal(readConfig({ CONTACT_MODE: "Send", CONTACT_TURNSTILE_SECRET_KEY: "s", CONTACT_DB: db }), undefined);
   });
 
   test("notification text", () => {

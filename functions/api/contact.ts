@@ -9,7 +9,10 @@ import {
 } from "../../src/contact/schema.ts";
 
 // The only Pages Function in this site (see public/_routes.json). It validates one
-// message and hands it to Cloudflare Email Service for the fixed, verified inbox.
+// message, records it in the inquiry history (D1, binding CONTACT_DB) and only then
+// reports success. The e-mail notification to the fixed, verified inbox follows, and
+// its outcome is written back to the same row, so a failed notification never loses
+// the message. See docs/contact/inquiry-history.md.
 
 const TURNSTILE_ENDPOINT = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const TURNSTILE_TIMEOUT_MS = 8_000;
@@ -17,7 +20,13 @@ const DELIVERY_TIMEOUT_MS = 10_000;
 /** Fixed prefix plus the chosen topic label; visitor-typed text never reaches the subject. */
 export const notificationSubject = (topic: ContactRequest["topic"]) => `[yuto-matsui.com] ${contactTopics[topic]}`;
 
+/** The part of the D1 binding this Function uses. */
+export type ContactDatabase = {
+  prepare(query: string): { bind(...values: unknown[]): { run(): Promise<{ meta?: { changes?: number } }> } };
+};
+
 export type ContactEnv = {
+  CONTACT_DB?: ContactDatabase;
   CONTACT_MODE?: string;
   CONTACT_ALLOWED_HOST?: string;
   CONTACT_ACCOUNT_ID?: string;
@@ -27,12 +36,13 @@ export type ContactEnv = {
   CONTACT_TURNSTILE_SECRET_KEY?: string;
 };
 
-type PagesContext = { env: ContactEnv; request: Request };
+type PagesContext = { env: ContactEnv; request: Request; waitUntil?: (promise: Promise<unknown>) => void };
 
 type Config =
-  | { mode: "mock"; turnstileSecret: string }
+  | { mode: "mock"; turnstileSecret: string; db: ContactDatabase }
   | {
     mode: "send";
+    db: ContactDatabase;
     allowedHost: string;
     accountId: string;
     from: string;
@@ -57,16 +67,19 @@ function respond(body: Record<string, unknown>, status: number, extra: Record<st
 }
 
 /** Operational log without names, addresses, message text, IPs or tokens. */
-function log(outcome: string, status: number, startedAt: number, detail?: string) {
+function log(outcome: string, status: number, startedAt: number, detail?: string, id?: string) {
   const entry: Record<string, unknown> = { event: "contact", outcome, status, ms: Date.now() - startedAt };
   if (detail) entry.detail = detail;
+  if (id) entry.id = id;
   console.log(JSON.stringify(entry));
 }
 
 export function readConfig(env: ContactEnv): Config | undefined {
   const turnstileSecret = env.CONTACT_TURNSTILE_SECRET_KEY?.trim();
-  if (!turnstileSecret) return undefined;
-  if (env.CONTACT_MODE === "mock") return { mode: "mock", turnstileSecret };
+  const db = env.CONTACT_DB;
+  // Without the history there is nothing to confirm, so both modes refuse to accept.
+  if (!turnstileSecret || typeof db?.prepare !== "function") return undefined;
+  if (env.CONTACT_MODE === "mock") return { mode: "mock", turnstileSecret, db };
   if (env.CONTACT_MODE !== "send") return undefined;
   const allowedHost = env.CONTACT_ALLOWED_HOST?.trim().toLowerCase() ?? "";
   const accountId = env.CONTACT_ACCOUNT_ID?.trim() ?? "";
@@ -80,7 +93,7 @@ export function readConfig(env: ContactEnv): Config | undefined {
     !addressPattern.test(to) ||
     apiToken.length < 20
   ) return undefined;
-  return { mode: "send", allowedHost, accountId, from, to, apiToken, turnstileSecret };
+  return { mode: "send", db, allowedHost, accountId, from, to, apiToken, turnstileSecret };
 }
 
 function acceptsOrigin(request: Request, config: Config) {
@@ -146,7 +159,33 @@ export function notificationText(payload: ContactRequest, receivedAt: Date) {
   ].join("\n");
 }
 
-async function deliver(config: Extract<Config, { mode: "send" }>, payload: ContactRequest): Promise<Failure | undefined> {
+type Disposition = "accepted" | "spam";
+type NotifyStatus = "pending" | "sent" | "failed" | "skipped";
+
+const INSERT_INQUIRY = `INSERT INTO inquiries
+  (id, received_at, topic, grade, affiliation, name, email, details, disposition, notify_status)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  ON CONFLICT(id) DO NOTHING`;
+const RECORD_NOTIFICATION = "UPDATE inquiries SET notify_status = ?, notify_detail = ?, notified_at = ? WHERE id = ?";
+
+/** Writes the inquiry. Returns false when the same requestId was already recorded. */
+async function recordInquiry(db: ContactDatabase, payload: ContactRequest, receivedAt: Date, disposition: Disposition, notifyStatus: NotifyStatus) {
+  const result = await db.prepare(INSERT_INQUIRY).bind(
+    payload.requestId,
+    receivedAt.toISOString(),
+    payload.topic,
+    payload.grade,
+    payload.affiliation,
+    payload.name,
+    payload.email,
+    payload.details,
+    disposition,
+    notifyStatus
+  ).run();
+  return result.meta?.changes !== 0;
+}
+
+async function deliver(config: Extract<Config, { mode: "send" }>, payload: ContactRequest, receivedAt: Date): Promise<Failure | undefined> {
   let response: Response;
   try {
     response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${config.accountId}/email/sending/send`, {
@@ -157,7 +196,7 @@ async function deliver(config: Extract<Config, { mode: "send" }>, payload: Conta
         to: [config.to],
         reply_to: payload.email,
         subject: notificationSubject(payload.topic),
-        text: notificationText(payload, new Date())
+        text: notificationText(payload, receivedAt)
       }),
       signal: AbortSignal.timeout(DELIVERY_TIMEOUT_MS)
     });
@@ -191,7 +230,20 @@ async function deliver(config: Extract<Config, { mode: "send" }>, payload: Conta
   return undefined;
 }
 
-export async function onRequest({ request, env }: PagesContext): Promise<Response> {
+/** Sends the notification and writes its outcome to the inquiry row. Never throws. */
+async function notifyAndRecord(config: Extract<Config, { mode: "send" }>, payload: ContactRequest, receivedAt: Date, startedAt: number) {
+  const failure = await deliver(config, payload, receivedAt);
+  const status: NotifyStatus = failure ? "failed" : "sent";
+  try {
+    await config.db.prepare(RECORD_NOTIFICATION).bind(status, failure?.detail ?? null, new Date().toISOString(), payload.requestId).run();
+  } catch {
+    log("notify_record_failed", 200, startedAt, status, payload.requestId);
+    return;
+  }
+  log(failure ? "notify_failed" : "notify_sent", 200, startedAt, failure?.detail, payload.requestId);
+}
+
+export async function onRequest({ request, env, waitUntil }: PagesContext): Promise<Response> {
   const startedAt = Date.now();
   const fail = ({ code, status, detail }: Failure, extra: Record<string, unknown> = {}) => {
     log(code, status, startedAt, detail);
@@ -248,22 +300,33 @@ export async function onRequest({ request, env }: PagesContext): Promise<Respons
   const parsed = parseContactRequest(raw);
   if (!parsed.ok) return fail({ code: "validation", status: 422 }, { fieldErrors: parsed.fieldErrors });
 
-  if (parsed.data.website !== "") {
-    // Automated submissions see an ordinary success and nothing is sent.
-    log("honeypot", 200, startedAt);
-    return respond({ ok: true }, 200);
-  }
-
   const turnstileFailure = await verifyTurnstile(request, config, parsed.data);
   if (turnstileFailure) return fail(turnstileFailure);
 
-  if (config.mode === "mock") {
-    log("mock_accepted", 200, startedAt);
+  const payload = parsed.data;
+  const id = payload.requestId;
+  const receivedAt = new Date();
+  // A filled honeypot is kept, marked as spam, so a person caught by autofill is not lost.
+  const disposition: Disposition = payload.website !== "" ? "spam" : "accepted";
+  const notifies = config.mode === "send" && disposition === "accepted";
+  let inserted: boolean;
+  try {
+    inserted = await recordInquiry(config.db, payload, receivedAt, disposition, notifies ? "pending" : "skipped");
+  } catch {
+    log("storage", 503, startedAt, "insert_failed", id);
+    return respond({ ok: false, code: "storage" }, 503);
+  }
+  if (!inserted) {
+    // The same submission arrived again: it is already in the history and was notified once.
+    log("duplicate", 200, startedAt, undefined, id);
     return respond({ ok: true }, 200);
   }
+  log(disposition === "spam" ? "stored_spam" : "stored", 200, startedAt, config.mode === "mock" ? "mock" : undefined, id);
 
-  const deliveryFailure = await deliver(config, parsed.data);
-  if (deliveryFailure) return fail(deliveryFailure);
-  log("accepted", 200, startedAt);
+  if (notifies && config.mode === "send") {
+    const task = notifyAndRecord(config, payload, receivedAt, startedAt);
+    if (waitUntil) waitUntil(task);
+    else await task;
+  }
   return respond({ ok: true }, 200);
 }
