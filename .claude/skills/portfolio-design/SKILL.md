@@ -32,7 +32,7 @@ description: yuto-matsui.comの見た目に触る作業の入口。JP/ENペー�
 1. ローカルでDesktopとMobileを実描画する（`npm run build && npm run serve`、主要な幅は390、1024、1280、1275×553、1536）。
 2. `design:design-critique` で階層・一貫性・既存との差を、`design:accessibility-review` でコントラスト・操作・読み上げを自己レビューする。指摘と対応をPRに書く。
 3. `npx playwright test tests/e2e/accessibility.spec.ts` を実行する。新しい違反は直す。既知の違反を直したら、同じfileの `known` から消す。
-4. `npm run compare -- check http://127.0.0.1:8798` を実行し、出た差分が意図した範囲だけであることを確認する。意図しない差分は直す。基準は撮り直さない。
+4. `src/shared/`・`src/inherited/` など両言語に効く部品に触れたときは、`npm run compare -- check http://127.0.0.1:8798` で、変えるつもりのない言語に差が出ていないことを確かめる（AGENTS.mdの「比較を使うとき」）。片方の言語だけを意図して変えるときは使わない。
 5. Cloudflare PreviewのURLで同じ画面を確認し、Desktop/Mobileのscreenshotを2倍の解像度でPRに添える。
 
 plugin skillが環境にない場合は、同じ観点を手で確認し、PRに「skill未使用」と書く。

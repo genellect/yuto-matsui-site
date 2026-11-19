@@ -25,11 +25,19 @@
 | 段階 | 対象 | 必要な確認 |
 |---|---|---|
 | T0 | 文書、agent設定（`AGENTS.md`・`CLAUDE.md`・`.claude/`）、PR template | CI `verify` |
-| T1 | 見た目が変わらないrefactor、テスト、build・CI、依存更新 | typecheck・build・verify、関係するE2E、`npm run compare` の差分なし |
-| T2 | 見た目・文言・挙動・画像の変更 | T1の確認に加え、Cloudflare PreviewのURL、Desktop/Mobileのscreenshot、意図した比較差分の一覧。オーナーが目視で承認する |
+| T1 | 見た目が変わらないrefactor、テスト、build・CI、依存更新 | typecheck・build・verify、関係するE2E。比較（`npm run compare`）は下の「比較を使うとき」だけ |
+| T2 | 見た目・文言・挙動・画像の変更 | T1の確認に加え、Cloudflare PreviewのURL、Desktop/Mobileのscreenshot。オーナーが目視で承認する |
 | T3 | `functions/`、`public/_headers`・`_routes.json`、Pages・ドメイン・DNS・redirect、secret、解析設定 | オーナーの明示指示の範囲だけ。復元手順をPRに書く |
 
-迷ったら上の段階として扱う。T2は比較基準と必ず差が出るため、本番反映後に基準を撮り直す別PR（T1）を作る。
+迷ったら上の段階として扱う。
+
+### 比較を使うとき
+
+`npm run compare` は必須ではなく、切り替えて使う。
+
+- 使う：見た目を変えないつもりのrefactor、依存更新、`src/inherited/`・`src/shared/` など両言語に効く部品の変更。目で見落としやすい、意図しない差を確かめるため。
+- 使わない：見た目を意図して変えるT2（差が出るのが当然で、Previewの目視で確かめる）、文書、テストだけの変更。
+- 比較で使う基準（`tests/compare/baseline/`）は、次に比較を使う前に本番から撮り直せばよい。T2のたびに撮り直すPRは作らない。
 
 ## 本番
 

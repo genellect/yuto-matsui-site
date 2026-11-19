@@ -33,7 +33,7 @@ Playwrightはbundled Chromiumを使います。OS依存が不足するLinuxで�
 - `functions/api/contact.ts`: このサイトで唯一のPages Function（`POST /api/contact`）。`public/_routes.json` でこのpathだけを対象にする。
 - Contactの設計・設定・経緯は [Contact実装案](contact/implementation-plan.md)。
 - 受け付けた問い合わせは、D1（binding `CONTACT_DB`）に記録してから受付完了を返す。表は `migrations/`、確認方法と導入の順序は [問い合わせ履歴](contact/inquiry-history.md)。
-- `tests/compare/baseline/`: 本番から取得した比較基準。
+- `tests/compare/baseline/`: 本番から取得した比較基準。比較を使う前に撮り直す。
 - `README.md`・`assets/`: GitHubプロフィールREADMEの複製（`genellect/genellect` のmain、commit `c68518a91d4a77b1257b097b162dd3e198f1e75d` から取得）。サイトには含めず、更新時は同じ取得元から README.md と参照画像だけをそのまま取り直す。
 
 ## 権利と出典
@@ -50,15 +50,16 @@ GitHub Flowで、小さいPRを速く回します。規則の要約は [AGENTS.m
 3. Draft PRを作り、[PR template](../.github/pull_request_template.md) に段階（T0〜T3）と確認範囲を書く。
 4. CI `verify` が通ったらReadyにする。T2はPreviewでオーナーが目視で承認する。
 5. mergeするとmainが自動でbuild・公開され、`Production verification` が本番を確認する。
-6. T2が本番に出たら、比較基準を本番から撮り直す別PR（T1）を作る（[比較方法](migration.md)）。
 
 ### 段階ごとの確認
 
 | 段階 | 例 | ローカル | CI | Preview |
 |---|---|---|---|---|
 | T0 | 文書、`AGENTS.md`、`CLAUDE.md`、`.claude/`、PR template | リンク先の存在 | buildだけ（E2Eは省く） | 不要 |
-| T1 | refactor、テスト、`scripts/`、CI、依存 | typecheck・build・verify・関係するE2E・`compare` の差分なし | 全件 | 必要に応じて |
-| T2 | 見た目・文言・挙動・画像 | T1＋Desktop/Mobileの実描画と、意図した比較差分の確認 | 全件 | 必須（URLとscreenshotをPRに載せる） |
+| T1 | refactor、テスト、`scripts/`、CI、依存 | typecheck・build・verify・関係するE2E。`compare` は使うときだけ | 全件 | 必要に応じて |
+| T2 | 見た目・文言・挙動・画像 | T1＋Desktop/Mobileの実描画 | 全件 | 必須（URLとscreenshotをPRに載せる） |
+
+`compare`（見た目の比較）を使うとき・使わないときは [AGENTS.md](../AGENTS.md) の「比較を使うとき」に従います。自動テストは、画面を見ても分からない失敗（Contactの送信、本番反映、リンク切れ、JavaScriptのエラー、WebGL・JavaScriptが使えないときの代替、計測のURL、アクセシビリティ）を対象にし、配置・構図・並び順はPreviewの目視で確認します。
 | T3 | `functions/`、`_headers`、`_routes.json`、ドメイン・DNS・redirect、secret、解析 | T1・T2＋復元手順 | 全件 | 必須 |
 
 見た目に触る作業は [デザイン言語](design-language.md) を先に読みます。Claude Codeでは `.claude/skills/` の `ship-change` と `portfolio-design` が、この手順を作業ごとに案内します（[CLAUDE.md](../CLAUDE.md)）。

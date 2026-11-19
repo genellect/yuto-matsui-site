@@ -22,7 +22,7 @@ AGENTS.md の「Gitワークフロー」と「変更の段階」を実行する�
 | 段階 | ローカルで実行するもの |
 |---|---|
 | T0 | 文書のリンク先が存在すること。CIに任せてよい |
-| T1 | `npm run typecheck`、`npm run build`、`npm run verify`、関係するE2E（`npx playwright test tests/e2e/<対象>.spec.ts`）、`npm run serve` と `npm run compare -- check http://127.0.0.1:8798` の差分なし |
+| T1 | `npm run typecheck`、`npm run build`、`npm run verify`、関係するE2E（`npx playwright test tests/e2e/<対象>.spec.ts`）。`npm run compare` はAGENTS.mdの「比較を使うとき」だけ |
 | T2 | T1に加え、`portfolio-design` skillの「確かめる」 |
 | T3 | T1・T2に加え、PRに復元手順を書く |
 
@@ -37,5 +37,5 @@ Contactを変えたら `node --test tests/contact-function.test.ts` も実行す
 
 ## 4. merge後
 
-- T2が本番に出たら、`Production verification` の成功を確認してから、比較基準を本番から撮り直す別PR（T1、`chore(compare): …`）を作る。手順は docs/migration.md の「比較」。
+- 本番に出たら、`Production verification` の成功を確認する。
 - 報告では、local・CI・Preview・本番のどこで何を確認したかを分ける。
