@@ -250,15 +250,15 @@ export const pageCopy = {
   "heroSocialLinks3": "GitHub",
   "expertiseIndex": "02 / Expertise",
   "expertiseTitle": "Expertise",
-  "experienceIndex": "03 / Experience & Credentials",
+  "experienceIndex": "06 / Experience & Credentials",
   "experienceTitle": "EXPERIENCE",
   "evidenceHeading": "As of November 2026",
   "experienceLink": "Development — Yuto Matsui’s GitHub profile (opens in a new tab)",
   "credentialsGrid": "English language credentials",
-  "statementIndex": "05 / Personal Statement",
+  "statementIndex": "04 / Personal Statement",
   "statementTitle": "Between Life Science and Engineering",
   "statementPortrait": "Yuto Matsui facing the camera",
-  "workIndex": "06 / Selected Work",
+  "workIndex": "05 / Selected Work",
   "workTitle": "Selected Work",
   "offHoursIndex": "07 / Away from the desk",
   "offHoursTitle": "OFF HOURS",
@@ -317,7 +317,7 @@ export const pageCopy = {
 
 // Rendered text from src/en/EnglishFragments.tsx; JSX structure stays in the component.
 export const fragmentCopy = {
-  "sectionIndex": "04 / Archive",
+  "sectionIndex": "03 / Archive",
   "fragmentsTitle": "FRAGMENTS",
   "fragmentsHeading": "Research, systems, cities, and the quiet moments between them.",
   "presentationLabel": "FRAGMENTS presentation",
@@ -385,10 +385,10 @@ export const controls = {
 
 export const mobileLinks = [
   { label: "Expertise", href: "#expertise" },
-  { label: "Experience", href: "#experience" },
   { label: "Fragments", href: "#fragments" },
   { label: "Statement", href: "#statement" },
   { label: "Selected Work", href: "#work" },
+  { label: "Experience", href: "#experience" },
   { label: "Off Hours", href: "#off-hours" },
   { label: "Contact", href: "#contact" }
 ] as const;

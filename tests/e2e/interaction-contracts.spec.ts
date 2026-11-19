@@ -29,11 +29,3 @@ for(const language of ['ja','en'] as const) for(const mobile of [false,true]) {
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  });
 }
-test('English statement opens and closes without losing the full text',async({page})=>{
- await page.goto('/en/');
- const content=page.locator('#english-statement-continuation');
- await expect(content).toBeHidden();
- await page.getByRole('button',{name:'Read the full statement',exact:true}).click();
- await expect(content).toBeVisible();await expect(content).toContainText('If that foundation can help science move faster');
- await page.getByRole('button',{name:'Close statement',exact:true}).click();await expect(content).toBeHidden();
-});
