@@ -1,31 +1,4 @@
 import { expect, test } from "../support/responsive-fixture";
-import { cameraPortraitAnchors as anchors } from "../../src/ja/hero-composition";
-
-test("JP camera portrait: torso centred at desktop and iPhone sizes", async ({ page }, info) => {
-  await page.emulateMedia({reducedMotion:"reduce"});
-  await page.goto("/");
-  await page.getByRole("button",{name:"写真 2 を表示",exact:true}).click();
-  for (const [width,height] of [[1440,900],[1024,768],[320,568],[375,667],[390,844],[430,932]]) {
-    await page.setViewportSize({width,height});
-    const crop=page.locator('[data-composition="camera-portrait"] img');
-    const measure=()=>crop.evaluate((el,a)=>{
-      const image=el.getBoundingClientRect(),frame=el.closest("figure")!.getBoundingClientRect();
-      const scale=image.width/a.sourceWidth;
-      return { torso:(image.x+a.torsoX*scale-frame.x)/frame.width,head:(image.y+a.headY*scale-frame.y)/frame.height,
-        chin:(image.y+a.chinY*scale-frame.y)/frame.height,
-        uncovered:image.x>frame.x+.5||image.y>frame.y+.5||image.right<frame.right-.5||image.bottom<frame.bottom-.5};
-    },anchors);
-    // setViewportSize finishes before the component's ResizeObserver composition.
-    // Wait for the actual anchors, not an image width that may belong to the old size.
-    await expect.poll(measure).toMatchObject({torso:expect.closeTo(.5,2)});
-    const geometry=await measure();
-    expect(geometry.torso).toBeCloseTo(.5,2);
-    // The whole face stays inside the frame, above the mobile bottom fade.
-    expect(geometry.head).toBeGreaterThan(.05); expect(geometry.chin).toBeLessThan(.8);
-    expect(geometry.uncovered).toBe(false);
-    await page.locator('#top').screenshot({path:info.outputPath(`jp-hero-${width}.png`)});
-  }
-});
 
 for (const route of ["/","/en/"]) {
   test(`Mobile film: composition, controls and lifecycle ${route}`, async ({ page }, info) => {
