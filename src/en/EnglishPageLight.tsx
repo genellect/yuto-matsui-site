@@ -7,10 +7,10 @@ import styles from "./english-founder.module.css";
 // section names its colours; the one in the middle of the screen sets them.
 const sectionLight: Record<string, [string, string, number]> = {
   expertise: ["#8b78f0", "#4d7cff", 0.85],
-  experience: ["#4d7cff", "#42d9ff", 0.8],
   fragments: ["#42d9ff", "#4d7cff", 1],
   statement: ["#a98bff", "#ff7ad9", 0.75],
   work: ["#4d7cff", "#8b78f0", 0.85],
+  experience: ["#42d9ff", "#8b78f0", 0.8],
   "off-hours": ["#ff9a7a", "#b06bff", 0.95],
   contact: ["#8b78f0", "#42d9ff", 1]
 };

@@ -28,7 +28,7 @@ yuto-matsui.com の見た目を変えるときの判断基準です。正本は�
 - 奥行き：遠景（各セクションの背後の光。スクロールで内容より遅く動く）、中景（ガラスのパネルと写真の3D枠）、近景（文字と、その背後の光）の3層。
 - hero：WebGLの光の場（`src/en/hero-light-engine.ts`）と、portraitを載せるガラスのプリズムの壁（`src/en/hero-prism-engine.ts`）。プリズムは写真の切り替え時にだけ回り、静止時の写真は無加工で表示する。pointerで写真を動かしたり切ったりしない。
 - focus：`outline: 2px solid var(--signal); outline-offset: 4px`。
-- セクション順：Hero → Expertise → Experience → FRAGMENTS → Statement → Work → Off hours → Contact。
+- セクション順：Hero → Expertise → FRAGMENTS → Statement → Work → Experience（Credentialsを含む） → Off hours → Contact。JPと同じ順。
 
 ## Contact（`/contact/`、`src/contact/`）
 

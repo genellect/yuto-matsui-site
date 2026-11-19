@@ -110,10 +110,10 @@ export default function EnglishFounderPage() {
         </a>
         <nav className={styles.desktopNav} aria-label={pageCopy.navigationLabel}>
           <a href="#expertise">{pageCopy.navExpertise}</a>
-          <a href="#experience">{pageCopy.navExperience}</a>
           <a href="#fragments">{pageCopy.navFragments}</a>
           <a href="#statement">{pageCopy.navStatement}</a>
           <a href="#work">{pageCopy.navWork}</a>
+          <a href="#experience">{pageCopy.navExperience}</a>
           <a href="#contact">{pageCopy.navContact}</a>
           <span className={styles.languageSwitch} aria-label={pageCopy.languageSwitch}>
             <FounderJapaneseLink>{pageCopy.languageSwitch2}</FounderJapaneseLink><span>{pageCopy.languageSwitch3}</span><a href={site.englishPath} aria-current="page">{pageCopy.languageSwitch4}</a>
@@ -165,35 +165,6 @@ export default function EnglishFounderPage() {
           </div>
         </section>
 
-        <section id="experience" className={styles.evidence} aria-labelledby="experience-title">
-          <div className={styles.sectionShell}>
-            <header className={styles.evidenceHeading}>
-              <div><p className={styles.sectionIndex}>{pageCopy.experienceIndex}</p><h2 id="experience-title">{pageCopy.experienceTitle}</h2></div>
-              <p>{pageCopy.evidenceHeading}</p>
-            </header>
-            <div className={styles.experienceGrid}>
-              {experience.map((item) => (
-                <DepthCard key={item.area} depth="experience" editorial className={styles.experienceItem}>
-                  {item.area === "Development" ? <a className={styles.experienceLink} href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.experienceLink} /> : null}
-                  <DepthVisual className={styles.experienceImage} data-depth-layer="image">
-                    <Image decoding="sync" loading="eager" src={item.image} alt={item.alt} fill sizes="(min-width: 901px) 31vw, 92vw" />
-                  </DepthVisual>
-                  <div className={styles.experienceMeta} data-depth-layer="copy"><span>{item.area}</span><strong>{item.years}</strong></div>
-                  <p>{item.focus.map((focus) => <span key={focus}>{focus}</span>)}</p>
-                </DepthCard>
-              ))}
-            </div>
-            <div className={styles.credentialsGrid} aria-label={pageCopy.credentialsGrid} data-spotlight>
-              {credentials.map((credential) => (
-                <article key={credential.name} className={styles.credentialItem}>
-                  <span>{credential.mark}</span>
-                  <div><p>{credential.name}</p><strong>{credential.score}</strong><small>{credential.cefr}</small></div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <EnglishFragments />
 
         <section id="statement" className={styles.statement} aria-labelledby="statement-title">
@@ -221,6 +192,35 @@ export default function EnglishFounderPage() {
             </header>
 
             <FounderProducts products={products} language="en" />
+          </div>
+        </section>
+
+        <section id="experience" className={styles.evidence} aria-labelledby="experience-title">
+          <div className={styles.sectionShell}>
+            <header className={styles.evidenceHeading}>
+              <div><p className={styles.sectionIndex}>{pageCopy.experienceIndex}</p><h2 id="experience-title">{pageCopy.experienceTitle}</h2></div>
+              <p>{pageCopy.evidenceHeading}</p>
+            </header>
+            <div className={styles.experienceGrid}>
+              {experience.map((item) => (
+                <DepthCard key={item.area} depth="experience" editorial className={styles.experienceItem}>
+                  {item.area === "Development" ? <a className={styles.experienceLink} href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.experienceLink} /> : null}
+                  <DepthVisual className={styles.experienceImage} data-depth-layer="image">
+                    <Image decoding="sync" loading="eager" src={item.image} alt={item.alt} fill sizes="(min-width: 901px) 31vw, 92vw" />
+                  </DepthVisual>
+                  <div className={styles.experienceMeta} data-depth-layer="copy"><span>{item.area}</span><strong>{item.years}</strong></div>
+                  <p>{item.focus.map((focus) => <span key={focus}>{focus}</span>)}</p>
+                </DepthCard>
+              ))}
+            </div>
+            <div className={styles.credentialsGrid} aria-label={pageCopy.credentialsGrid} data-spotlight>
+              {credentials.map((credential) => (
+                <article key={credential.name} className={styles.credentialItem}>
+                  <span>{credential.mark}</span>
+                  <div><p>{credential.name}</p><strong>{credential.score}</strong><small>{credential.cefr}</small></div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
