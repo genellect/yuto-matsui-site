@@ -61,10 +61,14 @@ export default function FounderPage() {
       <a className={styles.skipLink} href="#founder-main">{pageCopy.skipLink}</a>
 
       <header className={styles.header}>
-        <a className={styles.wordmark} href="#top" aria-label={pageCopy.wordmarkLabel}>
-          <strong>{pageCopy.wordmarkName}</strong>
-          <span>{pageCopy.wordmarkRole}</span>
-        </a>
+        {/* Mobile shows the role as its own line outside the link, so the link's name still matches its visible text. */}
+        <div className={styles.wordmarkGroup}>
+          <a className={styles.wordmark} href="#top" aria-label={pageCopy.wordmarkLabel}>
+            <strong>{pageCopy.wordmarkName}</strong>
+            <span>{pageCopy.wordmarkRole}</span>
+          </a>
+          <span className={styles.mobileWordmarkRole}>{pageCopy.wordmarkRole}</span>
+        </div>
         <nav className={styles.navigation} aria-label={pageCopy.navigationLabel}>
           <a href="#expertise">{pageCopy.navExpertise}</a>
           <a href="#story">{pageCopy.navStory}</a>
