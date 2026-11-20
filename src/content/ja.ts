@@ -450,7 +450,7 @@ export const pageCopy = {
   "skipLink": "本文へスキップ",
   "wordmarkLabel": "Yuto Matsui ポートフォリオの先頭へ",
   "wordmarkName": "YUTO MATSUI",
-  "wordmarkRole": "Research × Engineering",
+  "wordmarkRole": "Researcher & Engineer",
   "navigationLabel": "Portfolio navigation",
   "navExpertise": "Expertise",
   "navStory": "Story",
