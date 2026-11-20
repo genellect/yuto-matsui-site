@@ -76,9 +76,12 @@ for (const path of ['/', '/en/']) for (const mobile of [false,true]) {
     await page.goto(path+'?custom=a%2Bb&_gl=incoming');
     await page.waitForFunction(() => (window as any).__tagProbe?.pending.length === 1);
     await page.evaluate(() => { (window as any).__tagProbe.release('test-client'); (window as any).__tagProbe.release('test-session'); });
+    // Mobile section links live in each language's full-screen menu.
+    const menuId=path==='/en/'?'english-mobile-menu':'japanese-mobile-menu';
+    const closeName=path==='/en/'?'Close navigation':'Close';
     const openMenu = async () => {
-      if(mobile && path==='/en/') {
-        const toggle=page.locator('button[aria-controls="english-mobile-menu"]');
+      if(mobile) {
+        const toggle=page.locator(`button[aria-controls="${menuId}"]`);
         if(await toggle.getAttribute('aria-expanded')!=='true') await toggle.click();
       }
     };
@@ -91,12 +94,12 @@ for (const path of ['/', '/en/']) for (const mobile of [false,true]) {
     }
     expect(targets.length).toBeGreaterThan(2);
     for(const target of targets) {
-      if(mobile && path==='/en/') {
-        const toggle=page.locator('button[aria-controls="english-mobile-menu"]');
-        const needsMenu=await page.locator(`#english-mobile-menu a[href="${target}"]`).count()>0;
+      if(mobile) {
+        const toggle=page.locator(`button[aria-controls="${menuId}"]`);
+        const needsMenu=await page.locator(`#${menuId} a[href="${target}"]`).count()>0;
         const isOpen=await toggle.getAttribute('aria-expanded')==='true';
         if(needsMenu && !isOpen) await toggle.click();
-        if(!needsMenu && isOpen) await page.locator('#english-mobile-menu').getByRole('button',{name:'Close navigation',exact:true}).click();
+        if(!needsMenu && isOpen) await page.locator(`#${menuId}`).getByRole('button',{name:closeName,exact:true}).click();
       }
       // Reintroduce a consumed linker, including same-hash clicks where no
       // hashchange is fired. The click fallback must clean that case as well.
