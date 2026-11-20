@@ -599,6 +599,15 @@ export const menuCopy = {
   "label": "外部リンクを表示"
 } as const;
 
+// Rendered text from src/ja/JapaneseMobileMenu.tsx (JP top page, max-width 900px).
+// Section labels and the language switch reuse pageCopy so Desktop and Mobile stay identical.
+export const mobileMenuCopy = {
+  "open": "メニューを開く",
+  "close": "メニューを閉じる",
+  "closeText": "Close",
+  "socials": "Social profiles"
+} as const;
+
 // Existing shared/JP product headline fragments; EN headline data remains in en.ts.
 export const productCopy = {
   "interactiveLead": "LET EVERYTHING",

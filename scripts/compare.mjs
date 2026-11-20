@@ -109,7 +109,7 @@ for(const path of ['/','/en/']) for(const [width,height] of matrix) {
  await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(120);
  await page.waitForFunction(()=>[...document.images].filter(i=>i.loading!=='lazy'||(i.getBoundingClientRect().top<innerHeight&&i.getBoundingClientRect().bottom>0)).every(i=>i.complete),{},{timeout:15000});
  await capture('scrolled');
- if(width<901){const name=path==='/'?'外部リンクを表示':'Open navigation';await page.getByRole('button',{name,exact:true}).click();await page.waitForTimeout(120);await capture('menu');await page.keyboard.press('Escape');}
+ if(width<901){const name=path==='/'?'メニューを開く':'Open navigation';await page.getByRole('button',{name,exact:true}).click();await page.waitForTimeout(120);await capture('menu');await page.keyboard.press('Escape');}
  const report={key,status:response.status(),headers:await response.allHeaders(),failures,compassRequests:compass,errors,resources,rendererMessages};
  await writeFile(`${directory}/${key}-network.json`,JSON.stringify(report,null,2));
  summary.checks.push({key,network:failures.length===0,runtime:errors.length===0,compassRequests:compass.length});

@@ -8,12 +8,22 @@ import { FounderProducts } from "../../shared/products/FounderProducts";
 import { EssayContinuation } from "../../ja/EssayContinuation";
 import { FounderFragments } from "../../ja/FounderFragments";
 import { FounderHeroGallery } from "../../ja/FounderHeroGallery";
-import { MobileExternalMenu } from "../../ja/MobileExternalMenu";
+import { JapaneseMobileMenu } from "../../ja/JapaneseMobileMenu";
 import { DepthCard, DepthVisual } from "../../shared/portfolio/DepthCard";
 import { OffHoursGallery } from "../../shared/portfolio/OffHoursGallery";
 import styles from "../../ja/founder.module.css";
 
 export const metadata: Metadata = japaneseMetadata;
+
+// Same destinations and labels as the Desktop navigation.
+const mobileMenuLinks = [
+  { label: pageCopy.navExpertise, href: "#expertise" },
+  { label: pageCopy.navStory, href: "#story" },
+  { label: pageCopy.navProducts, href: "#products" },
+  { label: pageCopy.navCredentials, href: "#experience" },
+  { label: pageCopy.navOffHours, href: "#off-hours" },
+  { label: pageCopy.navContact, href: "#contact-cta" }
+] as const;
 
 function ArrowIcon() {
   return <span aria-hidden="true">{pageCopy.externalArrow}</span>;
@@ -66,23 +76,13 @@ export default function FounderPage() {
             <FounderJapaneseLink aria-current="page">{pageCopy.japaneseLanguage}</FounderJapaneseLink><span>{pageCopy.languageSeparator}</span><a href={site.englishPath}>{pageCopy.englishLanguage}</a>
           </span>
         </nav>
-        <nav className={styles.mobileNavigation} aria-label={pageCopy.mobileNavigationLabel}>
-          <a href="#message">{pageCopy.mobileMessage}</a>
-          <a href="#products">{pageCopy.mobileProducts}</a>
-          <a href="#contact-cta">{pageCopy.mobileContact}</a>
-          <MobileExternalMenu className={styles.mobileExternalLinks}>
-            <div className={styles.mobileExternalPopover} aria-label={pageCopy.mobileExternalPopover}>
-              <div className={styles.mobileExternalIcons}>
-                <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons}><InstagramIcon /></a>
-                <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons2}><GitHubIcon /></a>
-              </div>
-              <div className={styles.mobileLanguagePanel}>
-                <span>{pageCopy.mobileLanguagePanel}</span>
-                <div><FounderJapaneseLink aria-current="page">{pageCopy.mobileLanguagePanel2}</FounderJapaneseLink><span>{pageCopy.mobileLanguagePanel3}</span><a href={site.englishPath}>{pageCopy.mobileLanguagePanel4}</a></div>
-              </div>
-            </div>
-          </MobileExternalMenu>
-        </nav>
+        <JapaneseMobileMenu
+          links={mobileMenuLinks}
+          socials={<>
+            <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons}><InstagramIcon /></a>
+            <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons2}><GitHubIcon /></a>
+          </>}
+        />
       </header>
 
       <main id="founder-main">

@@ -21,7 +21,7 @@ for(const language of ['ja','en'] as const) for(const mobile of [false,true]) {
   await expect(footer.getByRole('link',{name:'EN',exact:true})).toHaveAttribute('href','/en/');
   if(mobile){
    await page.evaluate(()=>scrollTo(0,0));
-   const toggle=page.getByRole('button',{name:language==='ja'?'外部リンクを表示':'Open navigation',exact:true});
+   const toggle=page.getByRole('button',{name:language==='ja'?'メニューを開く':'Open navigation',exact:true});
    await toggle.click();await expect(page.locator('button[aria-expanded="true"]')).toHaveCount(1);
    await page.keyboard.press('Escape');await expect(toggle).toHaveAttribute('aria-expanded','false');await expect(toggle).toBeFocused();
   }
