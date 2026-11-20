@@ -324,7 +324,7 @@
 .sheet textarea { scroll-margin-top: 112px; }
 
 @media (max-width: 900px) {
-  .main { padding-top: calc(64px + 40px); }
+  .main { padding-top: calc(72px + 40px); }
 }
 
 @media (max-width: 640px) {

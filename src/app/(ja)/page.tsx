@@ -60,7 +60,7 @@ export default function FounderPage() {
     <div className={styles.page} data-founder-page>
       <a className={styles.skipLink} href="#founder-main">{pageCopy.skipLink}</a>
 
-      <header className={styles.header}>
+      <header className={styles.header} data-mobile-header>
         {/* Mobile shows the role as its own line outside the link, so the link's name still matches its visible text. */}
         <div className={styles.wordmarkGroup}>
           <a className={styles.wordmark} href="#top" aria-label={pageCopy.wordmarkLabel}>
