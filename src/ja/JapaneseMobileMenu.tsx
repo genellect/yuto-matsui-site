@@ -8,19 +8,25 @@ import { FounderJapaneseLink } from "../shared/JapaneseLink";
 import { site } from "../site";
 import styles from "./founder.module.css";
 
-type MenuLink = { label: string; href: string };
+type MenuLink = { label: string; href: string; current?: boolean };
 
 type JapaneseMobileMenuProps = {
   links: readonly MenuLink[];
   socials: ReactNode;
+  /** Where JP points on this page. The top page omits it and keeps FounderJapaneseLink ("/"). */
+  japaneseHref?: string;
+  /** Extra class for the portalled panel, for pages whose variables live outside [data-founder-page]. */
+  panelClassName?: string;
 };
 
 const MOBILE_QUERY = "(max-width: 900px)";
 
-function LanguageSwitch({ className }: { className: string }) {
+function LanguageSwitch({ className, japaneseHref }: { className: string; japaneseHref?: string }) {
   return (
     <div className={className} role="group" aria-label={pageCopy.languageLabel}>
-      <FounderJapaneseLink aria-current="page">{pageCopy.japaneseLanguage}</FounderJapaneseLink>
+      {japaneseHref
+        ? <a href={japaneseHref} aria-current="page">{pageCopy.japaneseLanguage}</a>
+        : <FounderJapaneseLink aria-current="page">{pageCopy.japaneseLanguage}</FounderJapaneseLink>}
       <span aria-hidden="true">{pageCopy.languageSeparator}</span>
       <a href={site.englishPath}>{pageCopy.englishLanguage}</a>
     </div>
@@ -28,11 +34,11 @@ function LanguageSwitch({ className }: { className: string }) {
 }
 
 /*
- * JP top page header for max-width 900px: wordmark (in page.tsx), language switch and a menu button.
- * The panel is portalled to the page root because the header's backdrop-filter would otherwise
- * become the containing block of a fixed descendant and clip the full-screen panel.
+ * JP header (top page and Contact) for max-width 900px: language switch and a menu button; the wordmark
+ * stays in the header markup. The panel is portalled out of the header because the header's
+ * backdrop-filter would otherwise become the containing block of a fixed descendant and clip it.
  */
-export function JapaneseMobileMenu({ links, socials }: JapaneseMobileMenuProps) {
+export function JapaneseMobileMenu({ links, socials, japaneseHref, panelClassName }: JapaneseMobileMenuProps) {
   const [open, setOpen] = useState(false);
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -96,7 +102,7 @@ export function JapaneseMobileMenu({ links, socials }: JapaneseMobileMenuProps) 
     <div
       ref={panelRef}
       id="japanese-mobile-menu"
-      className={styles.mobileMenuPanel}
+      className={panelClassName ? `${styles.mobileMenuPanel} ${panelClassName}` : styles.mobileMenuPanel}
       data-open={open}
       aria-hidden={!open}
     >
@@ -114,7 +120,7 @@ export function JapaneseMobileMenu({ links, socials }: JapaneseMobileMenuProps) 
       </div>
       <nav className={styles.mobileMenuLinks} aria-label={pageCopy.mobileNavigationLabel}>
         {links.map((link, index) => (
-          <a key={link.href} href={link.href} onClick={() => setOpen(false)}>
+          <a key={link.href} href={link.href} aria-current={link.current ? "page" : undefined} onClick={() => setOpen(false)}>
             <span>{String(index + 1).padStart(2, "0")}</span>
             {link.label}
           </a>
@@ -124,14 +130,14 @@ export function JapaneseMobileMenu({ links, socials }: JapaneseMobileMenuProps) 
         <nav className={styles.mobileMenuSocials} aria-label={mobileMenuCopy.socials}>
           {socials}
         </nav>
-        <LanguageSwitch className={styles.mobileLanguageSwitch} />
+        <LanguageSwitch className={styles.mobileLanguageSwitch} japaneseHref={japaneseHref} />
       </div>
     </div>
   );
 
   return (
     <div ref={rootRef} className={styles.mobileHeaderActions}>
-      <LanguageSwitch className={styles.mobileLanguageSwitch} />
+      <LanguageSwitch className={styles.mobileLanguageSwitch} japaneseHref={japaneseHref} />
       <button
         ref={triggerRef}
         type="button"

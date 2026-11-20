@@ -1,5 +1,5 @@
 import { pageCopy } from "../content/ja";
-import { MobileExternalMenu } from "../ja/MobileExternalMenu";
+import { JapaneseMobileMenu } from "../ja/JapaneseMobileMenu";
 // The portfolio's own header and footer styles, used read-only so Contact matches the top page.
 import founder from "../ja/founder.module.css";
 import styles from "./contact-chrome.module.css";
@@ -29,15 +29,29 @@ function GitHubIcon() {
   );
 }
 
+// The top page's menu items, pointing back to the top page; Contact is the current page.
+const mobileMenuLinks = [
+  { label: pageCopy.navExpertise, href: "/#expertise" },
+  { label: pageCopy.navStory, href: "/#story" },
+  { label: pageCopy.navProducts, href: "/#products" },
+  { label: pageCopy.navCredentials, href: "/#experience" },
+  { label: pageCopy.navOffHours, href: "/#off-hours" },
+  { label: pageCopy.navContact, href: "/contact/", current: true }
+] as const;
+
 export function ContactHeader() {
   return (
     <>
       <a className={`${founder.skipLink} ${styles.portfolio}`} href="#main">{pageCopy.skipLink}</a>
-      <header className={`${founder.header} ${styles.portfolio}`} data-contact-header>
-        <a className={founder.wordmark} href="/" aria-label={pageCopy.wordmarkLabel}>
-          <strong>{pageCopy.wordmarkName}</strong>
-          <span>{pageCopy.wordmarkRole}</span>
-        </a>
+      <header className={`${founder.header} ${styles.portfolio}`} data-contact-header data-mobile-header>
+        {/* Same structure as the top page: Mobile shows the role as its own line outside the link. */}
+        <div className={founder.wordmarkGroup}>
+          <a className={founder.wordmark} href="/" aria-label={pageCopy.wordmarkLabel}>
+            <strong>{pageCopy.wordmarkName}</strong>
+            <span>{pageCopy.wordmarkRole}</span>
+          </a>
+          <span className={founder.mobileWordmarkRole}>{pageCopy.wordmarkRole}</span>
+        </div>
         <nav className={founder.navigation} aria-label={pageCopy.navigationLabel}>
           <a href="/#expertise">{pageCopy.navExpertise}</a>
           <a href="/#story">{pageCopy.navStory}</a>
@@ -49,23 +63,15 @@ export function ContactHeader() {
             <a href="/contact/" aria-current="page">{pageCopy.japaneseLanguage}</a><span>{pageCopy.languageSeparator}</span><a href="/en/">{pageCopy.englishLanguage}</a>
           </span>
         </nav>
-        <nav className={founder.mobileNavigation} aria-label={pageCopy.mobileNavigationLabel}>
-          <a href="/#message">{pageCopy.mobileMessage}</a>
-          <a href="/#products">{pageCopy.mobileProducts}</a>
-          <a href="/contact/" aria-current="page">{pageCopy.mobileContact}</a>
-          <MobileExternalMenu className={founder.mobileExternalLinks}>
-            <div className={founder.mobileExternalPopover} aria-label={pageCopy.mobileExternalPopover}>
-              <div className={founder.mobileExternalIcons}>
-                <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons}><InstagramIcon /></a>
-                <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons2}><GitHubIcon /></a>
-              </div>
-              <div className={founder.mobileLanguagePanel}>
-                <span>{pageCopy.mobileLanguagePanel}</span>
-                <div><a href="/contact/" aria-current="page">{pageCopy.mobileLanguagePanel2}</a><span>{pageCopy.mobileLanguagePanel3}</span><a href="/en/">{pageCopy.mobileLanguagePanel4}</a></div>
-              </div>
-            </div>
-          </MobileExternalMenu>
-        </nav>
+        <JapaneseMobileMenu
+          links={mobileMenuLinks}
+          japaneseHref="/contact/"
+          panelClassName={styles.portfolio}
+          socials={<>
+            <a href="https://www.instagram.com/n.m.w.314/?__pwa=1#" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons}><InstagramIcon /></a>
+            <a href="https://github.com/genellect" target="_blank" rel="noopener noreferrer" aria-label={pageCopy.mobileExternalIcons2}><GitHubIcon /></a>
+          </>}
+        />
       </header>
     </>
   );

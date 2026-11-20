@@ -141,92 +141,6 @@
 
 .desktopLanguageSwitch a[aria-current="page"] { color: #183246; background: rgba(35, 77, 118, 0.09); }
 
-.mobileNavigation { display: none; }
-
-.mobileExternalLinks {
-  position: relative;
-}
-
-.mobileExternalLinks > button {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border: 1px solid rgba(35, 77, 118, 0.16);
-  border-radius: 50%;
-  color: #244257;
-  background: rgba(255, 255, 255, 0.78);
-  cursor: pointer;
-}
-
-.mobileExternalLinks > button svg { width: 17px; height: 17px; fill: currentColor; }
-
-.mobileExternalPopover {
-  position: absolute;
-  top: calc(100% + 11px);
-  right: 0;
-  z-index: 80;
-  display: grid;
-  gap: 9px;
-  padding: 9px;
-  border: 1px solid rgba(35, 77, 118, 0.14);
-  border-radius: 16px 4px 16px 16px;
-  background: rgba(250, 253, 255, 0.97);
-  box-shadow: 0 18px 44px rgba(26, 61, 91, 0.18);
-  backdrop-filter: blur(18px);
-}
-
-.mobileExternalIcons { display: flex; gap: 8px; }
-
-.mobileExternalPopover::before {
-  position: absolute;
-  top: -6px;
-  right: 12px;
-  width: 11px;
-  height: 11px;
-  content: "";
-  border-top: 1px solid rgba(35, 77, 118, 0.14);
-  border-left: 1px solid rgba(35, 77, 118, 0.14);
-  background: rgba(250, 253, 255, 0.97);
-  transform: rotate(45deg);
-}
-
-.mobileExternalIcons a {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  border: 1px solid rgba(35, 77, 118, 0.13);
-  border-radius: 50%;
-  color: #183246;
-  background: #fff;
-  text-decoration: none;
-}
-
-.mobileExternalPopover svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; }
-.mobileExternalPopover .iconFill { fill: currentColor; stroke: none; }
-
-.mobileLanguagePanel {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 9px 5px 2px;
-  border-top: 1px solid rgba(35, 77, 118, 0.12);
-  color: #688095;
-  font-size: 0.55rem;
-  font-weight: 740;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.mobileLanguagePanel > div { display: flex; align-items: center; gap: 1px; padding: 2px; border: 1px solid rgba(35, 77, 118, 0.12); border-radius: 999px; background: rgba(35, 77, 118, 0.035); }
-.mobileLanguagePanel > div > span { display: none; }
-.mobileLanguagePanel a { width: auto; min-width: 30px; height: auto; padding: 5px 7px; color: #688095; border: 0; border-radius: 999px; background: transparent; text-align: center; text-decoration: none; }
-.mobileLanguagePanel a[aria-current="page"] { color: #183246; background: #fff; box-shadow: 0 1px 5px rgba(24, 50, 70, 0.08); }
-
 .hero {
   position: relative;
   display: grid;
@@ -2650,8 +2564,6 @@
   .wordmark span { display: none; }
   .wordmark strong { font-size: 0.72rem; letter-spacing: 0.11em; }
   .navigation { display: none; }
-  .mobileNavigation { display: flex; align-items: center; gap: clamp(8px, 2.8vw, 14px); margin-left: auto; }
-  .mobileNavigation > a { color: #2f4558; font-size: 0.61rem; font-weight: 760; letter-spacing: 0.025em; text-decoration: none; }
 
   .hero {
     display: grid;
@@ -2794,9 +2706,6 @@
 @media (max-width: 360px) {
   .header { gap: 8px; padding-inline: 11px; }
   .wordmark strong { font-size: 0.63rem; letter-spacing: 0.08em; }
-  .mobileNavigation { gap: 7px; }
-  .mobileNavigation > a { font-size: 0.55rem; }
-  .mobileExternalLinks > button { width: 32px; height: 32px; }
   .heroPhoto { min-height: 0; }
   .photoFrame { width: min(82vw, calc((54svh - 104px) * 0.667)); height: calc(54svh - 104px); min-height: 0; }
   .photoControls { width: min(82vw, calc((54svh - 104px) * 0.667)); }
@@ -2889,45 +2798,6 @@
   .fragmentReelViewport { overflow-x: auto; scrollbar-width: none; }
   .fieldImage img, .productVisual img, .offHoursVisual img, .navigation a::after, .socialLinks a, .productCopy nav a { transition: none !important; }
   .interactiveHeroStage :global(.hero-signal-matrix) { display: none; }
-}
-
-/* JP mobile only. The desktop Hero and every English surface retain their styles. */
-@media (max-width: 900px) {
-  .mobileExternalLinks > button {
-    width: 44px; height: 44px; border: 0; background: transparent;
-    position: relative;
-  }
-  .mobileExternalLinks > button::before {
-    content: ""; position: absolute; inset: 7px;
-    border: 1px solid rgba(35, 77, 118, 0.16); border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
-  }
-  .mobileExternalLinks > button svg { position: relative; width: 14px; height: 14px; }
-  .mobileExternalPopover {
-    width: 190px;
-    gap: 9px;
-    padding: 10px;
-    border-radius: 12px;
-    background: #fbfdff;
-    box-shadow: 0 12px 36px rgba(26, 61, 91, 0.12);
-    animation: mobileMenuEnter 180ms ease-out both;
-  }
-  .mobileExternalPopover::before { display: none; }
-  .mobileExternalIcons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-  .mobileExternalIcons a {
-    width: 100%; height: 44px;
-    place-items: center;
-    padding: 0;
-    border: 1px solid transparent; border-radius: 8px;
-    color: #254257; background: transparent;
-    transition: background 160ms ease, border-color 160ms ease;
-  }
-  .mobileExternalIcons a:hover, .mobileExternalIcons a:focus-visible { background: #edf4f8; border-color: #d5e3ed; }
-  .mobileExternalIcons a:active { background: #e2eef5; }
-  .mobileExternalIcons svg { width: 21px; height: 21px; }
-  .mobileExternalIcons img { width: 25px; height: 25px; }
-  .mobileLanguagePanel { padding: 8px 2px 0; color: #526b7d; gap: 8px; }
-  .mobileLanguagePanel a { min-width: 38px; min-height: 32px; display: grid; place-items: center; }
 }
 
 @media (max-width: 640px) {
@@ -3058,7 +2928,6 @@
   .photoFrame::after { height: 12px; }
 }
 
-@keyframes mobileMenuEnter { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 
 /* JP second portrait only: pixel-derived composition inside the existing slide. */
 .portraitLayer { position:absolute; inset:0; overflow:hidden; }
@@ -3086,15 +2955,11 @@
   .fragments[data-mobile-view="original"] .mobileOriginalView { display:block; min-height:max(372px,calc(80svh - 108px)); padding-block:24px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .mobileExternalPopover { animation: none; }
-  .mobileExternalIcons a { transition: none; }
-}
 @media (max-width: 640px) and (prefers-reduced-motion: reduce) {
   .photoSlide, .photoSlide[data-motion] { transition: none !important; }
 }
 
-/* JP top page mobile header and menu (max-width 900px). Desktop and the Contact page keep their own header. */
+/* JP mobile header and menu (top page and Contact, max-width 900px). Desktop keeps its own header. */
 .mobileHeaderActions, .mobileMenuPanel { display: none; }
 
 @media (max-width: 900px) {
@@ -3127,7 +2992,7 @@
   .mobileMenuTrigger span { position: relative; display: block; width: 14px; height: 1.5px; border-radius: 1px; background: currentColor; }
 
   .mobileMenuPanel {
-    position: fixed; inset: 0; z-index: 90;
+    position: fixed; inset: 0; z-index: 110;
     display: grid; grid-template-rows: auto 1fr auto;
     padding: env(safe-area-inset-top) 16px 0;
     overflow-y: auto; overscroll-behavior: contain;
@@ -3195,21 +3060,20 @@
 .mobileWordmarkRole { display: none; }
 
 /*
- * JP top page header surface for max-width 900px. Scoped to [data-founder-page] so the Contact page,
- * which shares .header, keeps its own look. White surface, hairline and soft shadow separate the header
+ * JP header surface (top page and Contact, both marked data-mobile-header) for max-width 900px. White surface, hairline and soft shadow separate the header
  * from the paper; the two-line wordmark and 72px height match the density of the Desktop/EN headers.
  */
 @media (max-width: 900px) {
-  [data-founder-page] > .header {
+  .header[data-mobile-header] {
     min-height: 72px;
     padding-inline: 20px;
     border-bottom-color: rgba(22, 47, 76, 0.12);
     background: rgba(255, 255, 255, 0.94);
     box-shadow: 0 10px 24px -18px rgba(16, 28, 43, 0.35);
   }
-  [data-founder-page] > .header .wordmarkGroup { display: grid; flex: 0 0 auto; gap: 4px; }
-  [data-founder-page] > .header .wordmark strong { font-size: 0.76rem; letter-spacing: 0.13em; }
-  .mobileWordmarkRole { display: block; color: #567085; font-size: 0.56rem; font-weight: 680; letter-spacing: 0.08em; }
+  .header[data-mobile-header] .wordmarkGroup { display: grid; flex: 0 0 auto; gap: 4px; }
+  .header[data-mobile-header] .wordmark strong { font-size: 0.76rem; letter-spacing: 0.13em; }
+  .mobileWordmarkRole { display: block; color: #567085; font-size: 0.58rem; font-weight: 680; letter-spacing: 0.08em; }
   .mobileMenuTrigger::before { inset: 2px; background: #fff; }
   .mobileMenuTrigger span { width: 15px; }
   .mobileLanguageSwitch a { min-width: 42px; min-height: 34px; }
@@ -3226,14 +3090,15 @@
 }
 
 @media (max-width: 360px) {
-  [data-founder-page] > .header { padding-inline: 14px; }
-  [data-founder-page] > .header .wordmark strong { font-size: 0.68rem; letter-spacing: 0.1em; }
+  .header[data-mobile-header] { padding-inline: 14px; }
+  .mobileLanguageSwitch a { min-width: 36px; padding-inline: 7px; }
+  .header[data-mobile-header] .wordmark strong { font-size: 0.68rem; letter-spacing: 0.1em; }
   .mobileWordmarkRole { font-size: 0.52rem; letter-spacing: 0.05em; }
   .mobileMenuPanel { padding-inline: 14px; }
 }
 
 @media (max-width: 640px) and (max-height: 720px) {
-  [data-founder-page] > .header { min-height: 56px; padding-block: 6px; }
+  .header[data-mobile-header] { min-height: 56px; padding-block: 6px; }
   [data-founder-page] .hero { --hero-header-height: 56px; padding-top: 56px; }
   [data-founder-page] .hero .photoFrame { top: calc(var(--hero-header-height) + 8px); }
 }

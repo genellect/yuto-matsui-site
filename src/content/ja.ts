@@ -463,16 +463,8 @@ export const pageCopy = {
   "languageSeparator": "/",
   "englishLanguage": "EN",
   "mobileNavigationLabel": "Mobile portfolio navigation",
-  "mobileMessage": "Message",
-  "mobileProducts": "Product",
-  "mobileContact": "Contact",
-  "mobileExternalPopover": "Yuto Matsuiの外部リンク",
   "mobileExternalIcons": "Instagram",
   "mobileExternalIcons2": "GitHub",
-  "mobileLanguagePanel": "Language",
-  "mobileLanguagePanel2": "JP",
-  "mobileLanguagePanel3": "/",
-  "mobileLanguagePanel4": "EN",
   "eyebrow": "システムエンジニア・分子生物学研究",
   "founderTitle": "Yuto Matsui",
   "japaneseName": "松井優知",
@@ -594,12 +586,7 @@ export const heroCopy = {
   "photoMeta2": " · "
 } as const;
 
-// Rendered text from src/ja/MobileExternalMenu.tsx; JSX structure stays in the component.
-export const menuCopy = {
-  "label": "外部リンクを表示"
-} as const;
-
-// Rendered text from src/ja/JapaneseMobileMenu.tsx (JP top page, max-width 900px).
+// Rendered text from src/ja/JapaneseMobileMenu.tsx (JP top page and Contact, max-width 900px).
 // Section labels and the language switch reuse pageCopy so Desktop and Mobile stay identical.
 export const mobileMenuCopy = {
   "open": "メニューを開く",

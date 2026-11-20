@@ -105,10 +105,18 @@ for (const layout of layouts) {
         await expect(header.getByRole('link', { name: 'Expertise' })).toHaveAttribute('href', '/#expertise');
         await expect(header.getByRole('link', { name: 'Off Hours' })).toHaveAttribute('href', '/#off-hours');
         await expect(header.getByRole('link', { name: 'EN', exact: true })).toHaveAttribute('href', '/en/');
+        await expect(header.getByRole('link', { name: 'Contact' }).filter({ visible: true })).toHaveAttribute('aria-current', 'page');
       } else {
-        await expect(header.getByRole('link', { name: 'Message' })).toHaveAttribute('href', '/#message');
+        // The top page's mobile header: the language switch, and the sections in the full-screen menu.
+        await expect(header.getByRole('link', { name: 'EN', exact: true }).filter({ visible: true })).toHaveAttribute('href', '/en/');
+        await header.getByRole('button', { name: 'メニューを開く', exact: true }).click();
+        const menu = page.locator('#japanese-mobile-menu');
+        await expect(menu.getByRole('link', { name: 'Expertise' })).toHaveAttribute('href', '/#expertise');
+        await expect(menu.getByRole('link', { name: 'Off Hours' })).toHaveAttribute('href', '/#off-hours');
+        await expect(menu.getByRole('link', { name: 'Contact' })).toHaveAttribute('aria-current', 'page');
+        await page.keyboard.press('Escape');
+        await expect(header.getByRole('button', { name: 'メニューを開く', exact: true })).toBeFocused();
       }
-      await expect(header.getByRole('link', { name: 'Contact' }).filter({ visible: true })).toHaveAttribute('aria-current', 'page');
       // The top page's footer, with Back to top pointing at this page.
       const footer = page.locator('[data-contact-footer]');
       await expect(footer.getByRole('link', { name: /Back to top/ })).toHaveAttribute('href', '#contact-top');
