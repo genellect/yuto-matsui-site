@@ -275,7 +275,7 @@ export const pageCopy = {
   "universityEmailLabel": "Univ.",
   "universityEmail": "matsui.yuto@st.kitasato-u.ac.jp",
   "footerName": "Yuto Matsui",
-  "footerRole": "Life Science Research · AI-Native Engineering · Higher Education",
+  "footerRole": "Life Science Research · AI-Native Engineering",
   "footerLinksLabel": "Personal links",
   "footerInstagram": "Instagram ",
   "footerGitHub": "GitHub ",

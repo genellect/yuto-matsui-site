@@ -673,7 +673,7 @@
 }
 .contactField span { display: none; }
 .contactShell { position: relative; display: grid; width: min(calc(100% - 64px), 1280px); grid-template-columns: 1fr; gap: clamp(48px, 5vw, 72px); margin-inline: auto; padding-top: 22px; border-top: 1px solid var(--line); }
-.contact h2 { margin-top: 28px; padding-bottom: 0.08em; font-size: clamp(4.4rem, 11.6vw, 13rem); line-height: 0.84; white-space: nowrap; }
+.contact h2 { margin-top: 20px; padding-bottom: 0.08em; font-size: clamp(3.6rem, 7vw, 8rem); line-height: 0.88; white-space: nowrap; }
 .contactCopy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(40px, 6vw, 96px); align-items: start; }
 .contactIntroduction { display: grid; gap: 14px; max-width: 48ch; }
 .contactIntroduction p { margin: 0; color: var(--body); font-size: 1.04rem; line-height: 1.65; }
@@ -960,7 +960,7 @@
 
   .contact { padding-top: 112px; }
   .contact { padding-bottom: 150px; }
-  .contact h2 { font-size: clamp(3.2rem, 15.4vw, 5.4rem); }
+  .contact h2 { font-size: clamp(3.1rem, 15vw, 4.6rem); }
   .contactIntroduction p { font-size: 1rem; }
   .contactEmail { padding: 20px; }
   .contactEmail p { grid-template-columns: 74px 1fr; font-size: 0.78rem; }
