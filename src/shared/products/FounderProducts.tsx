@@ -14,7 +14,7 @@ type Product = {
   label: string;
   headline?: readonly [string, string];
   links: readonly { label: string; href: string }[];
-  recognition?: readonly { event: string; result?: string }[];
+  recognition?: readonly { event: string; result?: string; honor?: boolean; href?: string }[];
 };
 
 const STILLS = {
@@ -65,7 +65,12 @@ export function FounderProducts({ products, language = "ja" }: { products: reado
                 </h3>
                 {product.recognition && product.recognition.length > 0 && (
                   <ul className={styles.recognition} aria-label={english ? `${product.label} recognition` : `${product.label}の実績`}>
-                    {product.recognition.map(item => <li key={item.event}><span>{item.event}</span>{item.result && <strong>{item.result}</strong>}</li>)}
+                    {product.recognition.map(item => {
+                      const line = <><span>{item.event}</span>{item.result && <strong className={item.honor ? styles.honor : undefined}>{item.result}</strong>}</>;
+                      return <li key={item.event}>{item.href
+                        ? <a className={styles.recognitionLink} href={item.href} target="_blank" rel="noopener noreferrer">{line}<span className={styles.visuallyHidden}>{english ? " (opens in a new tab)" : "（新しいタブで開く）"}</span></a>
+                        : line}</li>;
+                    })}
                   </ul>
                 )}
                 <a className={styles.destination} href={primary.href} aria-label={`${product.label}: ${primary.label}`} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>

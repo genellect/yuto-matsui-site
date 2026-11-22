@@ -62,8 +62,8 @@ export const products = [
     title: "Get your microscopy publication-ready.",
     links: [{ label: "プロダクトLP", href: "https://cytellect.vercel.app/" }],
     recognition: [
+      { event: "東京AIハッカソン2026", result: "最優秀賞", honor: true, href: "https://www.hiroshimai.co.jp/tokyohackathon" },
       { event: "北里大学ChatGPTハッカソン2026", result: "準優勝" },
-      { event: "東京AIハッカソン2026", result: "本選進出" },
       { event: "技育展2026", result: "決勝進出" }
     ]
   },

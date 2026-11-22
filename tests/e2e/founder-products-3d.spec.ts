@@ -50,7 +50,9 @@ test("WebGL failure leaves all product destinations available", async ({ page })
   await page.goto("/en/");
   const products = page.locator("[data-products-cinematic]");
   await products.scrollIntoViewIfNeeded();
-  await expect(products.locator("a")).toHaveCount(4);
+  // Four product destinations, plus the cytellect grand-prize recognition link.
+  await expect(products.locator("a")).toHaveCount(5);
+  await expect(products.locator('[data-product="cytellect"] ul a')).toHaveAttribute("href", "https://www.hiroshimai.co.jp/tokyohackathon");
   await expect(products.locator('[data-product="interactive"] svg').first()).toBeVisible();
   await expect(products.locator('[data-product="topos"] img')).toBeVisible();
   await expect(products.locator('[data-product="cytellect"] img')).toBeVisible();

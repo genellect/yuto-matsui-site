@@ -16,6 +16,7 @@ yuto-matsui.com の見た目を変えるときの判断基準です。正本は�
 - テーマ：明るい紙面。`--paper #f7fbff`、`--ink #101c2b`、`--ink-soft #45566a`、`--line rgba(22,47,76,.14)`。
 - アクセント：分野ごとに固定。`--bio #38a77f`（生命科学）、`--ai #4d72ed`（AI）、`--education #d28a38`（教育）。カードでは `data-accent` で切り替え、文字用には濃い色（例 `#24775d`、`#3458bd`、`#8d5922`）を使う。
 - 補助色：`--cyan #19bad0`、`--blue #486ff0`、`--violet #8b69e8`。
+- 受賞の金：Productsカードの実績で、最優秀賞の結果の語だけに使う（JP・EN共通、`src/shared/products/products-equal.module.css` の `.honor`）。`#f1dba0 → #dcb767 → #cfa553` の幅の狭いグラデーションで、文字の大きさ・太さ・行間は他の行と同じにする。他の場所には広げない。（オーナーの指示、2026-11-22）
 - 書体：Inter と日本語のsystem font（Desktop、901px以上では Noto Sans JP を優先）。
 - focus：`outline: 3px solid #316fd7; outline-offset: 4px`。
 - セクション順：Hero → Expertise → FRAGMENTS → Story（essay） → Products → Experience → Credentials → Off hours → Contact CTA。
