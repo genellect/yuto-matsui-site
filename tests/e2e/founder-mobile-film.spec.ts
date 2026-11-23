@@ -21,8 +21,13 @@ for (const route of ["/","/en/"]) {
     await expect(section.locator('canvas:visible')).toHaveCount(1);
     await section.screenshot({path:info.outputPath(`mobile-${route.includes('en')?'en':'jp'}-390.png`)});
     const canvas=film.locator('canvas');const moving=await canvas.screenshot();await page.waitForTimeout(700);expect(Buffer.compare(moving,await canvas.screenshot())).not.toBe(0);
-    const pause=film.getByRole('button',{name:/一時停止|Pause automatic/});await pause.click();await page.waitForTimeout(250);
-    const still=await canvas.screenshot();await page.waitForTimeout(150);expect(Buffer.compare(still,await canvas.screenshot())).toBe(0);
+    const pause=film.getByRole('button',{name:/一時停止|Pause automatic/});await pause.click();
+    // Pause eases the film to rest over a few frames; on slow software WebGL that
+    // tail outlasts any fixed wait. Wait until drawing stops, then require stillness.
+    const renders=()=>canvas.getAttribute('data-render-commands');
+    await expect(async()=>{const before=await renders();await page.waitForTimeout(300);expect(await renders()).toBe(before);}).toPass({timeout:5000});
+    const still=await canvas.screenshot(),stillRenders=await renders();await page.waitForTimeout(400);
+    expect(Buffer.compare(still,await canvas.screenshot())).toBe(0);expect(await renders()).toBe(stillRenders);
     const viewport=film.locator('[role="group"]');
     const before=await viewport.getAttribute('data-current-photo');await film.getByRole('button',{name:/次の写真|Next image/}).click();
     await expect.poll(()=>viewport.getAttribute('data-current-photo')).not.toBe(before);
