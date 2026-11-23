@@ -156,6 +156,10 @@ export function mountPageLight(host: HTMLElement, options: { reducedMotion: bool
       invalidate();
     },
     paused(value) {
+      // Any aria-pressed change on the page re-syncs the hold (the hero gallery
+      // flips its own as it advances). Only a real change may draw: a redundant
+      // frame while held would still step the eased colours and move the light.
+      if (held === value) return;
       held = value;
       last = 0;
       invalidate();

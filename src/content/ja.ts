@@ -15,7 +15,7 @@ export const japaneseMetadata: Metadata = {
     type: "profile",
     siteName: "Yuto Matsui",
     title: "Yuto Matsui / 松井優知",
-    description: "ライフサイエンス研究・AIネイティブ開発・大学教育支援。",
+    description: "ライフサイエンス研究・AIネイティブ開発。",
     url: FOUNDER_URL,
     images: [
       {
@@ -29,7 +29,7 @@ export const japaneseMetadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Yuto Matsui / 松井優知",
-    description: "ライフサイエンス研究・AIネイティブ開発・大学教育支援。",
+    description: "ライフサイエンス研究・AIネイティブ開発。",
     images: [`${FOUNDER_URL}images/founder-portfolio/yuto-matsui-profile-hero.webp`]
   }
 };
@@ -170,8 +170,7 @@ export const personSchema = {
   image: `${FOUNDER_URL}images/founder-portfolio/yuto-matsui-profile-hero.webp`,
   knowsAbout: [
     "Life science research",
-    "AI-native software development",
-    "University education support"
+    "AI-native software development"
   ],
   founder: {
     "@type": "Organization",
@@ -527,7 +526,7 @@ export const pageCopy = {
   "universityEmailLabel": "Univ.：",
   "universityEmail": "matsui.yuto@st.kitasato-u.ac.jp",
   "footerName": "Yuto Matsui / 松井優知",
-  "footerRole": "Life Science · AI-native Development · University Education",
+  "footerRole": "Life Science Research · AI-native Development",
   "footerLinksLabel": "Personal links",
   "footerInstagram": "Instagram ",
   "footerGitHub": "GitHub ",

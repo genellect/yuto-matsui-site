@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     type: "profile",
     siteName: "Yuto Matsui",
     title: "Yuto Matsui | Researcher & Engineer",
-    description: "Life Science Research · AI-Native Engineering · Higher Education",
+    description: "Life Science Research · AI-Native Engineering",
     url: canonicalUrl,
     images: [
       {
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Yuto Matsui | Researcher & Engineer",
-    description: "Life Science Research · AI-Native Engineering · Higher Education",
+    description: "Life Science Research · AI-Native Engineering",
     images: [`${founderOrigin}/images/founder-portfolio/yuto-matsui-profile-hero.webp`]
   }
 };
@@ -82,8 +82,7 @@ const personSchema = {
   knowsAbout: [
     "Life science research",
     "Molecular biology",
-    "AI-native engineering",
-    "Higher education"
+    "AI-native engineering"
   ],
   founder: {
     "@type": "Organization",
