@@ -14,7 +14,7 @@ type Product = {
   label: string;
   headline?: readonly [string, string];
   links: readonly { label: string; href: string }[];
-  recognition?: readonly { event: string; result?: string; honor?: boolean; href?: string }[];
+  recognition?: readonly { event: string; result?: string; honor?: "gold" | "silver"; href?: string }[];
 };
 
 const STILLS = {
@@ -66,7 +66,7 @@ export function FounderProducts({ products, language = "ja" }: { products: reado
                 {product.recognition && product.recognition.length > 0 && (
                   <ul className={styles.recognition} aria-label={english ? `${product.label} recognition` : `${product.label}の実績`}>
                     {product.recognition.map(item => {
-                      const line = <><span>{item.event}</span>{item.result && <strong className={item.honor ? styles.honor : undefined}>{item.result}</strong>}</>;
+                      const line = <>{item.honor && <svg className={styles.trophy} data-tier={item.honor} viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 1.5h8v1.2h2.3v1.6c0 1.9-1.3 3.4-3 3.7A4 4 0 0 1 8.8 10v1.7h2.4v2.8H4.8v-2.8h2.4V10a4 4 0 0 1-2.5-2C3 7.7 1.7 6.2 1.7 4.3V2.7H4zm0 2.8H3.2c0 1 .5 1.8 1.2 2.2A6 6 0 0 1 4 4.3zm8 0c0 .8-.1 1.5-.4 2.2.7-.4 1.2-1.2 1.2-2.2z" fill="currentColor"/></svg>}<span>{item.event}</span>{item.result && <strong className={item.honor ? styles.honor : undefined} data-tier={item.honor}>{item.result}</strong>}</>;
                       return <li key={item.event}>{item.href
                         ? <a className={styles.recognitionLink} href={item.href} target="_blank" rel="noopener noreferrer">{line}<span className={styles.visuallyHidden}>{english ? " (opens in a new tab)" : "（新しいタブで開く）"}</span></a>
                         : line}</li>;
