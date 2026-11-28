@@ -4,7 +4,7 @@ import { controls as jaControls, productCopy } from "../../content/ja";
 import { controls as enControls } from "../../content/en";
 
 import { COMPASS_ORIGIN } from "../../site";
-import { useState, type CSSProperties } from "react";
+import { useId, useState, type CSSProperties } from "react";
 import { ProductSculpture, type SculptureKind } from "./ProductSculpture";
 import sceneStyles from "./products-cinematic.module.css";
 import styles from "./products-equal.module.css";
@@ -14,7 +14,7 @@ type Product = {
   label: string;
   headline?: readonly [string, string];
   links: readonly { label: string; href: string }[];
-  recognition?: readonly { event: string; result?: string; honor?: boolean; href?: string }[];
+  recognition?: readonly { event: string; result?: string; honor?: "gold" | "silver"; href?: string }[];
 };
 
 const STILLS = {
@@ -22,6 +22,30 @@ const STILLS = {
   topos: { src: "/images/founder-products/topos/readme-hero.webp", width: 1280, height: 640, ja: "Toposのプロダクト紹介画像。議論の分析画面と発言率の変化", en: "Topos product image showing its discussion analysis screens" },
   platform: { src: "/images/founder-products/compass/top.webp", width: 1920, height: 1080, ja: "COMPASS親サイトの光る円環と通路", en: "An illuminated circular gateway from the COMPASS homepage" }
 } as const;
+
+const TROPHY_STOPS = {
+  gold: ["#f6e3ae", "#dcb767", "#a97c2f"],
+  silver: ["#f7f8fb", "#c4cad5", "#848c9b"]
+} as const;
+
+// A small metal trophy: the cup and base take the tier's sheen; the handles are a hairline of the same metal.
+function Trophy({ tier }: { tier: "gold" | "silver" }) {
+  const id = useId();
+  const [light, mid, deep] = TROPHY_STOPS[tier];
+  return (
+    <svg className={styles.trophy} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={light} /><stop offset=".55" stopColor={mid} /><stop offset="1" stopColor={deep} />
+        </linearGradient>
+      </defs>
+      <path d="M7.2 5.2H5.1a1 1 0 0 0-1 1.1c.2 2 1.4 3.4 3.5 3.9M16.8 5.2h2.1a1 1 0 0 1 1 1.1c-.2 2-1.4 3.4-3.5 3.9" fill="none" stroke={`url(#${id})`} strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M6.8 3h10.4v5.3a5.2 5.2 0 0 1-10.4 0Z" fill={`url(#${id})`} />
+      <path d="M11 13.3h2v3.9h-2Z" fill={`url(#${id})`} />
+      <path d="M8.4 17.6h7.2c.5 0 .9.4.9.9V21h-9v-2.5c0-.5.4-.9.9-.9Z" fill={`url(#${id})`} />
+    </svg>
+  );
+}
 
 function Arrow() {
   return <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M8 31 31 8M9 8h22v22" stroke="currentColor" strokeWidth="1.8" /></svg>;
@@ -66,8 +90,8 @@ export function FounderProducts({ products, language = "ja" }: { products: reado
                 {product.recognition && product.recognition.length > 0 && (
                   <ul className={styles.recognition} aria-label={english ? `${product.label} recognition` : `${product.label}の実績`}>
                     {product.recognition.map(item => {
-                      const line = <><span>{item.event}</span>{item.result && <strong className={item.honor ? styles.honor : undefined}>{item.result}</strong>}</>;
-                      return <li key={item.event}>{item.href
+                      const line = <><span>{item.event}</span>{item.result && <strong className={item.honor ? styles.honor : undefined} data-tier={item.honor}>{item.result}</strong>}</>;
+                      return <li key={item.event} data-honor={item.honor}>{item.honor && <Trophy tier={item.honor} />}{item.href
                         ? <a className={styles.recognitionLink} href={item.href} target="_blank" rel="noopener noreferrer">{line}<span className={styles.visuallyHidden}>{english ? " (opens in a new tab)" : "（新しいタブで開く）"}</span></a>
                         : line}</li>;
                     })}
